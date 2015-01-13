@@ -1,0 +1,24 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                           controllers.Application.index(any = "none")
+
+# Play routes serving HTML to AngularJS start with /views
+GET     /views/*any                 controllers.Application.loadPublicHTML(any)
+
+# Play routes serving JSON to AngularJS start with /api
+GET     /api/user                   controllers.UserController.index
+POST    /api/user/new		        controllers.UserController.create
+GET     /api/user/:id		        controllers.UserController.show(id: String)
+POST    /api/user/:id		        controllers.UserController.update(id: String)
+DELETE  /api/user/:id		        controllers.UserController.delete(id: String)
+
+GET     /api/loaddefault            controllers.LoadDataController.index
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.at(path="/public", file)
+
+# Redirect all unknown routes to the index page
+GET     /*any						controllers.Application.index(any)
