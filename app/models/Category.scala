@@ -10,24 +10,27 @@ import reactivemongo.bson.{BSONDocumentReader, BSONObjectID, BSONDocument, BSOND
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
-
-
 /**
  * Created by tsieland on 1/8/15.
  */
-case class Category(id: UUID, name: String, parent: UUID)
+
+case class Category(categoryId: UUID, name: String, uniqueName: String, ordering: Int, parentId: Option[UUID])
 
 object Category {
   implicit val category_Writes: Writes[Category] = (
-    (JsPath \  "id").write[UUID] and
+    (JsPath \  "categoryId").write[UUID] and
       (JsPath \ "name").write[String] and
-      (JsPath \ "parent").write[UUID]
+      (JsPath \ "uniqueName").write[String] and
+      (JsPath \ "ordering").write[Int] and
+      (JsPath \ "parentId").write[Option[UUID]]
     )(unlift(Category.unapply))
 
   implicit val category_Reads: Reads[Category] = (
-    (JsPath \ "id").read[UUID] and
+    (JsPath \ "categoryId").read[UUID] and
       (JsPath \ "name").read[String] and
-      (JsPath \ "parent").read[UUID]
+      (JsPath \ "uniqueName").read[String] and   // only lower case chars, digits and _
+      (JsPath \ "ordering").read[Int] and
+      (JsPath \ "parentId").read[Option[UUID]]
     ) (Category.apply _)
 
 

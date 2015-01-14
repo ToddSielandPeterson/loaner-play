@@ -4,30 +4,32 @@ import java.util.UUID
 
 import com.cognitivecreations.dao.mongo.dao.UserMongoDao
 import com.cognitivecreations.dao.mongo.dao.mongomodel.UserMongo
-import com.cognitivecreations.modelconvertors.UserConvertor._
+import com.cognitivecreations.modelconverters.UserConverter
 import models.User
-import org.joda.time.Seconds
 
 import reactivemongo.core.commands.LastError
-import scala.concurrent.duration._
-import scala.concurrent.{duration, Await, ExecutionContext, Future}
+import scala.concurrent.{ExecutionContext, Future}
 
 /**
  * Created by tsieland on 11/29/14.
  */
-class UserCoordinator(implicit ec: ExecutionContext) {
-
+class UserCoordinator(implicit ec: ExecutionContext) extends UserConverter with CoordinatorBase[User]{
   val ALLOWED_FAILURE_COUNT = 5
+  val userDao = new UserMongoDao()
 
   def optionOrString(v: Option[String], d: Option[String]): Option[String] = if (v.isDefined) v else d
 
   def overwrite(user: UserMongo, fName: Option[String], lName: Option[String], website: Option[String]): UserMongo = {
-    user.copy(firstName = user.firstName, lastName = user.lastName,
+    user.copy(firstName = user.firstName,
+      lastName = user.lastName,
       website = optionOrString(website, user.website))
   }
 
   def overwriteAsSome(user: Option[UserMongo], fName: Option[String], lName: Option[String], website: Option[String]): Option[UserMongo] = {
-    if (user.isDefined) Some(overwrite(user.get, fName, lName, website)) else user
+    if (user.isDefined)
+      Some(overwrite(user.get, fName, lName, website))
+    else
+      user
   }
 
   def mergeUserMongo(to: UserMongo, from: UserMongo): UserMongo = {
@@ -57,63 +59,33 @@ class UserCoordinator(implicit ec: ExecutionContext) {
   }
 
   def updateUser(user: User, id: UUID): Future[Option[User]] = {
-    import com.cognitivecreations.modelconvertors.UserConvertor._
+    val foptUserMongo = findByPrimary(id)
 
-    val userDao = new UserMongoDao()
-    val foptUserMong = userDao.findByUserId(id)
-    val foptUser = foptUserMong.map( optUser => optUser.map(
-      userFetch => mergeUserMongo(asUserMongo(user), userFetch)
+    foptUserMongo.map( optUser =>
+      optUser.map(userFetch =>
+        fromMongo(mergeUserMongo(toMongo(user), userFetch))
     ))
-    asFutureOptionUser(foptUser)
   }
 
-  def findByUserId(id: UUID): Future[Option[User]] = {
-    val userDao = new UserMongoDao()
-
-    try {
-      for {
-        user <- userDao.findByUserId(id)
-      } yield user.map(u => asUser(u))
-    } catch {
-      case ex: Exception =>
-        println(s"Exception Happened ${ex.getMessage}" )
-        ex.printStackTrace
-        Future.successful(None)
-    }
+  override def findByPrimary(id: UUID): Future[Option[User]] = {
+    for {
+      user <- userDao.findByUserId(id)
+    } yield user.map(u => fromMongo(u))
   }
 
   def findAll(): Future[List[User]] = {
-    val userDao = new UserMongoDao
-
-    try {
-      val y = for {
-        users <- userDao.findAll
-      } yield
-        users.map(u => asUser(u))
-      y
-    } catch {
-      case ex: Exception =>
-        println(s"Exception Happened ${ex.getMessage}" )
-        ex.printStackTrace
-        Future.successful(List())
-    }
+    for (
+      users <- userDao.findAll
+    ) yield
+      users.map(u => fromMongo(u))
   }
 
   def insert(user: User): Future[LastError] = {
-    try {
-      val userDao = new UserMongoDao()
-      val y: Future[LastError] = userDao.findByUserId(user.userId.get).flatMap(optUserMongo =>
-        if (optUserMongo.isDefined)
-          Future.failed(new LastError(ok=false, code=None, err=Some("all"), errMsg = Some("already exists"), originalDocument = None, updated = 0, updatedExisting = false))
-        else
-          userDao.insert(asUserMongo(user))
-      )
-      y
-    } catch {
-      case ex: Exception =>
-        println(s"Exception Happened ${ex.getMessage}" )
-        ex.printStackTrace
-        Future.failed(ex)
+    findByPrimary(user.userId).flatMap {
+      case Some(s) =>
+        failed(s"Category ${user.userId.toString} already exists")
+      case None =>
+        userDao.insert(toMongo(user))
     }
   }
 }

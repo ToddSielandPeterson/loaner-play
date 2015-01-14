@@ -15,7 +15,8 @@ import play.api.libs.functional.syntax._
 /**
  * Created by Todd Sieland-Peterson on 10/14/14.
  */
-case class Product( id: Option[String], // unique generated id (UUID)
+
+case class Product( productId: Option[UUID], // unique generated id (UUID)
                     user: String, // link to user id
 
                     name: String,
@@ -33,7 +34,7 @@ case class Product( id: Option[String], // unique generated id (UUID)
 object Product {
 
   implicit val product_Writes:Writes[Product] = (
-      (JsPath \ "id").write[Option[String]] and
+      (JsPath \ "productId").write[Option[UUID]] and
       (JsPath \ "user").write[String] and
       (JsPath \ "name").write[String] and
       (JsPath \ "secondLine").write[Option[String]] and
@@ -47,7 +48,7 @@ object Product {
     )(unlift(Product.unapply))
 
   implicit val product_Reads: Reads[Product] = (
-    (JsPath \ "id").read[Option[String]] and
+    (JsPath \ "productId").read[Option[UUID]] and
       (JsPath \ "user").read[String] and
       (JsPath \ "name").read[String] and
       (JsPath \ "secondLine").read[Option[String]] and

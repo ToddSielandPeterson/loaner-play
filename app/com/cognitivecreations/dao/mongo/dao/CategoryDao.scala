@@ -16,9 +16,8 @@ trait CategoryDaoTrait extends BaseMongoDao[CategoryMongo] with BSONHandlers {
   implicit val bsonHandler = CategoryMongo.bsonHandler_CategoryMongo
 }
 
-
 class CategoryDao(implicit val executionContext: ExecutionContext) extends CategoryDaoTrait {
-  def findByPageId(id: String): Future[Option[CategoryMongo]] = {
+  def findByCategoryId(id: String): Future[Option[CategoryMongo]] = {
     findOne(BSONDocument("categoryId" -> BSONString(id)))
     //collection.find(BSONDocument("userId" -> BSONString(id))).one[UserMongo]
   }

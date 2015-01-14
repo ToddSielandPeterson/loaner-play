@@ -60,7 +60,7 @@ object UserController extends Controller {
 //    implicit val mongoController = this
 
     val userDao = new UserCoordinator()
-    val futureUser = userDao.findByUserId(UUID.fromString(id))
+    val futureUser = userDao.findByPrimary(UUID.fromString(id))
     futureUser.map { user => Ok(Json.toJson(user)) }
   }
 

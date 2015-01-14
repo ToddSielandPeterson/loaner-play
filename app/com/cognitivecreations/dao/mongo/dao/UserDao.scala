@@ -22,8 +22,6 @@ trait UserMongoDaoTrait extends BaseMongoDao[UserMongo] with BSONHandlers {
 class UserMongoDao(implicit val executionContext: ExecutionContext) extends UserMongoDaoTrait {
   import UserMongo._
 
-  val query = BSONDocument("email" -> BSONDocument("$gt" -> 25))
-
   def findByUserId(id: UUID): Future[Option[UserMongo]] = {
     findOne(BSONDocument("userId" -> BSONString(id.toString)))
     //collection.find(BSONDocument("userId" -> BSONString(id))).one[UserMongo]

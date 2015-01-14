@@ -19,10 +19,9 @@ trait ProductDaoTrait extends BaseMongoDao[ProductMongo] with BSONHandlers {
   implicit val bsonHandler = ProductMongo.bsonHandler_ProductMongo
 }
 
-
 class ProductDao(implicit val executionContext: ExecutionContext) extends ProductDaoTrait {
-  def findByUserId(id: String): Future[Option[ProductMongo]] = {
-    findOne(BSONDocument("userId" -> BSONString(id)))
+  def findByProductId(id: String): Future[Option[ProductMongo]] = {
+    findOne(BSONDocument("productId" -> BSONString(id)))
   }
 }
 
