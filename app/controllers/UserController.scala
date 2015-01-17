@@ -15,7 +15,7 @@ import play.api.mvc.Controller
 import play.api.Play.current
 
 import scala.concurrent.duration._
-import scala.concurrent.{ExecutionContext, duration, Await}
+import scala.concurrent.{ExecutionContext, Await}
 import scala.concurrent.ExecutionContext.Implicits.global
 
 /*
@@ -24,7 +24,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 object UserController extends Controller {
 
-  /** list all celebrities */
   def index = Action.async {
     implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
 

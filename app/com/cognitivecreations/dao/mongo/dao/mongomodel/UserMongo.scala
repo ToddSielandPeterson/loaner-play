@@ -7,7 +7,7 @@ import org.joda.time.DateTime
 case class UserMongo(lastName: String,
                      firstName: String,
                      email: String,
-                     userId: String,
+                     userId: UUID,
                      password: String,
                      website: Option[String] = None,
                      created: Option[DateTime] = None,
@@ -17,6 +17,7 @@ case class UserMongo(lastName: String,
 object UserMongo {
   implicit lazy val bsonHandler_UserMongoProperty = {
     import com.cognitivecreations.helpers.BSONHandlers._
+    import com.cognitivecreations.helpers.BSONHelpers._
 
     reactivemongo.bson.Macros.handler[UserMongo]
   }

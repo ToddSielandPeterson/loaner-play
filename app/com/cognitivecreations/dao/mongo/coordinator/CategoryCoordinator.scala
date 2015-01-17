@@ -23,6 +23,13 @@ class CategoryCoordinator(implicit ec: ExecutionContext) extends CategoryConvert
       optCat.map(x => fromMongo(x))
   }
 
+  def findByCategoryUniqueName(uniqueName: String): Future[Option[Category]] = {
+    for {
+      optCat <- categoryDao.findByCategoryUniqueName(uniqueName)
+    } yield
+      optCat.map(x => fromMongo(x))
+  }
+
   def insert(category: Category): Future[LastError] = {
     findByPrimary(category.categoryId).flatMap {
       case Some(s) => failed(s"Category ${category.categoryId} already exists")

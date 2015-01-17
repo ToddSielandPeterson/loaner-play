@@ -111,9 +111,9 @@ trait BSONHandlers {
     }
   }
 
-  implicit object UUIDHandler extends BSONHandler[BSONDocument,UUID]{
-    def write(c: UUID): BSONDocument = BSONDocument("uuid" -> c.toString)
-    def read (bson: BSONDocument) : UUID = bson.getAs[UUID]("uuid").get
+  implicit object UUIDHandler extends BSONHandler[BSONString,UUID]{
+    def write(c: UUID): BSONString = BSONString(c.toString)
+    def read (bson: BSONString) : UUID = UUID.fromString(bson.value)
   }
 
   implicit def implicitMapHandler[B <: BSONValue, T ](implicit handler: BSONHandler[B, T]) : BSONHandler[BSONDocument,Map[String, T]] = new BSONHandler[BSONDocument,Map[String, T]]{

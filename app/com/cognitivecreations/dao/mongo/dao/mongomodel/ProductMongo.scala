@@ -27,6 +27,7 @@ case class ProductMongo(id: UUID, // unique generated id (UUID)
 object ProductMongo {
   implicit lazy val bsonHandler_ProductMongo = {
     import com.cognitivecreations.helpers.BSONHandlers._
+    import com.cognitivecreations.helpers.BSONHelpers._
 
     reactivemongo.bson.Macros.handler[ProductMongo]
   }

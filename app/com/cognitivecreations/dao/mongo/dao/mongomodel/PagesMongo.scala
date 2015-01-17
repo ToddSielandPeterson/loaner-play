@@ -3,8 +3,6 @@ package com.cognitivecreations.dao.mongo.dao.mongomodel
 import java.util.UUID
 
 import org.joda.time.DateTime
-import play.api.libs.json.Json
-import reactivemongo.bson.{BSONDocument, BSONDocumentReader, BSONDocumentWriter, BSONObjectID}
 
 /**
  * Created by tsieland on 10/14/14.
@@ -20,6 +18,7 @@ case class PagesMongo(userPageId: UUID,
 
 object PagesMongo {
   implicit lazy val bsonHandler_PagesMongo = {
+    import com.cognitivecreations.helpers.BSONHandlers._
     import com.cognitivecreations.helpers.BSONHelpers._
     reactivemongo.bson.Macros.handler[PagesMongo]
   }

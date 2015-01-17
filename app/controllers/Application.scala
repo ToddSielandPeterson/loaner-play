@@ -1,10 +1,12 @@
 package controllers
 
 import java.io.File
+import java.util.UUID
 
+import controllers.LoadDataController._
 import play.Play
-import play.api.mvc.Action
-import play.api.mvc.Controller
+import play.api.libs.iteratee.Enumerator
+import play.api.mvc.{Cookie, Action, Controller}
 
 /*
  * Author: Sari Haj Hussein
@@ -13,24 +15,14 @@ import play.api.mvc.Controller
 object Application extends Controller {
   
   /** serve the index page app/views/index.scala.html */
-  def index(any: String) = Action {
-    Ok(views.html.index())
-  }
-  
-  /** resolve "any" into the corresponding HTML page URI */
-  def getURI(any: String): String = any match {
-    case "main" => "/public/html/main.html"
-    case "detail" => "/public/html/detail.html"
-    case _ => "error"
-  }
-  
-  /** load an HTML page from public/html */
-  def loadPublicHTML(any: String) = Action {
-    val projectRoot = Play.application().path()
-    var file = new File(projectRoot + getURI(any))
-    if (file.exists())
-      Ok(scala.io.Source.fromFile(file.getCanonicalPath()).mkString).as("text/html");
+  def index(any: String) = Action { request =>
+    val optCookieId = request.cookies.get("sessioninfo")
+    val sessionId = optCookieId.getOrElse(UUID.randomUUID())
+
+    if (optCookieId.isDefined)
+      Ok(views.html.index())
     else
-      NotFound
+      Ok(views.html.index()).withCookies(Cookie("sessioninfo", sessionId.toString, Some(86400 * 31)))
   }
+  
 }

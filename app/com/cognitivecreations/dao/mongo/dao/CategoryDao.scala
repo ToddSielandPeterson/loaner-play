@@ -12,13 +12,18 @@ import scala.concurrent.{Future, ExecutionContext}
  */
 trait CategoryDaoTrait extends BaseMongoDao[CategoryMongo] with BSONHandlers {
   import reactivemongo.api._
-  val collection =   DatabaseMongoDataSource.pagesSource
+  val collection =   DatabaseMongoDataSource.categorySource
   implicit val bsonHandler = CategoryMongo.bsonHandler_CategoryMongo
 }
 
 class CategoryDao(implicit val executionContext: ExecutionContext) extends CategoryDaoTrait {
   def findByCategoryId(id: String): Future[Option[CategoryMongo]] = {
     findOne(BSONDocument("categoryId" -> BSONString(id)))
+    //collection.find(BSONDocument("userId" -> BSONString(id))).one[UserMongo]
+  }
+
+  def findByCategoryUniqueName(id: String): Future[Option[CategoryMongo]] = {
+    findOne(BSONDocument("uniqueName" -> BSONString(id)))
     //collection.find(BSONDocument("userId" -> BSONString(id))).one[UserMongo]
   }
 }

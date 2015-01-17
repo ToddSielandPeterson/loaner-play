@@ -14,4 +14,10 @@ object DatabaseMongoDataSource extends MongoDataSource {
     lazy val userDataSource = db[BSONCollection]("users")
     lazy val categorySource = db[BSONCollection]("category")
     lazy val pagesSource = db[BSONCollection]("pages")
+    lazy val sessionSource = db[BSONCollection]("session")
+    lazy val categoryTreeSource = db[BSONCollection]("categoryTree")
+    lazy val shoppingCartSource = db[BSONCollection]("shoppingCart")
+    lazy val userReviewsSource = db[BSONCollection]("userReviews")
+    lazy val productReviewsSource = db[BSONCollection]("productReviews")
+    lazy val ordersSource = db[BSONCollection]("orders")
 }

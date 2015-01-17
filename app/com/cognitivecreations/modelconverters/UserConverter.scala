@@ -17,7 +17,7 @@ class UserConverter extends ModelConverterBase[User, UserMongo] with AddressConv
       firstName = userIn.firstName,
       lastName = userIn.lastName,
       email = userIn.email,
-      userId = Some(UUID.fromString(userIn.userId)),
+      userId = Some(userIn.userId),
       password = None,
       website = userIn.website,
       address = fromMongo(userIn.address.get))
@@ -27,7 +27,7 @@ class UserConverter extends ModelConverterBase[User, UserMongo] with AddressConv
     UserMongo(firstName = userIn.firstName,
       lastName = userIn.lastName,
       email = userIn.email,
-      userId = userIn.userId.getOrElse(UUID.randomUUID()).toString,
+      userId = userIn.userId.getOrElse(UUID.randomUUID()),
       password = userIn.password.getOrElse(""),
       website = userIn.website,
       address = Some(toMongo(userIn.address))
@@ -40,7 +40,7 @@ class UserConverter extends ModelConverterBase[User, UserMongo] with AddressConv
       firstName = userIn.firstName,
       lastName = userIn.lastName,
       email = userIn.email,
-      userId = Some(UUID.fromString(userIn.userId)),
+      userId = Some(userIn.userId),
       password = Some(userIn.password),
       website = userIn.website,
       address = fromMongo(userIn.address.get)
@@ -51,7 +51,7 @@ class UserConverter extends ModelConverterBase[User, UserMongo] with AddressConv
     UserMongo(firstName = userIn.firstName,
       lastName = userIn.lastName,
       email = userIn.email,
-      userId = userIn.userId.getOrElse(UUID.randomUUID()).toString,
+      userId = userIn.userId.getOrElse(UUID.randomUUID()),
       password = userIn.password.getOrElse(""),
       website = userIn.website,
       address = Some(toMongo(userIn.address))

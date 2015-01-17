@@ -14,6 +14,7 @@ case class AddressMongo(addressLine1: String,
 
 object AddressMongo {
   implicit lazy val bsonHandler_AddressMongoProperty = {
+    import com.cognitivecreations.helpers.BSONHandlers._
     import com.cognitivecreations.helpers.BSONHelpers._
     reactivemongo.bson.Macros.handler[AddressMongo]
   }

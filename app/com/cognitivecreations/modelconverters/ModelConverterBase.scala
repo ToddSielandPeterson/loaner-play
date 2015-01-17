@@ -29,7 +29,5 @@ trait ModelConverterBase[X,M] { // eXternal and Mongo
   def asOptionMongo(userInF: Option[X]): Option[M] =
     if (userInF.isDefined) Some(toMongo(userInF.get)) else None
 
-  def uuidToString(uuid: UUID): String = uuid.toString
-  def stringToUUID(uuid: String): UUID = UUID.fromString(uuid)
 
 }

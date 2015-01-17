@@ -5,6 +5,7 @@ import java.util.UUID
 import java.util.zip.{GZIPInputStream, GZIPOutputStream}
 
 import com.cognitivecreations.dao.mongo.sugar
+import org.joda.money.Money
 import org.joda.time.{DateTime, DateTimeZone}
 import reactivemongo.bson._
 
@@ -79,16 +80,6 @@ object BSONHelpers {
       writer.close()
       BSONBinary(byteOs.toByteArray, Subtype.GenericBinarySubtype)
     }
-  }
-
-  implicit val bsonHandler_UUID = new BSONWriter[java.util.UUID,BSONString] with BSONReader[BSONString, java.util.UUID] {
-    def write(t: UUID): BSONString = BSONString(t.toString)
-    def read(bson: BSONString): UUID = UUID.fromString(bson.toString)
-  }
-
-  implicit val bsonHandler_DateTime = new BSONWriter[org.joda.time.DateTime,BSONDateTime] with BSONReader[BSONDateTime, org.joda.time.DateTime] {
-    def write(t: DateTime): BSONDateTime = BSONDateTime(t.getMillis)
-    def read(bson: BSONDateTime): DateTime = new DateTime(bson.value, DateTimeZone.UTC)
   }
 
   implicit def bsonHandler_Map[A,B, B_BV <: BSONValue](implicit
