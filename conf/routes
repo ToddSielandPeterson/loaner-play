@@ -5,6 +5,7 @@
 # Home page
 GET           /                             controllers.Application.index(any = "none")
 GET           /products/:categoryName       controllers.ProductsController.index(categoryName:String)
+GET           /product/:productId           controllers.ProductController.index(productId: String)
 
 # Play routes serving HTML to AngularJS start with /views
 #GET           /views/*any             controllers.Application.loadPublicHTML(any)

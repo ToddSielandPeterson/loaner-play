@@ -22,7 +22,7 @@ trait ProductDaoTrait extends BaseMongoDao[ProductMongo] with BSONHandlers {
 class ProductDao(implicit val executionContext: ExecutionContext) extends ProductDaoTrait {
 
   def findByProductId(id: UUID): Future[Option[ProductMongo]] = {
-    findOne(BSONDocument("productId" -> BSONString(id.toString)))
+    findOne(BSONDocument("id" -> BSONString(id.toString)))
   }
 
   def findByCategory(id: UUID): Future[List[ProductMongo]] = {
