@@ -1,6 +1,6 @@
 @import models.CategoryTree
 
-@(bannerLink:String, catTree:CategoryTree)
+@(bannerLink:String, catTree:CategoryTree, user:Option[User])
 <!DOCTYPE html>
 <html>
 <head lang="en">
@@ -13,6 +13,6 @@
   <title></title>
 </head>
 <body>
-@views.html.widgets.banner(bannerLink, catTree)
+@views.html.widgets.banner(bannerLink, catTree, user)
 </body>
 </html>

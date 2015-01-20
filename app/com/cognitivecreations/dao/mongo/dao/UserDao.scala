@@ -24,7 +24,11 @@ class UserMongoDao(implicit val executionContext: ExecutionContext) extends User
 
   def findByUserId(id: UUID): Future[Option[UserMongo]] = {
     findOne(BSONDocument("userId" -> BSONString(id.toString)))
-    //collection.find(BSONDocument("userId" -> BSONString(id))).one[UserMongo]
+  }
+
+  def findByUserId(id: Option[UUID]): Future[Option[UserMongo]] = {
+    if (id.isDefined) findByUserId(id.get)
+    else Future.successful(None)
   }
 }
 

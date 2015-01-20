@@ -1,18 +1,18 @@
 package com.cognitivecreations.dao.mongo.dao
 
-import com.cognitivecreations.dao.mongo.dao.mongomodel.{UserMongo, DatabaseMongoDataSource, ProductMongo}
+import java.util.UUID
+
+import com.cognitivecreations.dao.mongo.dao.mongomodel.{DatabaseMongoDataSource, ProductMongo}
 import com.cognitivecreations.dao.mongo.BaseMongoDao
 import com.cognitivecreations.helpers.BSONHandlers
-import models.Product
-import reactivemongo.api.DB
-import reactivemongo.api.collections.default.BSONCollection
-import reactivemongo.bson.{BSONString, BSONDocument, BSONObjectID}
+import reactivemongo.bson.{BSONString, BSONDocument}
 
 import scala.concurrent.{Future, ExecutionContext}
 
 /**
  * Created by tsieland on 10/21/14.
  */
+
 trait ProductDaoTrait extends BaseMongoDao[ProductMongo] with BSONHandlers {
   import reactivemongo.api._
   val collection =   DatabaseMongoDataSource.productsDataSource
@@ -20,8 +20,13 @@ trait ProductDaoTrait extends BaseMongoDao[ProductMongo] with BSONHandlers {
 }
 
 class ProductDao(implicit val executionContext: ExecutionContext) extends ProductDaoTrait {
-  def findByProductId(id: String): Future[Option[ProductMongo]] = {
-    findOne(BSONDocument("productId" -> BSONString(id)))
+
+  def findByProductId(id: UUID): Future[Option[ProductMongo]] = {
+    findOne(BSONDocument("productId" -> BSONString(id.toString)))
+  }
+
+  def findByCategory(id: UUID): Future[List[ProductMongo]] = {
+    find(BSONDocument("categoryId" -> BSONString(id.toString)))
   }
 }
 

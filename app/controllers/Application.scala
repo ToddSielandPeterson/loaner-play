@@ -1,12 +1,14 @@
 package controllers
 
-import java.io.File
-import java.util.UUID
-
-import controllers.LoadDataController._
-import play.Play
-import play.api.libs.iteratee.Enumerator
+import com.cognitivecreations.utils.SessionUtils
+import controllers.widgets.{Footer, Banner}
+import play.api.libs.concurrent.Akka
 import play.api.mvc.{Cookie, Action, Controller}
+import ui.Pagelet
+
+import scala.concurrent.ExecutionContext
+import play.api.Play.current
+
 
 /*
  * Author: Sari Haj Hussein
@@ -15,14 +17,22 @@ import play.api.mvc.{Cookie, Action, Controller}
 object Application extends Controller {
   
   /** serve the index page app/views/index.scala.html */
-  def index(any: String) = Action { request =>
-    val optCookieId = request.cookies.get("sessioninfo")
-    val sessionId = optCookieId.getOrElse(UUID.randomUUID())
+  def index(any: String) = Action.async { request =>
+    implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
+    val sessionUtils = new SessionUtils(request)
+    val sessionInfo = sessionUtils.fetchFutureSessionInfo()
 
-    if (optCookieId.isDefined)
-      Ok(views.html.index())
-    else
-      Ok(views.html.index()).withCookies(Cookie("sessioninfo", sessionId.toString, Some(86400 * 31)))
+    for {
+      session <- sessionInfo
+      header <- Banner.index(embed = true, Some(session))(request)
+      footer <- Footer.index(embed = true, Some(session))(request)
+
+      headerBody <- Pagelet.readBody(header)
+      footerBody <- Pagelet.readBody(footer)
+    } yield {
+      Ok(views.html.index(headerBody, footerBody)).withCookies(Cookie("sessioninfo", session.sessionId.toString, Some(86400 * 31)))
+    }
+
   }
   
 }

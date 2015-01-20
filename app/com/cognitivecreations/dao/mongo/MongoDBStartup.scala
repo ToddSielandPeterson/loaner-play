@@ -3,7 +3,6 @@ package com.cognitivecreations.dao.mongo
 import com.cognitivecreations.dao.mongo.MDCExecutionContext.Implicits.global
 import play.api.{Mode, Application, GlobalSettings}
 import scala.concurrent.duration._
-import com.cognitivecreations.dao.mongo.{MongoDBManager, MongoDBUtils}
 
 trait MongoDBStartUp extends GlobalSettings {
   override def beforeStart(app: Application) {

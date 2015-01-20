@@ -1,0 +1,30 @@
+@(products: List[List[(Product, Int)]], category: Category, session: UserSession)
+
+<div role="main" class="container">
+    <div class="row">
+        <div class="span12">
+            <h2>Products</h2>
+        </div>
+    </div>
+</div>
+<div role="sub" class="container">
+    @if(products.isEmpty) {
+    <div class="row">
+        <div class="span12">
+            <h4>No products in this category</h4>
+        </div>
+    </div>
+    } else {
+        @for(prodGroup <- products) {
+        <div class="row">
+            @for(prodInd <- prodGroup) {
+            <div class="span3">
+                <h4><a href="/product/@prodInd._1.productId">@prodInd._1.name</a></h4>
+                <h5>@prodInd._1.secondLine</h5>
+                <p>@prodInd._1.text</p>
+            </div>
+            }
+        }
+        </div>
+    }
+</div>

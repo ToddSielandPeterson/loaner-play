@@ -21,7 +21,7 @@ object LoadDataController extends Controller {
   val userTodd = UUID.randomUUID()
   val userCyndi = UUID.randomUUID()
 
-  def index() = Action { request =>
+  def loader() = Action { request =>
     implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
 
     val optCookieId = request.cookies.get("sessioninfo")
@@ -32,9 +32,9 @@ object LoadDataController extends Controller {
 //    loadProducts
 
     if (optCookieId.isDefined)
-      Ok(views.html.index())
+      Ok(views.html.loader())
     else
-      Ok(views.html.index()).withCookies(Cookie("sessioninfo", sessionId.toString, Some(86400 * 31)))
+      Ok(views.html.loader()).withCookies(Cookie("sessioninfo", sessionId.toString, Some(86400 * 31)))
   }
 
   def sessionTest() = Action {
@@ -45,7 +45,7 @@ object LoadDataController extends Controller {
 
     sessionDao.insert(session)
 
-    Ok(views.html.index())
+    Ok(views.html.loader())
   }
 
   def sessionPullTest() = Action {
@@ -56,7 +56,7 @@ object LoadDataController extends Controller {
     for (x <- sessionDao.findBySessionId(UUID.fromString("853e8c86-f3c8-48c1-b9ef-2227467da91d")))
       yield x
 
-    Ok(views.html.index())
+    Ok(views.html.loader())
   }
 
   def loadUsers = Action{
@@ -70,7 +70,7 @@ object LoadDataController extends Controller {
 
     users.foreach(userCoordinator.insert)
 
-    Ok(views.html.index())
+    Ok(views.html.loader())
   }
 
   def loadCategories = Action {
@@ -90,7 +90,7 @@ object LoadDataController extends Controller {
       category1.map(cat => println(s"found ${cat.name}"))
     }
 
-    Ok(views.html.index())
+    Ok(views.html.loader())
   }
 
   def loadProducts = Action{
@@ -106,6 +106,6 @@ object LoadDataController extends Controller {
 
     products.foreach(productCoordinator.insert)
 
-    Ok(views.html.index())
+    Ok(views.html.loader())
   }
 }

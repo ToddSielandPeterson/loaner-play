@@ -20,9 +20,16 @@ class ProductCoordinator(implicit ec: ExecutionContext) extends ProductConverter
 
   def findByPrimary(uuid: UUID): Future[Option[Product]] = {
     for {
-      optCat <- productDao.findByProductId(uuid.toString)
+      optCat <- productDao.findByProductId(uuid)
     } yield
       optCat.map(x => fromMongo(x))
+  }
+
+  def findByCategory(uuid: UUID): Future[List[Product]] = {
+    for {
+      productList <- productDao.findByCategory(uuid)
+    } yield
+      productList.map(product => fromMongo(product))
   }
 
   def insert(product: Product): Future[LastError] = {

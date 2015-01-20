@@ -3,7 +3,8 @@
 # ~~~~
 
 # Home page
-GET           /                       controllers.Application.index(any = "none")
+GET           /                             controllers.Application.index(any = "none")
+GET           /products/:categoryName       controllers.ProductsController.index(categoryName:String)
 
 # Play routes serving HTML to AngularJS start with /views
 #GET           /views/*any             controllers.Application.loadPublicHTML(any)
@@ -15,7 +16,6 @@ GET           /api/user/:id           controllers.UserController.show(id: String
 POST          /api/user/:id           controllers.UserController.update(id: String)
 DELETE        /api/user/:id           controllers.UserController.delete(id: String)
 
-GET           /api/loaddefault        controllers.LoadDataController.index
 GET           /api/load/session/add   controllers.LoadDataController.sessionTest
 GET           /api/load/session/find  controllers.LoadDataController.sessionPullTest
 GET           /api/load/categories    controllers.LoadDataController.loadCategories
@@ -25,8 +25,8 @@ GET           /api/load/users         controllers.LoadDataController.loadUsers
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file           controllers.Assets.at(path="/public", file)
 
-GET           /TEST/footer            controllers.widgets.Footer.index
-GET           /TEST/header            controllers.widgets.Banner.index(embed:Boolean = false)
+GET           /TEST/footer            controllers.widgets.Footer.index(embed:Boolean ?= false)
+GET           /TEST/header            controllers.widgets.Banner.index(embed:Boolean ?= false)
 GET           /TEST/loginpopup        controllers.popups.LoginPopup.index
 
 # Redirect all unknown routes to the index page
