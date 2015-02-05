@@ -1,7 +1,6 @@
 package controllers.widgets
 
-import com.cognitivecreations.dao.mongo.coordinator.{UserCoordinator, CategoryCoordinator}
-import com.cognitivecreations.utils.SessionUtils
+import com.cognitivecreations.dao.mongo.coordinator.CategoryCoordinator
 import models.{UserSession, CategoryTree}
 import play.api.libs.concurrent.Akka
 import play.api.mvc.{Action, Controller}

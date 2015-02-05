@@ -1,8 +1,32 @@
 @import models.CategoryTree
 
-@(bannerLink:String, catTree: CategoryTree, user:Option[User])
-  <header>
-    <div class="container">
-      <img src="@bannerLink">
+@(bannerLink: String, catTree: CategoryTree, user: Option[User])
+@*<header class="navbar navbar-fixed-top navbar-inverse">*@
+  @*<img src="@bannerLink">*@
+@*</header>*@
+<header class="page-header">
+  <div class="navbar navbar-default">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#mynavbar-content">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">TooLoan</a>
+
+      <div class="navbar-collapse collapse" id="#mynavbar-content">
+        <ul class="nav navbar-nav">
+          <li class="active"><a class="navbar-brand" href="/">Home</a></li>
+          <li class="active"><a class="navbar-brand" href="/categories">Categories</a></li>
+          @if(user.isDefined) {
+            <li class="active"><a class="navbar-brand" href="/user">Me<br /></a></li>
+            <li class="active"><a class="navbar-brand" href="/logout">Logout<br /><small>(not @user.get.firstName)</small></a></li>
+          } else {
+            <li class="active"><a class="navbar-brand" href="/login">Sign In</a></li>
+          }
+
+        </ul>
+      </div>
     </div>
-  </header>
+  </div>
+</header>

@@ -28,5 +28,9 @@ class ProductDao(implicit val executionContext: ExecutionContext) extends Produc
   def findByCategory(id: UUID): Future[List[ProductMongo]] = {
     find(BSONDocument("categoryId" -> BSONString(id.toString)))
   }
+
+  def findByUser(id: UUID): Future[List[ProductMongo]] = {
+    find(BSONDocument("user" -> BSONString(id.toString)))
+  }
 }
 

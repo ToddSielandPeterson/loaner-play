@@ -18,7 +18,8 @@
         @for(prodGroup <- products) {
         <div class="row">
             @for(prodInd <- prodGroup) {
-            <div class="span3">
+            <div class="col-lg-4 col-sm-6 col-xs-12">
+                <img src="@prodInd._1.thumbnails(0)" />
                 <h4><a href="/product/@prodInd._1.productId">@prodInd._1.name</a></h4>
                 <h5>@prodInd._1.secondLine</h5>
                 <p>@prodInd._1.text</p>

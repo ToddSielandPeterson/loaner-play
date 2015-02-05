@@ -1,0 +1,28 @@
+@(session: UserSession, inputErrors: Option[Form[Login.UserData]])
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            @if(inputErrors.isDefined) {
+                <div class="alert alert-danger" role="alert">
+                @for(formErrors <- inputErrors.get.errors) {
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    <span class="sr-only">Error:</span>
+                     @Messages(s"${formErrors.key}.${formErrors.message}")
+                }
+
+                </div>
+            }
+            <form action="/login" method="post">
+                @Messages("login.form.userid"): <input type="text" name="username" /><br/>
+                @Messages("login.form.password"): <input type="password" name="password" /><br/>
+                <input type="submit" value="Login">
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <a href="/lostpassword">@Messages("login.cantrememberpassword.text")</a>
+        </div>
+    </div>
+</div>

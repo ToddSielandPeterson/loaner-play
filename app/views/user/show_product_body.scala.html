@@ -1,0 +1,38 @@
+@(optProduct:Option[Product], session: UserSession, inputErrors: Option[Form[UserProductController.ProductData]])
+
+<div class="container">
+    @if(inputErrors.isDefined) {
+    <div class="row">
+        <div class="col-sm-12">
+                <div class="alert alert-danger" role="alert">
+                @for(formErrors <- inputErrors.get.errors) {
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    <span class="sr-only">Error:</span>
+                    @Messages(s"${formErrors.key}.${formErrors.message}")
+                }
+                </div>
+        </div>
+    </div>
+    }
+    @if(optProduct.isDefined) {
+        <div class="row">
+            <div class="col-sm-6">@Messages("productedit.form.productId")
+                : </div><div class="col-sm-6">@optProduct.get.productId.getOrElse("") <br /></div>
+            <div class="col-sm-6">@Messages("productedit.form.name")
+                :</div><div class="col-sm-6">@optProduct.get.name <br/></div>
+            <div class="col-sm-6">@Messages("productedit.form.secondLine")
+                :</div><div class="col-sm-6">@optProduct.get.secondLine.getOrElse("") <br/></div>
+            <div class="col-sm-6">@Messages("productedit.form.categoryId")
+                :</div><div class="col-sm-6">@optProduct.get.categoryId.getOrElse("") <br/></div>
+            <div class="col-sm-6">@Messages("productedit.form.productType")
+                :</div><div class="col-sm-6">@optProduct.get.productType.getOrElse("") <br/></div>
+            <div class="col-sm-6">@Messages("productedit.form.text")
+                :</div><div class="col-sm-6">@optProduct.get.text <br/></div>
+            <div class="col-sm-12"><a href="/user/product/edit/@optProduct.get.productId">@Messages("productedit.form.button.Edit")</a></div>
+        </div>
+    } else {
+        <div class="row">
+            <div class="col-sm-12">@Messages("productedit.form.invalidproduct")</div>
+        </div>
+    }
+</div>

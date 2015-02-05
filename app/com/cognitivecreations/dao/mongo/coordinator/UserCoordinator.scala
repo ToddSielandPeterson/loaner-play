@@ -73,6 +73,12 @@ class UserCoordinator(implicit ec: ExecutionContext) extends UserConverter with 
     } yield user.map(u => fromMongo(u))
   }
 
+  def findUserByUserName(userName: String): Future[Option[User]] = {
+    for {
+      user <- userDao.findUserByUserName(userName)
+    } yield user.map(u => fromMongo(u))
+  }
+
   def findAll(): Future[List[User]] = {
     for (
       users <- userDao.findAll
@@ -87,5 +93,11 @@ class UserCoordinator(implicit ec: ExecutionContext) extends UserConverter with 
       case None =>
         userDao.insert(toMongo(user))
     }
+  }
+
+  def findUserByIdAndPassword(user: String, password: String):Future[Option[User]] = {
+    for {
+      u <- userDao.findByUserNameAndPassword(user, password)
+    } yield u.map(y => fromMongo(y))
   }
 }

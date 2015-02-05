@@ -27,15 +27,25 @@ class SessionUtils(request: Request[AnyContent])(implicit ec: ExecutionContext) 
     ).getOrElse(sessionCoordinator.insertNewSession(UUID.randomUUID()))
   }
 
+  // fetch or create a new session info
   def fetchFutureSessionInfo(): Future[UserSession] = {
     if (optCookieId.isDefined)
       for {
         optSession <- sessionCoordinator.findByPrimary(UUID.fromString(optCookieId.get.value))
       } yield
-        optSession.getOrElse(sessionCoordinator.insertNewSession(UUID.randomUUID()))
+        optSession.getOrElse(sessionCoordinator.insertNewSession(UUID.fromString(optCookieId.get.value)))
     else
       Future.successful(sessionCoordinator.insertNewSession(UUID.randomUUID()))
   }
 
+  def saveSession(session: UserSession) = {
+    sessionCoordinator.update(session)
+  }
+
+}
+
+object SessionUtils {
+
+  def apply(request: Request[AnyContent])(implicit ec: ExecutionContext): SessionUtils = new SessionUtils(request)
 
 }

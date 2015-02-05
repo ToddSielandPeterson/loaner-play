@@ -1,0 +1,39 @@
+@(optProduct:Option[Product], session: UserSession, inputErrors: Option[Form[UserProductController.ProductData]])
+
+<div class="container">
+    @if(inputErrors.isDefined) {
+    <div class="row">
+        <div class="col-sm-12">
+                <div class="alert alert-danger" role="alert">
+                @for(formErrors <- inputErrors.get.errors) {
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    <span class="sr-only">Error:</span>
+                    @Messages(s"${formErrors.key}.${formErrors.message}")
+                }
+                </div>
+        </div>
+    </div>
+    }
+    @if(optProduct.isDefined) {
+        <div class="row">
+            <div class="col-sm-12">
+                <form action="/login" method="post">
+                    <input type="hidden" name="productid" value="@optProduct.get.productId.getOrElse("")" /><br/>
+                    <input type="hidden" name="userId" value="@optProduct.get.user" /><br/>
+                    @Messages("productedit.form.name"): <input type="text" name="name" value="@optProduct.get.name" /><br/>
+                    @Messages("productedit.form.secondLine"): <input type="text" name="secondLine" value="@optProduct.get.secondLine.getOrElse("")" /><br/>
+                    @Messages("productedit.form.categoryId"): <input type="text" name="categoryId" value="@optProduct.get.categoryId.getOrElse("")" /><br/>
+                    @Messages("productedit.form.productType"): <input type="text" name="productType" value="@optProduct.get.productType.getOrElse("")" /><br/>
+                    @Messages("productedit.form.text"): <input type="text" name="text" value="@optProduct.get.text" /><br/>
+                    <input type="submit" value="@Messages("productedit.form.button.submit")">
+                    <input type="submit" value="@Messages("productedit.form.button.cancel")">
+                </form>
+            </div>
+        </div>
+    } else {
+        <div class="row">
+            <div class="col-sm-12">@Messages("productedit.form.invalidproduct")</div>
+        </div>
+    }
+
+</div>

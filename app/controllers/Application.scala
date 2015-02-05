@@ -1,5 +1,6 @@
 package controllers
 
+import com.cognitivecreations.dao.mongo.coordinator.UserCoordinator
 import com.cognitivecreations.utils.SessionUtils
 import controllers.widgets.{Footer, Banner}
 import play.api.libs.concurrent.Akka
@@ -19,8 +20,9 @@ object Application extends Controller {
   /** serve the index page app/views/index.scala.html */
   def index(any: String) = Action.async { request =>
     implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
-    val sessionUtils = new SessionUtils(request)
-    val sessionInfo = sessionUtils.fetchFutureSessionInfo()
+
+    val userController = new UserCoordinator()
+    val sessionInfo = SessionUtils(request).fetchFutureSessionInfo()
 
     for {
       session <- sessionInfo
@@ -30,7 +32,8 @@ object Application extends Controller {
       headerBody <- Pagelet.readBody(header)
       footerBody <- Pagelet.readBody(footer)
     } yield {
-      Ok(views.html.index(headerBody, footerBody)).withCookies(Cookie("sessioninfo", session.sessionId.toString, Some(86400 * 31)))
+      Ok(views.html.index(headerBody, footerBody, session)).
+        withCookies(Cookie("sessioninfo", session.sessionId.toString, Some(86400 * 31)))
     }
 
   }

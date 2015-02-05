@@ -5,6 +5,7 @@ import java.util.UUID
 import com.cognitivecreations.dao.mongo.BaseMongoDao
 import com.cognitivecreations.dao.mongo.dao.mongomodel.{UserMongo, DatabaseMongoDataSource}
 import com.cognitivecreations.helpers.BSONHandlers
+import models.User
 import reactivemongo.bson.{BSONString, BSONDocument}
 
 import scala.concurrent.{Future, ExecutionContext}
@@ -29,6 +30,19 @@ class UserMongoDao(implicit val executionContext: ExecutionContext) extends User
   def findByUserId(id: Option[UUID]): Future[Option[UserMongo]] = {
     if (id.isDefined) findByUserId(id.get)
     else Future.successful(None)
+  }
+
+  def findUserByUserName(userName: String): Future[Option[UserMongo]] = {
+    findOne(BSONDocument("email" -> BSONString(userName)))
+  }
+
+  def findByUserNameAndPassword(userName: String, password: String): Future[Option[UserMongo]] = {
+    for {
+      u <- findUserByUserName(userName)
+    } yield {
+      if (u.isDefined && u.get.password.equals(password)) u
+      else None
+    }
   }
 }
 

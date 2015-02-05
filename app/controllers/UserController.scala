@@ -5,14 +5,17 @@ import java.util.UUID
 
 import akka.japi.Option.Some
 import com.cognitivecreations.dao.mongo.coordinator.UserCoordinator
+import com.cognitivecreations.utils.SessionUtils
+import controllers.Application._
+import controllers.widgets.{Footer, Banner}
 
 import models._
 import models.User._
 import play.api.libs.concurrent.Akka
 import play.api.libs.json.{JsError, JsSuccess, Json}
-import play.api.mvc.Action
-import play.api.mvc.Controller
+import play.api.mvc.{Cookie, Action, Controller}
 import play.api.Play.current
+import ui.Pagelet
 
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Await}
@@ -24,7 +27,26 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 object UserController extends Controller {
 
-  def index = Action.async {
+  def index = Action.async { implicit request =>
+    implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
+    val sessionUtils = new SessionUtils(request)
+    val userController = new UserCoordinator()
+    val sessionInfo = sessionUtils.fetchFutureSessionInfo()
+
+    for {
+      session <- sessionInfo
+      header <- Banner.index(embed = true, Some(session))(request)
+      footer <- Footer.index(embed = true, Some(session))(request)
+
+      headerBody <- Pagelet.readBody(header)
+      footerBody <- Pagelet.readBody(footer)
+    } yield {
+      Ok(views.html.me(headerBody, footerBody, session)).
+        withCookies(Cookie("sessioninfo", session.sessionId.toString, Some(86400 * 31)))
+    }
+  }
+  
+  def list = Action.async {
     implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
 
     val userDao = new UserCoordinator()
@@ -34,7 +56,7 @@ object UserController extends Controller {
       user => Ok(Json.toJson(user))
     } // convert it to a JSON and return it
   }
-  
+
   /** create a celebrity from the given JSON */
   def create() = Action(parse.json) { request =>
     val json = request.body
@@ -94,7 +116,23 @@ object UserController extends Controller {
   }
 
   def delete(id: String) = Action(parse.json) { request =>
-    Ok
+    NotImplemented
+  }
+
+  def editSelf() = Action { request =>
+    NotImplemented
+  }
+
+  def editSelfPost() = Action { request =>
+    NotImplemented
+  }
+
+  def createAccount() = Action { request =>
+    NotImplemented
+  }
+
+  def createAccountPost() = Action { request =>
+    NotImplemented
   }
 
   def nameFormat(name: String): String = {

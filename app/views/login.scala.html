@@ -1,3 +1,4 @@
+@(headerBody: Html, footerBody: Html, session: UserSession, inputErrors: Option[Form[Login.UserData]])
 <!DOCTYPE html>
 <html data-ng-app="app" data-ng-controller="AppCtrl">
 <head>
@@ -14,15 +15,8 @@
 	<script src="@routes.Assets.at("javascripts/main.js")" type="text/javascript"></script>
 </head>
 <body>
-	<div role="main" class="container">
-		<div class="row">
-			<div class="span12">
-				<h2>Celebrities</h2>
-				<!-- as the route changes, the AngularJS view will be dynamically rendered and populated -->
-				<div data-ng-view></div>
-			</div>
-		</div>
-	</div>
-	
+	@headerBody
+	@login_body(session, inputErrors)
+	@footerBody
 </body>
 </html>

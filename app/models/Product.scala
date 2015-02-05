@@ -33,7 +33,10 @@ case class Product( productId: Option[UUID], // unique generated id (UUID)
 
 object Product {
 
-  implicit val product_Writes:Writes[Product] = (
+  def newEmptyProduct():Product = new Product(productId = None, user = "", name = "", secondLine = None, categoryId = None, productType = None,
+    addedDateTime = None, lastUpdate = None, pictures = List(), thumbnails = List(), text = "")
+
+  implicit val product_Writes: Writes[Product] = (
       (JsPath \ "productId").write[Option[UUID]] and
       (JsPath \ "user").write[String] and
       (JsPath \ "name").write[String] and

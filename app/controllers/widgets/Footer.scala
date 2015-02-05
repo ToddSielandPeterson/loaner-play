@@ -1,8 +1,7 @@
 package controllers.widgets
 
 import models.UserSession
-import play.api.mvc.{Action, Controller}
-
+import play.api.mvc.{Result, Action, Controller}
 import scala.concurrent.Future
 
 /**

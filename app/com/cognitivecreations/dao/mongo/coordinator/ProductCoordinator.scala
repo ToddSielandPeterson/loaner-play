@@ -5,7 +5,7 @@ import java.util.UUID
 import com.cognitivecreations.dao.mongo.dao.ProductDao
 import com.cognitivecreations.dao.mongo.dao.mongomodel.ProductMongo
 import com.cognitivecreations.modelconverters.ProductConverter
-import models.Product
+import models.{User, Product}
 import reactivemongo.core.commands.LastError
 
 import scala.concurrent.{Future, ExecutionContext}
@@ -37,6 +37,13 @@ class ProductCoordinator(implicit ec: ExecutionContext) extends ProductConverter
       case Some(s) => failed(s"Category ${product.productId.toString} already exists")
       case None => productDao.insert(toMongo(product))
     }
+  }
+
+  def findByOwner(user: User): Future[List[Product]] = {
+    for {
+      productList <- productDao.findByUser(user.userId.get)
+    } yield
+      productList.map(product => fromMongo(product))
   }
 
 }

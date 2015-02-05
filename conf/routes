@@ -3,32 +3,50 @@
 # ~~~~
 
 # Home page
-GET           /                             controllers.Application.index(any = "none")
-GET           /products/:categoryName       controllers.ProductsController.index(categoryName:String)
-GET           /product/:productId           controllers.ProductController.index(productId: String)
+GET           /                              controllers.Application.index(any = "none")
+GET           /products/:categoryName        controllers.ProductsController.index(categoryName:String)
+GET           /product/:productId            controllers.ProductsController.readOne(productId: String)
+
+GET           /logout                        controllers.Login.logout
+GET           /login                         controllers.Login.index
+POST          /login                         controllers.Login.post
+GET           /lostpassword                  controllers.Login.lostPassword
+POST          /lostpassword                  controllers.Login.lostPasswordPost
+GET           /createaccount                 controllers.UserController.createAccount
+POST          /createaccount                 controllers.UserController.createAccountPost()
+
+# all pages in the /user are protected, you must be logged in to access
+GET           /user                          controllers.UserDesktopController.index()
+GET           /user/edit                     controllers.UserController.editSelf()
+POST          /user/edit                     controllers.UserController.editSelfPost()
+GET           /user/products                 controllers.UserProductController.listForUser()
+GET           /user/product/:id              controllers.UserProductController.show(id: String)
+DELETE        /user/product/delete           controllers.UserProductController.delete(id: String)
+PUT           /user/product/add              controllers.UserProductController.add()
+GET           /user/product/edit/:id         controllers.UserProductController.edit(id: String)
+PUT           /user/product/edit/:id         controllers.UserProductController.editPost(id: String)
 
 # Play routes serving HTML to AngularJS start with /views
 #GET           /views/*any             controllers.Application.loadPublicHTML(any)
 
 # Play routes serving JSON to AngularJS start with /api
-GET           /api/user               controllers.UserController.index
-POST          /api/user/new           controllers.UserController.create
-GET           /api/user/:id           controllers.UserController.show(id: String)
-POST          /api/user/:id           controllers.UserController.update(id: String)
-DELETE        /api/user/:id           controllers.UserController.delete(id: String)
+GET           /api/users                     controllers.UserController.list
+POST          /api/user/new                  controllers.UserController.create
+GET           /api/user/:id                  controllers.UserController.show(id: String)
+POST          /api/user/:id                  controllers.UserController.update(id: String)
+DELETE        /api/user/:id                  controllers.UserController.delete(id: String)
 
-GET           /api/load/session/add   controllers.LoadDataController.sessionTest
-GET           /api/load/session/find  controllers.LoadDataController.sessionPullTest
-GET           /api/load/categories    controllers.LoadDataController.loadCategories
-GET           /api/load/products      controllers.LoadDataController.loadProducts
-GET           /api/load/users         controllers.LoadDataController.loadUsers
+GET           /api/load/session/add          controllers.LoadDataController.sessionTest
+GET           /api/load/session/find         controllers.LoadDataController.sessionPullTest
+GET           /api/load/categories           controllers.LoadDataController.loadCategories
+GET           /api/load/products             controllers.LoadDataController.loadProducts
+GET           /api/load/users                controllers.LoadDataController.loadUsers
 
 # Map static resources from the /public folder to the /assets URL path
-GET           /assets/*file           controllers.Assets.at(path="/public", file)
+GET           /assets/*file                  controllers.Assets.at(path="/public", file)
 
-GET           /TEST/footer            controllers.widgets.Footer.index(embed:Boolean ?= false)
-GET           /TEST/header            controllers.widgets.Banner.index(embed:Boolean ?= false)
-GET           /TEST/loginpopup        controllers.popups.LoginPopup.index
+GET           /TEST/footer                   controllers.widgets.Footer.index(embed:Boolean ?= false)
+GET           /TEST/header                   controllers.widgets.Banner.index(embed:Boolean ?= false)
 
 # Redirect all unknown routes to the index page
-GET           /*any                   controllers.Application.index(any)
+GET           /*any                          controllers.Application.index(any)

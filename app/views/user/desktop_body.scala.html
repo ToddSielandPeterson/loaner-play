@@ -1,0 +1,22 @@
+@(session: UserSession, inputErrors: Option[Form[UserProductController.ProductData]])
+
+<div class="container">
+    @if(inputErrors.isDefined) {
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="alert alert-danger" role="alert">
+                @for(formErrors <- inputErrors.get.errors) {
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    <span class="sr-only">Error:</span>
+                    @Messages(s"${formErrors.key}.${formErrors.message}")
+                }
+                </div>
+            </div>
+        </div>
+    }
+    <div class="row">
+        <div class="col-sm-4"><a href="/user/products">@Messages("userdesktop.productlinktext")</a></div>
+        <div class="col-sm-4"><a href="/user/edit">@Messages("userdesktop.usereditlinktext")</a></div>
+        <div class="col-sm-4"><a href="/user">@Messages("userdesktop.activerequests")</a></div>
+    </div>
+</div>

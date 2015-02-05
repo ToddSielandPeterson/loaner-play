@@ -1,4 +1,4 @@
-@(headerBody: Html, footerBody: Html)
+@(headerBody: Html, footerBody: Html, session: UserSession)
 <html>
 <head>
 	<meta charset="UTF-8">
@@ -15,10 +15,17 @@
 	@headerBody
 	<div role="main" class="container">
 		<div class="row">
-			<div class="span12">
+			<div class="col-lg-12">
 				<h2>Home Page</h2>
 			</div>
 		</div>
+		@if(session.user.isDefined) {
+			<div class="row">
+				<div class="col-lg-12">
+					Welcome back, @session.user.get.firstName
+				</div>
+			</div>
+		}
 	</div>
 	@footerBody
 </body>

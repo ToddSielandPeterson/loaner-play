@@ -1,0 +1,31 @@
+#user login
+login.errors=Please correct the errors below:
+
+password.error.required=Password cannot be blank
+username.error.required=User Name cannot be blank
+login.error.nouser=User does not exist or password incorrect
+
+login.form.userid=User Name
+login.form.password=Password
+login.cantrememberpassword.text=Can't remember your password?
+
+lostpassword.form.text=Enter in the email address associated with the account.
+lostpassword.error.nouser=User is not in system
+lostpassword.ok.emailsent=Email was sent to user email
+
+productedit.form.name=Product Name
+productedit.form.secondLine=Second Line
+productedit.form.categoryId=Category Id
+productedit.form.productType=Product Type
+productedit.form.text=Product Information
+productedit.form.button.submit=Submit
+productedit.form.button.cancel=Cancel
+productedit.form.productId=Product ID
+productedit.form.button.Edit=Edit
+productedit.form.invalidproduct=You have specified an invalid product.
+
+productedit.error.x=
+
+userdesktop.productlinktext=Current Tools
+userdesktop.usereditlinktext=Edit User Info
+userdesktop.activerequests=Current Tools
