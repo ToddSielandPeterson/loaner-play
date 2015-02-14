@@ -24,11 +24,10 @@ object ProductsController extends Controller {
 
     val sessionInfo = SessionUtils(request).fetchFutureSessionInfo()
     val categoryCoordinator = new CategoryCoordinator()
-    val fCategory = categoryCoordinator.findByCategoryUniqueName(categoryName)
 
     for {
       session <- sessionInfo
-      category <- fCategory
+      category <- categoryCoordinator.findByCategoryUniqueName(categoryName)
 
       header <- Banner.index(embed = true, Some(session))(request)
       footer <- Footer.index(embed = true, Some(session))(request)

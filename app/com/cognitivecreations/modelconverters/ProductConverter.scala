@@ -12,7 +12,7 @@ import models.Product
 class ProductConverter extends ModelConverterBase[Product, ProductMongo] {
   def fromMongo(product: ProductMongo): Product = {
     Product(productId = Some(product.id),
-      user = product.user,
+      user = Some(UUID.fromString(product.user)),
       name = product.name,
       secondLine = product.secondLine,
       categoryId = product.categoryId,
@@ -26,7 +26,7 @@ class ProductConverter extends ModelConverterBase[Product, ProductMongo] {
 
   def toMongo(product: Product): ProductMongo = {
     ProductMongo(id = product.productId.get,
-      user = product.user,
+      user = product.user.toString,
       name = product.name,
       secondLine = product.secondLine,
       categoryId = product.categoryId,

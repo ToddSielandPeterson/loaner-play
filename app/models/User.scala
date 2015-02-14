@@ -18,16 +18,20 @@ case class User(userId: Option[UUID],   // uuid for user (unique)
                 lastName: String,
                 email: String,
                 password: Option[String],
+                passwordAgain: Option[String] = None,
                 address: Address,
                 website: Option[String] = None)
 
 object User {
+  def newBlankUser(): User = new User(None, "", "", "", None, None, Address.newBlankAddress, None)
+
   implicit val user_Writes: Writes[User] = (
     (JsPath \ "userId").write[Option[UUID]] and
       (JsPath \  "firstName").write[String] and
       (JsPath \ "lastName").write[String] and
       (JsPath \ "email").write[String] and
       (JsPath \ "password").write[Option[String]] and
+      (JsPath \ "passwordAgain").write[Option[String]] and
       (JsPath \ "address").write[Address] and
       (JsPath \ "website").write[Option[String]]
     )(unlift(User.unapply))
@@ -38,6 +42,7 @@ object User {
       (JsPath \ "lastName").read[String](minLength[String](2)) and
       (JsPath \ "email").read[String](email) and
       (JsPath \ "password").read[Option[String]] and
+      (JsPath \ "passwordAgain").read[Option[String]] and
       (JsPath \ "address").read[Address] and
       (JsPath \ "website").read[Option[String]]
     ) (User.apply _)

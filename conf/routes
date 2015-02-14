@@ -24,7 +24,7 @@ GET           /user/product/:id              controllers.UserProductController.s
 DELETE        /user/product/delete           controllers.UserProductController.delete(id: String)
 PUT           /user/product/add              controllers.UserProductController.add()
 GET           /user/product/edit/:id         controllers.UserProductController.edit(id: String)
-PUT           /user/product/edit/:id         controllers.UserProductController.editPost(id: String)
+POST           /user/product/edit/:id         controllers.UserProductController.editPost(id: String)
 
 # Play routes serving HTML to AngularJS start with /views
 #GET           /views/*any             controllers.Application.loadPublicHTML(any)

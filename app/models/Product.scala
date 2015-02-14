@@ -17,7 +17,7 @@ import play.api.libs.functional.syntax._
  */
 
 case class Product( productId: Option[UUID], // unique generated id (UUID)
-                    user: String, // link to user id
+                    user: Option[UUID], // link to user id
 
                     name: String,
                     secondLine: Option[String],
@@ -29,16 +29,38 @@ case class Product( productId: Option[UUID], // unique generated id (UUID)
 
                     pictures: List[String], // list of pictures
                     thumbnails: List[String], // list of pictures
-                    text: String)
+                    text: String) {
+  import com.cognitivecreations.utils.SessionUtils._
+
+  def productOwnedByUser(u: Option[User]): Boolean = {
+    u.isDefined && optionUuidCompare(u.get.userId, user)
+  }
+
+  def productOwnedByUserFromSession(userSession: Option[UserSession]): Boolean = {
+    userSession.isDefined && productOwnedByUser(userSession.get.user)
+  }
+
+  def productOwnedByUserFromSession(userSession: UserSession): Boolean = {
+    user.isDefined && productOwnedByUser(userSession.user)
+  }
+}
 
 object Product {
 
-  def newEmptyProduct():Product = new Product(productId = None, user = "", name = "", secondLine = None, categoryId = None, productType = None,
+  implicit def isProductOwnedBySession(product: Option[Product], session: Option[UserSession]): Boolean = {
+    product.isDefined && product.get.productOwnedByUserFromSession(session)
+  }
+
+  implicit def isProductOwnedBySession(product: Option[Product], session: UserSession): Boolean = {
+    product.isDefined && product.get.productOwnedByUserFromSession(session)
+  }
+
+  def newEmptyProduct():Product = new Product(productId = None, user = None, name = "", secondLine = None, categoryId = None, productType = None,
     addedDateTime = None, lastUpdate = None, pictures = List(), thumbnails = List(), text = "")
 
   implicit val product_Writes: Writes[Product] = (
       (JsPath \ "productId").write[Option[UUID]] and
-      (JsPath \ "user").write[String] and
+      (JsPath \ "user").write[Option[UUID]] and
       (JsPath \ "name").write[String] and
       (JsPath \ "secondLine").write[Option[String]] and
       (JsPath \ "categoryId").write[Option[UUID]] and
@@ -52,7 +74,7 @@ object Product {
 
   implicit val product_Reads: Reads[Product] = (
     (JsPath \ "productId").read[Option[UUID]] and
-      (JsPath \ "user").read[String] and
+      (JsPath \ "user").read[Option[UUID]] and
       (JsPath \ "name").read[String] and
       (JsPath \ "secondLine").read[Option[String]] and
       (JsPath \ "categoryId").read[Option[UUID]] and

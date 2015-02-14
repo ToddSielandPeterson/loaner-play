@@ -65,8 +65,10 @@ object LoadDataController extends Controller {
     val userCoordinator = new UserCoordinator
 
     val users = List(
-      new User(Some(userTodd), "Todd", "Sieland-Peterson", "todd@cognitivecreations.com", Some("test"), new Address("1145 Brogdon Dr", None, "Powder Springs", "GA", "30127", None), None),
-      new User(Some(userCyndi), "Cyndi", "Tierney", "cyndi@example.com", Some("test"), new Address("1145 Brogdon Dr", None, "Powder Springs", "GA", "30127", None), None))
+      new User(userId = Some(userTodd), firstName = "Todd", lastName = "Sieland-Peterson", email = "todd@cognitivecreations.com", password = Some("test"),
+        passwordAgain = None, address = new Address("1145 Brogdon Dr", None, "Powder Springs", "GA", "30127", None)),
+      new User(userId = Some(userCyndi), firstName = "Cyndi", lastName = "Tierney", email = "cyndi@example.com", password = Some("test"),
+        passwordAgain = None, address = new Address("1145 Brogdon Dr", None, "Powder Springs", "GA", "30127", None)))
 
     users.foreach(userCoordinator.insert)
 
@@ -98,7 +100,7 @@ object LoadDataController extends Controller {
     val productCoordinator = new ProductCoordinator()
 
     val products = List(
-      new Product( productId = Some(UUID.randomUUID()), user = userTodd.toString,
+      new Product( productId = Some(UUID.randomUUID()), user = Some(userTodd),
         name = "Big Hammer", secondLine = Some("a big hammer"),
         categoryId = Some(hammerId), productType = None, addedDateTime = None, lastUpdate = None,
         pictures = List(), thumbnails = List(), text = "a really <b>really</b> big hammer")

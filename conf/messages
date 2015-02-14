@@ -1,3 +1,6 @@
+global.button.submit=Submit
+global.button.cancel=Cancel
+
 #user login
 login.errors=Please correct the errors below:
 
@@ -12,6 +15,16 @@ login.cantrememberpassword.text=Can't remember your password?
 lostpassword.form.text=Enter in the email address associated with the account.
 lostpassword.error.nouser=User is not in system
 lostpassword.ok.emailsent=Email was sent to user email
+
+newuser.form.userId=Email Address
+newuser.form.password=Password
+newuser.form.passwordagain=Password Again
+newuser.form.address1=Address
+newuser.form.address2=
+newuser.form.city=City
+newuser.form.state=State
+newuser.form.zip=Zip Code
+
 
 productedit.form.name=Product Name
 productedit.form.secondLine=Second Line

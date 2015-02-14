@@ -22,7 +22,8 @@ object ProductsWidget extends Controller {
     for {
       products <- productCoordinator.findByCategory(category.categoryId)
     } yield {
-      val prodGroup = products.zipWithIndex.grouped(4).toList
+      val productList = for ( prod <- products ) yield prod.copy(thumbnails = List("/noproductimage.jpg"))
+      val prodGroup = productList.zipWithIndex.grouped(4).toList
       val session = userSession.getOrElse(UserSession.defaultUserSession())
       if (embed)
         Ok(views.html.widgets.productlist_body(prodGroup, category, session))

@@ -17,6 +17,9 @@ case class Address(addressLine1: String,
 
 object Address {
 
+  def newBlankAddress: Address = new Address("", None, "", "", "", None)
+
+
   implicit val address_Writes: Writes[Address] = (
       (JsPath \ "addressLine1").write[String] and
       (JsPath \ "addressLine2").write[Option[String]] and

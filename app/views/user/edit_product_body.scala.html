@@ -17,7 +17,7 @@
     @if(optProduct.isDefined) {
         <div class="row">
             <div class="col-sm-12">
-                <form action="/login" method="post">
+                <form action="/user/product/edit/@optProduct.get.productId.getOrElse("")" method="post">
                     <input type="hidden" name="productid" value="@optProduct.get.productId.getOrElse("")" /><br/>
                     <input type="hidden" name="userId" value="@optProduct.get.user" /><br/>
                     @Messages("productedit.form.name"): <input type="text" name="name" value="@optProduct.get.name" /><br/>

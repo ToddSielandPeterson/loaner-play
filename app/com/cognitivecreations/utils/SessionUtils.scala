@@ -48,4 +48,8 @@ object SessionUtils {
 
   def apply(request: Request[AnyContent])(implicit ec: ExecutionContext): SessionUtils = new SessionUtils(request)
 
+  implicit def optionUuidCompare(uuid1: Option[UUID], uuid2: Option[UUID]): Boolean = {
+    uuid1 == None || uuid2 == None || uuid1.get == uuid2.get
+  }
+
 }

@@ -19,7 +19,9 @@ import scala.util.Try
 /**
  * Created by tsieland on 1/7/15.
  */
+
 object UserProductController extends Controller {
+  import models.Product._
 
   def productList(session: UserSession) = Action.async { request =>
     implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
@@ -42,8 +44,7 @@ object UserProductController extends Controller {
     val futureOptProduct: Future[Option[Product]] =
       if (update) {
         if (!productFormInputHolder.hasErrors) {
-          val productFormInput = productFormInputHolder.get.productId
-          productCoordinator.findByPrimary(UUID.fromString(productFormInput.get))
+          productCoordinator.findByPrimary(id)
         } else
           Future.successful(Some(Product.newEmptyProduct()))
       } else {
@@ -52,8 +53,9 @@ object UserProductController extends Controller {
 
     for {
       product <- futureOptProduct
-    } yield
-      Ok(views.html.user.edit_product_body(product, session, None))
+    } yield {
+      Ok(views.html.user.edit_product_body(if (isProductOwnedBySession(product, session)) product else None, session, None))
+    }
   }
 
   def productShow(id: UUID, session: UserSession) = Action.async { implicit request =>
