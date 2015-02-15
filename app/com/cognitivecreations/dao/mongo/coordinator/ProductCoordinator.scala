@@ -4,6 +4,7 @@ import java.util.UUID
 
 import com.cognitivecreations.dao.mongo.dao.ProductDao
 import com.cognitivecreations.dao.mongo.dao.mongomodel.ProductMongo
+import com.cognitivecreations.dao.mongo.exceptions.NoUserBoundToSessionException
 import com.cognitivecreations.modelconverters.ProductConverter
 import models.{User, Product}
 import reactivemongo.core.commands.LastError
@@ -44,6 +45,22 @@ class ProductCoordinator(implicit ec: ExecutionContext) extends ProductConverter
       productList <- productDao.findByUser(user.userId.get)
     } yield
       productList.map(product => fromMongo(product))
+  }
+
+  def findByPrimaryAndUser(productId: UUID, user: Option[User]): Future[Option[Product]] = {
+    if (user.isDefined) {
+      findByPrimaryAndUser(productId, user.get.userId.get)
+    } else {
+      Future.failed(new NoUserBoundToSessionException())
+    }
+  }
+
+  def findByPrimaryAndUser(productId: UUID, uuid: UUID): Future[Option[Product]] = {
+    for {
+      product <- productDao.findByProductId(productId)
+    } yield {
+      product.map(product => fromMongo(product))
+    }
   }
 
 }

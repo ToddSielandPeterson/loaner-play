@@ -25,6 +25,10 @@ newuser.form.city=City
 newuser.form.state=State
 newuser.form.zip=Zip Code
 
+productlist.text.title=Your Products:
+productlist.header.name=Product Name
+productlist.header.dateAdded=Date Added
+productlist.header.lastEdit=Last Edit
 
 productedit.form.name=Product Name
 productedit.form.secondLine=Second Line

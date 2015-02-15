@@ -13,10 +13,10 @@
 
                 </div>
             }
-            <form action="/login" method="post">
-                @Messages("login.form.userid"): <input type="text" name="username" /><br/>
-                @Messages("login.form.password"): <input type="password" name="password" /><br/>
-                <input type="submit" value="Login">
+            <form action="/login" method="post" role="form">
+                <div class="form-group"><label for="username">@Messages("login.form.userid"):</label><input type="text" class="form-control" name="username" /></div>
+                <div class="form-group"><label for="password">@Messages("login.form.password"):</label> <input type="password" class="form-control" name="password" /></div>
+                <button type="submit" class="btn btn-default">@Messages("global.button.submit")</button>
             </form>
         </div>
     </div>

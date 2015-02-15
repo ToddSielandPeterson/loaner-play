@@ -17,16 +17,16 @@
     @if(optProduct.isDefined) {
         <div class="row">
             <div class="col-sm-12">
-                <form action="/user/product/edit/@optProduct.get.productId.getOrElse("")" method="post">
-                    <input type="hidden" name="productid" value="@optProduct.get.productId.getOrElse("")" /><br/>
-                    <input type="hidden" name="userId" value="@optProduct.get.user" /><br/>
-                    @Messages("productedit.form.name"): <input type="text" name="name" value="@optProduct.get.name" /><br/>
-                    @Messages("productedit.form.secondLine"): <input type="text" name="secondLine" value="@optProduct.get.secondLine.getOrElse("")" /><br/>
-                    @Messages("productedit.form.categoryId"): <input type="text" name="categoryId" value="@optProduct.get.categoryId.getOrElse("")" /><br/>
-                    @Messages("productedit.form.productType"): <input type="text" name="productType" value="@optProduct.get.productType.getOrElse("")" /><br/>
-                    @Messages("productedit.form.text"): <input type="text" name="text" value="@optProduct.get.text" /><br/>
-                    <input type="submit" value="@Messages("productedit.form.button.submit")">
-                    <input type="submit" value="@Messages("productedit.form.button.cancel")">
+                <form action="/user/product/edit/@optProduct.get.productId.getOrElse("")" method="post" role="form">
+                    <input type="hidden" name="productid" value="@optProduct.get.productId.getOrElse("")" />
+                    <input type="hidden" name="userId" value="@optProduct.get.user" />
+                    <div class="form-group"><label for="name">@Messages("productedit.form.name"):</label> <input type="text" name="name" class="form-control" value="@optProduct.get.name" /></div>
+                    <div class="form-group"><label for="secondLine">@Messages("productedit.form.secondLine"):</label> <input type="text" name="secondLine" class="form-control" value="@optProduct.get.secondLine.getOrElse("")" /></div>
+                    <div class="form-group"><label for="categoryId">@Messages("productedit.form.categoryId"):</label> <input type="text" name="categoryId" class="form-control" value="@optProduct.get.categoryId.getOrElse("")" /></div>
+                    <div class="form-group"><label for="productType">@Messages("productedit.form.productType"):</label> <input type="text" name="productType" class="form-control" value="@optProduct.get.productType.getOrElse("")" /></div>
+                    <div class="form-group"><label for="text">@Messages("productedit.form.text"):</label> <input type="text" name="text" class="form-control" value="@optProduct.get.text" /></div>
+                    <button type="submit">@Messages("productedit.form.button.submit")</button>
+                    <button type="submit">@Messages("productedit.form.button.cancel")</button>
                 </form>
             </div>
         </div>

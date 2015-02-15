@@ -2,7 +2,7 @@ package controllers
 
 import java.util.UUID
 
-import com.cognitivecreations.dao.mongo.coordinator.{ProductCoordinator}
+import com.cognitivecreations.dao.mongo.coordinator.{UserCoordinator, ProductCoordinator}
 import com.cognitivecreations.utils.SessionUtils
 import controllers.widgets.{Banner, Footer}
 import models.{UserSession, Product}
@@ -10,6 +10,7 @@ import play.api.Play.current
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.libs.concurrent.Akka
+import play.api.libs.json.Json
 import play.api.mvc.{Action, Controller}
 import ui.Pagelet
 
@@ -23,6 +24,33 @@ import scala.util.Try
 object UserProductController extends Controller {
   import models.Product._
 
+  def productListForUser() = Action.async{ request =>
+    implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
+    val productCoordinator = new ProductCoordinator()
+    val sessionUtils = new SessionUtils(request)
+    val sessionInfo = sessionUtils.fetchFutureSessionInfo()
+
+    for {
+      session <- sessionInfo
+      productList <- productCoordinator.findByOwner(session.user.get)
+    } yield
+      Ok(Json.toJson(productList))
+  }
+
+  def productForUser(productStringId: String) = Action.async{ request =>
+    implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
+    val productCoordinator = new ProductCoordinator()
+    val sessionUtils = new SessionUtils(request)
+    val sessionInfo = sessionUtils.fetchFutureSessionInfo()
+
+    val productId = UUID.fromString(productStringId)
+    for {
+      session <- sessionInfo
+      product <- productCoordinator.findByPrimaryAndUser(productId, session.user)
+    } yield
+      Ok(Json.toJson(product.get))
+  }
+
   def productList(session: UserSession) = Action.async { request =>
     implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
     val productCoordinator = new ProductCoordinator()
@@ -31,7 +59,7 @@ object UserProductController extends Controller {
       for {
         products <- productCoordinator.findByOwner(session.user.get)
       } yield
-        Ok(views.html.user.user_product_list(products, session, None))
+        Ok(views.html.user.user_product_list(session))
     } else
       Future.successful(NotImplemented)
   }

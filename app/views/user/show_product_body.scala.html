@@ -16,7 +16,7 @@
     }
     @if(optProduct.isDefined) {
         <div class="row">
-            <div class="col-sm-6">@Messages("productedit.form.productId")
+            <div class="col-sm-6 ">@Messages("productedit.form.productId")
                 : </div><div class="col-sm-6">@optProduct.get.productId.getOrElse("") <br /></div>
             <div class="col-sm-6">@Messages("productedit.form.name")
                 :</div><div class="col-sm-6">@optProduct.get.name <br/></div>

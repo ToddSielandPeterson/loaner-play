@@ -1,34 +1,29 @@
-@(productList: List[Product], session: UserSession, inputErrors: Option[Form[UserProductController.ProductData]])
+@(session: UserSession)
 <div class="container">
-    @if(inputErrors.isDefined) {
-        <div class="row">
-            <div class="col-sm-12">
-                    <div class="alert alert-danger" role="alert">
-                    @for(formErrors <- inputErrors.get.errors) {
-                        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                        <span class="sr-only">Error:</span>
-                        @Messages(s"${formErrors.key}.${formErrors.message}")
-                    }
-                    </div>
+    <form action="#">
+    <div ng-controller="UserProductListController as prodListCtrl">
+        <h2>@Messages("productlist.text.title")</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>cb</th> <!-- checkbox them all -->
+                    <th>@Messages("productlist.header.name")</th>
+                    <th>@Messages("productlist.header.lastEdit")</th>
+                    <th>@Messages("productlist.header.dateAdded")</th>
+                    <th>Edit</th>
+                </tr>
+            </thead>
+            <tbody ng-repeat="product in prodListCtrl.products">
+                <tr>
+                    <td>cb</td>
+                    <td><a href="/user/product/{{product.productId}}">{{product.name}}</a><br/> {{product.secondLine}} </td>
+                    <td>{{product.lastEditDate}}</td>
+                    <td>{{product.dateAdded}}</td>
+                    <td><button type="submit">Edit</button></td>
+                </tr>
+            </tbody>
+        </table>
 
-            </div>
-        </div>
-    }
-    <div class="row">
-        <div class="col-md-8">Name</div>
-        <div class="col-md-2">Last Updated</div>
-        <div class="col-md-2">Added</div>
-    </div>
-    @for(product <- productList) {
-        <div class="row">
-            <div class="col-md-8"><a href="/user/product/@product.productId.get">@product.name</a></div>
-            <div class="col-md-2">@product.lastUpdate.getOrElse("")t</div>
-            <div class="col-md-2">@product.addedDateTime.getOrElse("")</div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                @product.secondLine @product.secondLine
-            </div>
-        </div>
-    }
+    </div><button type="submit">Delete Checked</button> <button type="submit">Add New</button>
+    </form>
 </div>

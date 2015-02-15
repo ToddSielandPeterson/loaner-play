@@ -1,27 +1,26 @@
-/*
- * Author: Sari Haj Hussein
- */
+
 var app = angular.module("app", ["ngResource"])
-	.constant("apiUrl", "http://localhost:9000\:9000/api") // to tell AngularJS that 9000 is not a dynamic parameter
-	.config(["$routeProvider", function($routeProvider) {
-		return $routeProvider.when("/", {
-			templateUrl: "/views/main",
-			controller: "ListCtrl"
-		}).when("/create", {
-			templateUrl: "/views/detail",
-			controller: "CreateCtrl"
-	    }).when("/edit/:id", {
-			templateUrl: "/views/detail",
-			controller: "EditCtrl"
-	    }).otherwise({
-			redirectTo: "/"
-		});
-	}
-	]).config([
-	"$locationProvider", function($locationProvider) {
-		return $locationProvider.html5Mode(true).hashPrefix("!"); // enable the new HTML5 routing and histoty API
-	}
-]);
+	//.constant("apiUrl", "http://localhost:9000\:9000/api") // to tell AngularJS that 9000 is not a dynamic parameter
+	//.config(["$routeProvider", function($routeProvider) {
+	//	return $routeProvider.when("/", {
+	//		templateUrl: "/views/main",
+	//		controller: "ListCtrl"
+	//	}).when("/create", {
+	//		templateUrl: "/views/detail",
+	//		controller: "CreateCtrl"
+	//    }).when("/edit/:id", {
+	//		templateUrl: "/views/detail",
+	//		controller: "EditCtrl"
+	//    }).otherwise({
+	//		redirectTo: "/"
+	//	});
+	//}
+	//]).config([
+	//"$locationProvider", function($locationProvider) {
+	//	return $locationProvider.html5Mode(true).hashPrefix("!"); // enable the new HTML5 routing and histoty API
+	//}
+//])
+;
 
 // the global controller
 app.controller("AppCtrl", ["$scope", "$location", function($scope, $location) {
@@ -31,48 +30,48 @@ app.controller("AppCtrl", ["$scope", "$location", function($scope, $location) {
 	};
 }]);
 
-// the list controller
-app.controller("ListCtrl", ["$scope", "$resource", "apiUrl", function($scope, $resource, apiUrl) {
-	var Celebrities = $resource(apiUrl + "/celebrities"); // a RESTful-capable resource object
-	$scope.celebrities = Celebrities.query(); // for the list of celebrities in public/html/main.html
+app.controller("UserProductListController",['$scope', '$http', function($scope, $http) {
+    var store = this;
+    store.products = [];
+
+    $http.get("/api/u/products").success( function(data) {
+        store.products = data
+        }
+    );
+
+    //this.productList = [
+    //    {
+    //        productId:"1",
+    //        name:"big hammer",
+    //        secondLine:"a really big hammer",
+    //        dateAdded:new Date(),
+    //        lastEditDate: new Date()
+    //    },
+    //    {
+    //        productId:"2",
+    //        name:"small hammer",
+    //        secondLine:"a really small hammer",
+    //        dateAdded:new Date(),
+    //        lastEditDate: new Date()
+    //    }
+    //];
 }]);
 
-// the create controller
-app.controller("CreateCtrl", ["$scope", "$resource", "$timeout", "apiUrl", function($scope, $resource, $timeout, apiUrl) {
-	// to save a celebrity
-	$scope.save = function() {
-		var CreateCelebrity = $resource(apiUrl + "/celebrities/new"); // a RESTful-capable resource object
-		CreateCelebrity.save($scope.celebrity); // $scope.celebrity comes from the detailForm in public/html/detail.html
-		$timeout(function() { $scope.go('/'); }); // go back to public/html/main.html
-	};
-}]);
+app.directive("productTabs", function() {
+    return {
+        restrict: 'E',
+        templateUrl: 'product-tabs.html',
+        controller: function() {
+            this.tab = 1;
 
-// the edit controller
-app.controller("EditCtrl", ["$scope", "$resource", "$routeParams", "$timeout", "apiUrl", function($scope, $resource, $routeParams, $timeout, apiUrl) {
-	var ShowCelebrity = $resource(apiUrl + "/celebrities/:id", {id:"@id"}); // a RESTful-capable resource object
-	if ($routeParams.id) {
-		// retrieve the corresponding celebrity from the database
-		// $scope.celebrity.id.$oid is now populated so the Delete button will appear in the detailForm in public/html/detail.html
-		$scope.celebrity = ShowCelebrity.get({id: $routeParams.id});
-		$scope.dbContent = ShowCelebrity.get({id: $routeParams.id}); // this is used in the noChange function
-	}
-	
-	// decide whether to enable or not the button Save in the detailForm in public/html/detail.html 
-	$scope.noChange = function() {
-		return angular.equals($scope.celebrity, $scope.dbContent);
-	};
+            this.isSet = function(checkTab) {
+                return this.tab === checkTab;
+            };
 
-	// to update a celebrity
-	$scope.save = function() {
-		var UpdateCelebrity = $resource(apiUrl + "/celebrities/" + $routeParams.id); // a RESTful-capable resource object
-		UpdateCelebrity.save($scope.celebrity); // $scope.celebrity comes from the detailForm in public/html/detail.html
-		$timeout(function() { $scope.go('/'); }); // go back to public/html/main.html
-	};
-	
-	// to delete a celebrity
-	$scope.delete = function() {
-		var DeleteCelebrity = $resource(apiUrl + "/celebrities/" + $routeParams.id); // a RESTful-capable resource object
-		DeleteCelebrity.delete(); // $scope.celebrity comes from the detailForm in public/html/detail.html
-		$timeout(function() { $scope.go('/'); }); // go back to public/html/main.html
-	};
-}]);
+            this.setTab = function(setTab) {
+                this.tab = setTab;
+            };
+        },
+        controllerAs:'tab'
+    };
+});
