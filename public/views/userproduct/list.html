@@ -1,0 +1,26 @@
+<div class="container">
+    <div ng-init="userProductsFn();">
+        <h2>Your Products</h2>
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>cb</th> <!-- checkbox them all -->
+                <th>Name</th>
+                <th>Last Edit</th>
+                <th>Date Added</th>
+                <th>Edit</th>
+            </tr>
+            </thead>
+            <tbody ng-repeat="product in products">
+            <tr>
+                <td>cb</td>
+                <td><a ng-href="#/show/{{product.productId}}">{{product.name}}</a><br/> {{product.secondLine}} </td>
+                <td>{{product.lastEditDate}}</td>
+                <td>{{product.dateAdded}}</td>
+                <td><button ng-click="goToEdit(product.productId)">Edit</button></td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div><button type="submit">Delete Checked</button> <button type="submit">Add New</button>
+</div>

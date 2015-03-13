@@ -1,0 +1,40 @@
+@(categories: CategoryTree, session: UserSession)
+
+<div role="main" class="container">
+    <div class="row">
+        <div class="span12">
+            <h2>Categories</h2>
+        </div>
+    </div>
+</div>
+<div role="sub" class="container">
+    @for(branch : CategoryBranch <- categories.branches) {
+        <div class="row">
+        <div class="col-lg-4 col-sm-6 col-xs-12">
+            <a href="/products/@branch.uniqueName">@branch.name</a>
+        </div>
+        </div>
+        @for(branch1 : CategoryBranch <- branch.children) {
+            <div class="row">
+            <div class="col-lg-4 col-sm-6 col-xs-12">
+                <a href="/products/@branch1.uniqueName">@branch.name -> @branch1.name</a>
+            </div>
+            </div>
+            @for(branch2 : CategoryBranch <- branch1.children) {
+                <div class="row">
+                <div class="col-lg-4 col-sm-6 col-xs-12">
+                    <a href="/products/@branch2.uniqueName">@branch.name -> @branch1.name -> @branch2.name</a>
+                </div>
+                </div>
+                @for(branch3 : CategoryBranch <- branch2.children) {
+                    <div class="row">
+                    <div class="col-lg-4 col-sm-6 col-xs-12">
+                        <a href="/products/@branch2.uniqueName">@branch.name -> @branch1.name -> @branch2.name -> @branch3.name</a>
+                    </div>
+                    </div>
+                }
+            }
+        }
+    }
+    </div>
+</div>

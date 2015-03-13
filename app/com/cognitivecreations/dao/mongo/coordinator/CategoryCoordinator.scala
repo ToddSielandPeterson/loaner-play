@@ -7,6 +7,8 @@ import com.cognitivecreations.dao.mongo.dao.mongomodel.CategoryMongo
 import com.cognitivecreations.modelconverters.CategoryConverter
 import models.{CategoryBranch, CategoryTree, Category}
 import org.joda.time.DateTime
+import play.api.libs.functional.syntax._
+import play.api.libs.json.{JsPath, Writes}
 import reactivemongo.core.commands.LastError
 
 import scala.concurrent.duration._
@@ -15,6 +17,32 @@ import scala.concurrent.{Await, Future, ExecutionContext}
 /**
  * Created by Todd Sieland-Peteson on 1/13/15.
  */
+
+case class CategoryFlat(id: UUID, categoryPath: List[String]) {
+  def categoryAsPath(separator: String): String = categoryPath.reduce[String]((cur, acc) => acc + separator + cur)
+}
+
+object CategoryFlat {
+  def applyAll(categoryTree: CategoryTree): List[CategoryFlat] = {
+    val x = for {
+      branch <- categoryTree.branches
+      child <- branch.children
+    } yield {
+      applyIt(List(branch.name), child)
+    }
+    x.flatten
+  }
+
+  def applyIt(backLinks: List[String], currentCategoryBranch: CategoryBranch): List[CategoryFlat] = {
+    if (currentCategoryBranch.children.isEmpty)
+      List(new CategoryFlat(currentCategoryBranch.categoryId, backLinks ::: List(currentCategoryBranch.name)))
+    else {
+      currentCategoryBranch.children.map(x => applyIt(backLinks ::: List(currentCategoryBranch.name), x)).flatten
+    }
+  }
+
+}
+
 class CategoryCoordinator(implicit ec: ExecutionContext) extends CategoryConverter with CoordinatorBase[Category] {
   import CategoryCoordinator._
 
@@ -54,10 +82,9 @@ class CategoryCoordinator(implicit ec: ExecutionContext) extends CategoryConvert
   // build it
   def buildCategoryTree:CategoryTree = {
     def buildBranches(id: UUID, categoryList: List[CategoryMongo]): List[CategoryBranch] = {
-      val eachList = categoryList.filter(cur => {cur.parentId.isDefined && cur.parentId.get == id}).
-        map(cur => {
+      val eachList = categoryList.filter(cur => {cur.parentId.isDefined && cur.parentId.get == id}).map(cur => {
         val x = buildBranches(cur.categoryId, categoryList)
-        new CategoryBranch(categoryId = cur.categoryId, name = cur.categoryName, ordering = cur.ordering, children = x)
+        new CategoryBranch(categoryId = cur.categoryId, name = cur.categoryName, uniqueName = cur.uniqueName, ordering = cur.ordering, children = x)
       } )
 
       eachList
@@ -67,7 +94,7 @@ class CategoryCoordinator(implicit ec: ExecutionContext) extends CategoryConvert
       val catBranchList = categoryList.filter(cur => cur.parentId.isEmpty).
         map(cur => {
         val branch = buildBranches(cur.categoryId, categoryList.filterNot(cur => cur.parentId.isEmpty))
-        new CategoryBranch(categoryId = cur.categoryId, name = cur.categoryName, ordering = cur.ordering, children = branch)
+        new CategoryBranch(categoryId = cur.categoryId, name = cur.categoryName, uniqueName = cur.uniqueName, ordering = cur.ordering, children = branch)
       })
       catBranchList
     }

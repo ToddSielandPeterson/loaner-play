@@ -41,6 +41,10 @@ trait MongoDao[T] extends Logging with MongoLogging {
     insert(document, GetLastError())
   }
 
+  def delete(query: BSONDocument, first: Boolean)(implicit ec: ExecutionContext): Future[LastError] = {
+    collection.remove(query, GetLastError(), firstMatchOnly = first)
+  }
+
   def insert(document: T, writeConcern: GetLastError)(implicit ec: ExecutionContext): Future[LastError] = {
     implicit val writer = bsonHandler.asInstanceOf[BSONDocumentWriter[T]] // to me this is not necessary, yet the scala compiler insists on it
     println(collection.db.name)

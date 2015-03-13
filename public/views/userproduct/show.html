@@ -1,0 +1,22 @@
+<div class="container" ng-init="userProductFn();">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="alert alert-danger" role="alert">
+                @for(formErrors <- inputErrors.get.errors) {
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="sr-only">Error:</span>
+                @Messages(s"${formErrors.key}.${formErrors.message}")
+                }
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">Product Id : </div><div class="col-sm-6">{{product.productId}} <br /></div>
+        <div class="col-sm-6">Name :</div><div class="col-sm-6">{{product.name}}<br/></div>
+        <div class="col-sm-6">secondLine :</div><div class="col-sm-6">{{product.secondLine}}<br/></div>
+        <div class="col-sm-6">categoryId :</div><div class="col-sm-6">{{category.name}}<br/></div>
+        <div class="col-sm-6">productType :</div><div class="col-sm-6">{{product.productType}}<br/></div>
+        <div class="col-sm-6">text :</div><div class="col-sm-6">{{product.text}}<br/></div>
+        <div class="col-sm-12"><button ng-click="goToEdit(product.productId)">Edit</button></div>
+    </div>
+</div>

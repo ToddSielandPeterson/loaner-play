@@ -10,7 +10,7 @@ import reactivemongo.bson.{BSONDocument, BSONDocumentReader, BSONDocumentWriter,
  * Created by tsieland on 10/14/14.
  */
 case class ProductMongo(id: UUID, // unique generated id (UUID)
-                        user: String, // link to user id
+                        user: UUID, // link to user id
 
                         name: String,
                         secondLine: Option[String] = None,

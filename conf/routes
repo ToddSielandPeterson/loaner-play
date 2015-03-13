@@ -4,6 +4,7 @@
 
 # Home page
 GET           /                              controllers.Application.index(any = "none")
+GET           /categories                    controllers.CategoriesController.index
 GET           /products/:categoryName        controllers.ProductsController.index(categoryName:String)
 GET           /product/:productId            controllers.ProductsController.readOne(productId: String)
 
@@ -30,14 +31,17 @@ POST          /user/product/edit/:id         controllers.UserProductController.e
 #GET           /views/*any             controllers.Application.loadPublicHTML(any)
 
 # Play routes serving JSON to AngularJS start with /api
-GET           /api/users                    controllers.UserController.list
-POST          /api/user/new                 controllers.UserController.create
-GET           /api/user/:id                 controllers.UserController.show(id: String)
-POST          /api/user/:id                 controllers.UserController.update(id: String)
-DELETE        /api/user/:id                 controllers.UserController.delete(id: String)
+GET           /api/users                     controllers.UserController.list
+POST          /api/user/new                  controllers.UserController.create
+GET           /api/user/:id                  controllers.UserController.show(id: String)
+POST          /api/user/:id                  controllers.UserController.update(id: String)
+DELETE        /api/user/:id                  controllers.UserController.delete(id: String)
 
-GET           /api/u/products                 controllers.UserProductController.productListForUser
-GET           /api/u/product/:id                 controllers.UserProductController.productForUser(id: String)
+GET           /api/u/products                controllers.UserProductController.productListForUser
+GET           /api/u/product/:id             controllers.UserProductController.productForUser(id: String)
+POST          /api/u/product/:id             controllers.UserProductController.productUpdateForUser(id: String)
+DELETE        /api/u/product/:id             controllers.UserProductController.productDeleteForUser(id: String)
+PUT           /api/u/product                 controllers.UserProductController.productAddForUser
 
 GET           /api/load/session/add          controllers.LoadDataController.sessionTest
 GET           /api/load/session/find         controllers.LoadDataController.sessionPullTest
@@ -45,6 +49,8 @@ GET           /api/load/categories           controllers.LoadDataController.load
 GET           /api/load/products             controllers.LoadDataController.loadProducts
 GET           /api/load/users                controllers.LoadDataController.loadUsers
 
+GET           /api/categories                controllers.CategoriesController.categoriesFlat()
+GET           /api/category/:id              controllers.CategoriesController.category(id: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                  controllers.Assets.at(path="/public", file)

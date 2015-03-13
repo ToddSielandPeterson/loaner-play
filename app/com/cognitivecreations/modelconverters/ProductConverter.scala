@@ -5,14 +5,14 @@ import java.util.UUID
 import com.cognitivecreations.dao.mongo.dao.mongomodel.ProductMongo
 import models.Product
 
-
 /**
  * Created by Todd Sieland-Peteson on 1/11/15.
  */
+
 class ProductConverter extends ModelConverterBase[Product, ProductMongo] {
   def fromMongo(product: ProductMongo): Product = {
     Product(productId = Some(product.id),
-      user = Some(UUID.fromString(product.user)),
+      user = Some(product.user),
       name = product.name,
       secondLine = product.secondLine,
       categoryId = product.categoryId,
@@ -26,7 +26,7 @@ class ProductConverter extends ModelConverterBase[Product, ProductMongo] {
 
   def toMongo(product: Product): ProductMongo = {
     ProductMongo(id = product.productId.get,
-      user = product.user.toString,
+      user = product.user.getOrElse(UUID.randomUUID()),
       name = product.name,
       secondLine = product.secondLine,
       categoryId = product.categoryId,

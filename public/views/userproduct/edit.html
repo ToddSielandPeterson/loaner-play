@@ -1,0 +1,24 @@
+
+<div class="container" ng-init="userProductFn();categoriesFn();">
+    <div class="row">
+        <div class="col-sm-12">
+            <form method="post" role="form">
+                <input type="hidden" name="productid" value="{{product.productId}}" />
+                <input type="hidden" name="userId" value="{{product.user}}" />
+                <div class="form-group"><label for="name">Name :</label> <input type="text" id="name" name="name" class="form-control" ng-model="product.name" required /></div>
+                <div class="form-group"><label for="secondLine">Second Line :</label> <input type="text" id="secondLine" name="secondLine" class="form-control" ng-model="product.secondLine"  required/></div>
+                <div class="form-group"><label for="categoryId">Category :</label>
+                    <select id="categoryId" ng-model="product.categoryId" ng-options="value.categoryId as value.categoryPath for value in categories" required>
+                    <option>--</option></select>
+                </div>
+                <div class="form-group"><label for="productType">Product Type :</label> <input type="text" id="productType" name="productType" class="form-control" ng-model="product.productType" /></div>
+                <div class="form-group"><label for="text">Text :</label> <input type="text" name="text" id="text" class="form-control" ng-model="product.text"  required/></div>
+                <button type="submit" ng-click="submitTheForm()">Submit</button>
+                <button type="submit" ng-click="backToShow(product.productId)">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+</div>
+{{product}}<br />
+{{categories}}

@@ -2,10 +2,12 @@ package controllers
 
 import java.util.UUID
 
-import com.cognitivecreations.dao.mongo.coordinator.{UserCoordinator, ProductCoordinator}
+import com.cognitivecreations.dao.mongo.coordinator.{CategoryFlat, CategoryCoordinator, UserCoordinator, ProductCoordinator}
+import com.cognitivecreations.modelconverters.CategoryConverter
 import com.cognitivecreations.utils.SessionUtils
 import controllers.widgets.{Banner, Footer}
-import models.{UserSession, Product}
+import models.{Error, UserSession, Product}
+import org.joda.time.DateTime
 import play.api.Play.current
 import play.api.data.Form
 import play.api.data.Forms._
@@ -21,10 +23,12 @@ import scala.util.Try
  * Created by tsieland on 1/7/15.
  */
 
+
 object UserProductController extends Controller {
   import models.Product._
 
-  def productListForUser() = Action.async{ request =>
+
+  def productListForUser() = Action.async{ implicit request =>
     implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
     val productCoordinator = new ProductCoordinator()
     val sessionUtils = new SessionUtils(request)
@@ -37,7 +41,7 @@ object UserProductController extends Controller {
       Ok(Json.toJson(productList))
   }
 
-  def productForUser(productStringId: String) = Action.async{ request =>
+  def productForUser(productStringId: String) = Action.async{ implicit request =>
     implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
     val productCoordinator = new ProductCoordinator()
     val sessionUtils = new SessionUtils(request)
@@ -51,7 +55,82 @@ object UserProductController extends Controller {
       Ok(Json.toJson(product.get))
   }
 
-  def productList(session: UserSession) = Action.async { request =>
+  def productAddForUser() = Action.async { implicit request =>
+    implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
+    val productCoordinator = new ProductCoordinator()
+    val sessionUtils = new SessionUtils(request)
+    val sessionInfo = sessionUtils.fetchFutureSessionInfo()
+    val productFormInputHolder = productForm.bindFromRequest()
+
+    if (productFormInputHolder.hasErrors) {
+      Future.successful(Ok(Json.toJson(Error(productFormInputHolder.toString))))
+    } else { // valid
+      for {
+        session <- sessionInfo
+      } yield {
+        val productIn = productFormInputHolder.get
+        if (session.user.isEmpty || session.user.get.userId.isEmpty) {
+          Ok(Json.toJson(Error("You are not logged in")))
+        } else {
+          if (productIn.productId.isDefined) {
+            Ok(Json.toJson(Error("should not have a productId yet")))
+          } else {
+            val product = fromProductData(productIn, session.user.get.userId.get).copy(productId = Some(UUID.randomUUID()))
+            productCoordinator.insert(product)
+            Ok(Json.toJson(product))
+          }
+        }
+      }
+    }
+  }
+
+  def productUpdateForUser(productStringId: String) = Action.async { implicit request =>
+    implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
+    val productCoordinator = new ProductCoordinator()
+    val sessionInfo = new SessionUtils(request).fetchFutureSessionInfo()
+    val productFormInputHolder = productForm.bindFromRequest()
+
+    if (productFormInputHolder.hasErrors) {
+      Future.successful(Ok(Json.toJson(Error(productFormInputHolder.toString))))
+    } else { // valid
+      for {
+        session <- sessionInfo
+      } yield {
+        val productIn = productFormInputHolder.get
+        if (session.user.isEmpty || session.user.get.userId.isEmpty) {
+          Ok(Json.toJson(Error("You are not logged in")))
+        } else {
+          if (productIn.productId.isEmpty) {
+            Ok(Json.toJson(Error("should have a productId")))
+          } else {
+            val product = fromProductData(productIn, session.user.get.userId.get)
+            productCoordinator.insert(product)
+            Ok(Json.toJson(product))
+          }
+        }
+      }
+    }
+  }
+
+  def productDeleteForUser(productStringId: String) = Action.async { implicit request =>
+    implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
+
+    val sessionInfo = SessionUtils(request).fetchFutureSessionInfo()
+    val productCoordinator = new ProductCoordinator()
+    val productId = UUID.fromString(productStringId)
+
+    for {
+      session <- sessionInfo
+      productShow <- productCoordinator.delete(productId, session.user)
+    } yield {
+      Ok(Json.toJson(Error.success))
+    }
+  }
+
+  /* ******************* */
+  /* standard form calls */
+  /* ******************* */
+  def productList(session: UserSession) = Action.async { implicit request =>
     implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
     val productCoordinator = new ProductCoordinator()
 
@@ -82,7 +161,7 @@ object UserProductController extends Controller {
     for {
       product <- futureOptProduct
     } yield {
-      Ok(views.html.user.edit_product_body(if (isProductOwnedBySession(product, session)) product else None, session, None))
+      Ok(views.html.user.edit_product_body(product.get, session, None))
     }
   }
 
@@ -114,7 +193,7 @@ object UserProductController extends Controller {
       productBody <- Pagelet.readBody(product)
     } yield {
       if (session.user.isDefined) // add redirect if user not found
-        Ok(views.html.user.user_template(headerBody, productBody, footerBody, session))
+        Ok(views.html.user.user_product_template(headerBody, productBody, footerBody, session))
       else
         Redirect("/login")
     }
@@ -136,7 +215,7 @@ object UserProductController extends Controller {
       footerBody <- Pagelet.readBody(footer)
       productEditBody <- Pagelet.readBody(productEdit)
     } yield {
-      Ok(views.html.user.user_template(headerBody, productEditBody, footerBody, session))
+      Ok(views.html.user.user_product_template(headerBody, productEditBody, footerBody, session))
     }
   }
 
@@ -159,9 +238,9 @@ object UserProductController extends Controller {
       productEditBody <- Pagelet.readBody(productEdit)
     } yield {
       if (!productFormInputHolder.hasErrors) {
-        Ok(views.html.user.user_template(headerBody, productEditBody, footerBody, session))
+        Ok(views.html.user.user_product_template(headerBody, productEditBody, footerBody, session))
       } else {
-        Ok(views.html.user.user_template(headerBody, productEditBody, footerBody, session))
+        Ok(views.html.user.user_product_template(headerBody, productEditBody, footerBody, session))
       }
     }
   }
@@ -186,7 +265,7 @@ object UserProductController extends Controller {
       footerBody <- Pagelet.readBody(footer)
       productShowBody <- Pagelet.readBody(productShow)
     } yield {
-      Ok(views.html.user.user_template(headerBody, productShowBody, footerBody, session))
+      Ok(views.html.user.user_product_template(headerBody, productShowBody, footerBody, session))
     }
   }
 
@@ -215,4 +294,17 @@ object UserProductController extends Controller {
     )(ProductData.apply)(ProductData.unapply)
   )
 
+  def fromProductData(productIn: UserProductController.ProductData, userId: UUID): Product = {
+    new Product(productId = Some(UUID.fromString(productIn.productId.get)),
+      user = Some(userId),
+      name = productIn.name,
+      secondLine = productIn.secondLine,
+      categoryId = Some(UUID.fromString(productIn.categoryId)), // link to unique category id
+      productType = None,
+      addedDateTime = Some(new DateTime()),
+      lastUpdate = Some(new DateTime()),
+      pictures = List(),
+      thumbnails = List(),
+      text = productIn.text.getOrElse(""))
+  }
 }

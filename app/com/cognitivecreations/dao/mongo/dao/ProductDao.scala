@@ -6,6 +6,7 @@ import com.cognitivecreations.dao.mongo.dao.mongomodel.{DatabaseMongoDataSource,
 import com.cognitivecreations.dao.mongo.BaseMongoDao
 import com.cognitivecreations.helpers.BSONHandlers
 import reactivemongo.bson.{BSONString, BSONDocument}
+import reactivemongo.core.commands.LastError
 
 import scala.concurrent.{Future, ExecutionContext}
 
@@ -23,6 +24,10 @@ class ProductDao(implicit val executionContext: ExecutionContext) extends Produc
 
   def findByProductId(id: UUID): Future[Option[ProductMongo]] = {
     findOne(BSONDocument("id" -> BSONString(id.toString)))
+  }
+
+  def deleteByProductId(id: UUID): Future[LastError] = {
+    delete(BSONDocument("id" -> BSONString(id.toString)), true)
   }
 
   def findByCategory(id: UUID): Future[List[ProductMongo]] = {

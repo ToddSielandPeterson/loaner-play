@@ -9,3 +9,5 @@ class OptionUUIDNotSetException extends Exception  // a uuid that should be set 
 
 class UUIDInvalidException extends Exception
 
+class ProductDoesNotExists extends Exception
+

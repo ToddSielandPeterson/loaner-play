@@ -4,7 +4,7 @@ import java.util.UUID
 
 import com.cognitivecreations.dao.mongo.dao.ProductDao
 import com.cognitivecreations.dao.mongo.dao.mongomodel.ProductMongo
-import com.cognitivecreations.dao.mongo.exceptions.NoUserBoundToSessionException
+import com.cognitivecreations.dao.mongo.exceptions.{ProductDoesNotExists, NoUserBoundToSessionException}
 import com.cognitivecreations.modelconverters.ProductConverter
 import models.{User, Product}
 import reactivemongo.core.commands.LastError
@@ -63,4 +63,20 @@ class ProductCoordinator(implicit ec: ExecutionContext) extends ProductConverter
     }
   }
 
+  def delete(productId: UUID, user: Option[User]): Future[LastError] = {
+    if (user.isDefined) {
+      delete(productId, user.get.userId.get)
+    } else {
+      Future.failed(new NoUserBoundToSessionException())
+    }
+  }
+
+  def delete(productId: UUID, uuid: UUID): Future[LastError] = {
+    productDao.findByProductId(productId).flatMap(product => {
+      if (product.isDefined && uuid == product.get.user)
+        productDao.deleteByProductId(product.get.id)
+      else
+        Future.failed(new ProductDoesNotExists)
+    })
+  }
 }
