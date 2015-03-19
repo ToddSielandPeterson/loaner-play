@@ -20,9 +20,10 @@ case class User(userId: Option[UUID],   // uuid for user (unique)
                 password: Option[String],
                 passwordAgain: Option[String] = None,
                 address: Address,
-                website: Option[String] = None)
+                admin: Option[Boolean] = None)
 
 object User {
+  val defaultUser = newBlankUser()
   def newBlankUser(): User = new User(None, "", "", "", None, None, Address.newBlankAddress, None)
 
   implicit val user_Writes: Writes[User] = (
@@ -33,7 +34,7 @@ object User {
       (JsPath \ "password").write[Option[String]] and
       (JsPath \ "passwordAgain").write[Option[String]] and
       (JsPath \ "address").write[Address] and
-      (JsPath \ "website").write[Option[String]]
+      (JsPath \ "admin").write[Option[Boolean]]
     )(unlift(User.unapply))
 
   implicit val user_Reads: Reads[User] = (
@@ -44,7 +45,7 @@ object User {
       (JsPath \ "password").read[Option[String]] and
       (JsPath \ "passwordAgain").read[Option[String]] and
       (JsPath \ "address").read[Address] and
-      (JsPath \ "website").read[Option[String]]
+      (JsPath \ "admin").read[Option[Boolean]]
     ) (User.apply _)
 
 }

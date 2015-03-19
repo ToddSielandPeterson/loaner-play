@@ -19,7 +19,7 @@
         <div class="col-sm-12">
             <form method="post" role="form">
                 <input type="hidden" name="productid" value="${product.productId}" />
-                <input type="hidden" name="userId" value="${product.userId.get}" />
+                <input type="hidden" name="userId" value="${product.userId}" />
                 <div class="form-group"><label for="name">@Messages("productedit.form.name"):</label> <input type="text" name="name" class="form-control" value="{{prodCtrl.product.name}}" required /></div>
                 <div class="form-group"><label for="secondLine">@Messages("productedit.form.secondLine"):</label> <input type="text" name="secondLine" class="form-control" value="{{prodCtrl.product.secondLine}}"  required/></div>
                 <div class="form-group"><label for="categoryId">@Messages("productedit.form.categoryId"):</label> <select ng-model="prodCtrl.product.categories" ng-options="value.id as value.name for value in prodCtrl.product.categories" required>

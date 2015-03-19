@@ -80,10 +80,10 @@ object LoadDataController extends Controller {
     val categoryCoordinator = new CategoryCoordinator()
 
     val categories = List(
-      new Category(categoryId = hammerId, name = "Hammers", uniqueName = "hammers", ordering = 1, parentId = None),
-      new Category(categoryId = sawsId, name = "Saws", uniqueName = "saws", ordering = 2, parentId = None),
-      new Category(categoryId = taleSawsId, name = "Table Saw", uniqueName = "table_saw", ordering = 1, parentId = Some(sawsId)),
-      new Category(categoryId = circleSawsId, name = "Circular Saw", uniqueName = "circle_saw", ordering = 2, parentId = Some(sawsId)))
+      new Category(categoryId = Some(hammerId), name = "Hammers", uniqueName = "hammers", ordering = 1, parentId = None),
+      new Category(categoryId = Some(sawsId), name = "Saws", uniqueName = "saws", ordering = 2, parentId = None),
+      new Category(categoryId = Some(taleSawsId), name = "Table Saw", uniqueName = "table_saw", ordering = 1, parentId = Some(sawsId)),
+      new Category(categoryId = Some(circleSawsId), name = "Circular Saw", uniqueName = "circle_saw", ordering = 2, parentId = Some(sawsId)))
 
     categories.foreach(categoryCoordinator.insert)
 
@@ -100,7 +100,7 @@ object LoadDataController extends Controller {
     val productCoordinator = new ProductCoordinator()
 
     val products = List(
-      new Product( productId = Some(UUID.randomUUID()), user = Some(userTodd),
+      new Product( productId = Some(UUID.randomUUID()), userId = Some(userTodd),
         name = "Big Hammer", secondLine = Some("a big hammer"),
         categoryId = Some(hammerId), productType = None, addedDateTime = None, lastUpdate = None,
         pictures = List(), thumbnails = List(), text = "a really <b>really</b> big hammer")

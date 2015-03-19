@@ -1,9 +1,9 @@
 angular.module("app.userproduct.app", ["ngResource", 'ngRoute', 'app.userProduct.controller'])
     .factory('userProductFactory', ['$resource', function($resource) {
         return $resource("/api/u/product/:id", {}, {
-            get: {method: 'GET', cache: false, isArray: false}//,
-            //post: {method: 'POST', cache: false, isArray: true},
-            //delete: {method: 'DELETE', cache: false, isArray: true}
+            get: {method: 'GET', cache: false, isArray: false},
+            post: {method: 'POST', cache: false, isArray: true},
+            delete: {method: 'DELETE', cache: false, isArray: true}
         });
     }])
     .factory('userProductsFactory', ['$resource', function($resource) {

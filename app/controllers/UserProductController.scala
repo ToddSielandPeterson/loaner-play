@@ -60,7 +60,7 @@ object UserProductController extends Controller {
     val productCoordinator = new ProductCoordinator()
     val sessionUtils = new SessionUtils(request)
     val sessionInfo = sessionUtils.fetchFutureSessionInfo()
-    val productFormInputHolder = productForm.bindFromRequest()
+    val productFormInputHolder = productAddForm.bindFromRequest()
 
     if (productFormInputHolder.hasErrors) {
       Future.successful(Ok(Json.toJson(Error(productFormInputHolder.toString))))
@@ -72,13 +72,15 @@ object UserProductController extends Controller {
         if (session.user.isEmpty || session.user.get.userId.isEmpty) {
           Ok(Json.toJson(Error("You are not logged in")))
         } else {
-          if (productIn.productId.isDefined) {
-            Ok(Json.toJson(Error("should not have a productId yet")))
-          } else {
-            val product = fromProductData(productIn, session.user.get.userId.get).copy(productId = Some(UUID.randomUUID()))
-            productCoordinator.insert(product)
-            Ok(Json.toJson(product))
-          }
+          val product = new Product(userId = session.user.flatMap(_.userId),
+            text = productIn.text.get,
+            name = productIn.name,
+            secondLine = productIn.secondLine,
+            categoryId = Some(UUID.fromString(productIn.categoryId)),
+            productType = productIn.productType
+          )
+          productCoordinator.insert(product)
+          Ok(Json.toJson(product))
         }
       }
     }
@@ -104,7 +106,8 @@ object UserProductController extends Controller {
             Ok(Json.toJson(Error("should have a productId")))
           } else {
             val product = fromProductData(productIn, session.user.get.userId.get)
-            productCoordinator.insert(product)
+            val errors = productCoordinator.update(product)
+            // TODO: add error processing if failed.
             Ok(Json.toJson(product))
           }
         }
@@ -274,7 +277,7 @@ object UserProductController extends Controller {
   }
 
   case class ProductData(
-    productId: Option[String],
+    productId: Option[String] = None,
     userId: String,
     name: String,
     secondLine: Option[String] = None,
@@ -296,7 +299,7 @@ object UserProductController extends Controller {
 
   def fromProductData(productIn: UserProductController.ProductData, userId: UUID): Product = {
     new Product(productId = Some(UUID.fromString(productIn.productId.get)),
-      user = Some(userId),
+      userId = Some(userId),
       name = productIn.name,
       secondLine = productIn.secondLine,
       categoryId = Some(UUID.fromString(productIn.categoryId)), // link to unique category id
@@ -307,4 +310,22 @@ object UserProductController extends Controller {
       thumbnails = List(),
       text = productIn.text.getOrElse(""))
   }
+
+  case class ProductAddData(
+                          name: String,
+                          secondLine: Option[String] = None,
+                          categoryId: String, // link to unique category id
+                          productType: Option[String] = None,
+                          text: Option[String] = None)
+
+  val productAddForm = Form(
+    mapping(
+      "name" -> nonEmptyText,
+      "secondLine" -> optional(text),
+      "categoryId" -> nonEmptyText,
+      "productType" -> optional(text),
+      "text" -> optional(text)
+    )(ProductAddData.apply)(ProductAddData.unapply)
+  )
+
 }

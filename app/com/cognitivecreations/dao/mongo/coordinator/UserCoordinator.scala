@@ -21,8 +21,7 @@ class UserCoordinator(implicit ec: ExecutionContext) extends UserConverter with 
 
   def overwrite(user: UserMongo, fName: Option[String], lName: Option[String], website: Option[String]): UserMongo = {
     user.copy(firstName = user.firstName,
-      lastName = user.lastName,
-      website = optionOrString(website, user.website))
+      lastName = user.lastName)
   }
 
   def overwriteAsSome(user: Option[UserMongo], fName: Option[String], lName: Option[String], website: Option[String]): Option[UserMongo] = {

@@ -14,11 +14,11 @@ import play.api.libs.functional.syntax._
  * Created by tsieland on 1/8/15.
  */
 
-case class Category(categoryId: UUID, name: String, uniqueName: String, ordering: Int, parentId: Option[UUID])
+case class Category(categoryId: Option[UUID], name: String, uniqueName: String, ordering: Int, parentId: Option[UUID])
 
 object Category {
   implicit val category_Writes: Writes[Category] = (
-    (JsPath \  "categoryId").write[UUID] and
+    (JsPath \  "categoryId").write[Option[UUID]] and
       (JsPath \ "name").write[String] and
       (JsPath \ "uniqueName").write[String] and
       (JsPath \ "ordering").write[Int] and
@@ -26,7 +26,7 @@ object Category {
     )(unlift(Category.unapply))
 
   implicit val category_Reads: Reads[Category] = (
-    (JsPath \ "categoryId").read[UUID] and
+    (JsPath \ "categoryId").read[Option[UUID]] and
       (JsPath \ "name").read[String] and
       (JsPath \ "uniqueName").read[String] and   // only lower case chars, digits and _
       (JsPath \ "ordering").read[Int] and

@@ -9,8 +9,11 @@ import com.cognitivecreations.dao.mongo.dao.mongomodel.SessionMongo
  */
 case class UserSession(sessionId: UUID,
                        session: Option[SessionMongo] = None,
-                       user: Option[User] = None)
+                       user: Option[User] = None) {
+  def isAdmin: Boolean = user.getOrElse(User.defaultUser).admin.getOrElse(false)   //if (user.isDefined) user.get.admin else false
+}
 
 object UserSession{
-  def defaultUserSession():UserSession = { new UserSession(UUID.randomUUID()) }
+  def defaultUserSession():UserSession = new UserSession(UUID.randomUUID())
+
 }

@@ -19,8 +19,9 @@ class UserConverter extends ModelConverterBase[User, UserMongo] with AddressConv
       email = userIn.email,
       userId = Some(userIn.userId),
       password = None,
-      website = userIn.website,
-      address = fromMongo(userIn.address.get))
+      address = fromMongo(userIn.address.get),
+      admin = userIn.admin
+    )
   }
 
   def toMongo(userIn: User): UserMongo = {
@@ -29,8 +30,8 @@ class UserConverter extends ModelConverterBase[User, UserMongo] with AddressConv
       email = userIn.email,
       userId = userIn.userId.getOrElse(UUID.randomUUID()),
       password = userIn.password.getOrElse(""),
-      website = userIn.website,
-      address = Some(toMongo(userIn.address))
+      address = Some(toMongo(userIn.address)),
+      admin = userIn.admin
     )
   }
 
@@ -42,8 +43,8 @@ class UserConverter extends ModelConverterBase[User, UserMongo] with AddressConv
       email = userIn.email,
       userId = Some(userIn.userId),
       password = Some(userIn.password),
-      website = userIn.website,
-      address = fromMongo(userIn.address.get)
+      address = fromMongo(userIn.address.get),
+      admin = userIn.admin
     )
   }
 
@@ -53,8 +54,8 @@ class UserConverter extends ModelConverterBase[User, UserMongo] with AddressConv
       email = userIn.email,
       userId = userIn.userId.getOrElse(UUID.randomUUID()),
       password = userIn.password.getOrElse(""),
-      website = userIn.website,
-      address = Some(toMongo(userIn.address))
+      address = Some(toMongo(userIn.address)),
+      admin = userIn.admin
     )
   }
 

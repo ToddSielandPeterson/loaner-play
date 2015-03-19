@@ -20,7 +20,7 @@ object ProductsWidget extends Controller {
     val productCoordinator = new ProductCoordinator()
 
     for {
-      products <- productCoordinator.findByCategory(category.categoryId)
+      products <- productCoordinator.findByCategory(category.categoryId.get)
     } yield {
       val productList = for ( prod <- products ) yield prod.copy(thumbnails = List("/noproductimage.jpg"))
       val prodGroup = productList.zipWithIndex.grouped(4).toList

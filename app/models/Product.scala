@@ -16,24 +16,24 @@ import play.api.libs.functional.syntax._
  * Created by Todd Sieland-Peterson on 10/14/14.
  */
 
-case class Product( productId: Option[UUID], // unique generated id (UUID)
-                    user: Option[UUID], // link to user id
+case class Product( productId: Option[UUID] = None, // unique generated id (UUID)
+                    userId: Option[UUID] = None, // link to user id
 
                     name: String,
                     secondLine: Option[String],
                     categoryId: Option[UUID], // link to unique category id
                     productType: Option[String] = None,
 
-                    addedDateTime: Option[DateTime],
-                    lastUpdate: Option[DateTime],
+                    addedDateTime: Option[DateTime] = Some(new DateTime()),
+                    lastUpdate: Option[DateTime] = Some(new DateTime()),
 
-                    pictures: List[String], // list of pictures
-                    thumbnails: List[String], // list of pictures
+                    pictures: List[String] = Nil, // list of pictures
+                    thumbnails: List[String] = Nil, // list of pictures
                     text: String) {
   import com.cognitivecreations.utils.SessionUtils._
 
   def productOwnedByUser(u: Option[User]): Boolean = {
-    u.isDefined && optionUuidCompare(u.get.userId, user)
+    u.isDefined && optionUuidCompare(u.get.userId, userId)
   }
 
   def productOwnedByUserFromSession(userSession: Option[UserSession]): Boolean = {
@@ -41,7 +41,7 @@ case class Product( productId: Option[UUID], // unique generated id (UUID)
   }
 
   def productOwnedByUserFromSession(userSession: UserSession): Boolean = {
-    user.isDefined && productOwnedByUser(userSession.user)
+    userId.isDefined && productOwnedByUser(userSession.user)
   }
 }
 
@@ -55,12 +55,12 @@ object Product {
     product.isDefined && product.get.productOwnedByUserFromSession(session)
   }
 
-  def newEmptyProduct():Product = new Product(productId = None, user = None, name = "", secondLine = None, categoryId = None, productType = None,
+  def newEmptyProduct():Product = new Product(productId = None, userId = None, name = "", secondLine = None, categoryId = None, productType = None,
     addedDateTime = None, lastUpdate = None, pictures = List(), thumbnails = List(), text = "")
 
   implicit val product_Writes: Writes[Product] = (
       (JsPath \ "productId").write[Option[UUID]] and
-      (JsPath \ "user").write[Option[UUID]] and
+      (JsPath \ "userId").write[Option[UUID]] and
       (JsPath \ "name").write[String] and
       (JsPath \ "secondLine").write[Option[String]] and
       (JsPath \ "categoryId").write[Option[UUID]] and
@@ -74,7 +74,7 @@ object Product {
 
   implicit val product_Reads: Reads[Product] = (
     (JsPath \ "productId").read[Option[UUID]] and
-      (JsPath \ "user").read[Option[UUID]] and
+      (JsPath \ "userId").read[Option[UUID]] and
       (JsPath \ "name").read[String] and
       (JsPath \ "secondLine").read[Option[String]] and
       (JsPath \ "categoryId").read[Option[UUID]] and

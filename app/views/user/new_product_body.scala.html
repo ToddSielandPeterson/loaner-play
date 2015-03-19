@@ -1,0 +1,34 @@
+@(product: Product, session: UserSession, inputErrors: Option[Form[UserProductController.ProductData]])
+
+<div class="container" ng-controller="UserProductEditController as prodCtrl">
+    @if(inputErrors.isDefined) {
+    <div class="row">
+        <div class="col-sm-12">
+                <div class="alert alert-danger" role="alert">
+                @for(formErrors <- inputErrors.get.errors) {
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    <span class="sr-only">Error:</span>
+                    @Messages(s"${formErrors.key}.${formErrors.message}")
+                }
+                </div>
+        </div>
+    </div>
+    }
+
+    <div class="row">
+        <div class="col-sm-12">
+            <form method="post" role="form">
+                <div class="form-group"><label for="name">@Messages("productedit.form.name"):</label> <input type="text" name="name" class="form-control" value="{{prodCtrl.product.name}}" required /></div>
+                <div class="form-group"><label for="secondLine">@Messages("productedit.form.secondLine"):</label> <input type="text" name="secondLine" class="form-control" value="{{prodCtrl.product.secondLine}}"  required/></div>
+                <div class="form-group"><label for="categoryId">@Messages("productedit.form.categoryId"):</label> <select ng-model="prodCtrl.product.categories" ng-options="value.id as value.name for value in prodCtrl.product.categories" required>
+                    <option>--</option></select>
+                </div>
+                <div class="form-group"><label for="productType">@Messages("productedit.form.productType"):</label> <input type="text" name="productType" class="form-control" value="{{prodCtrl.product.productType}}"  required/></div>
+                <div class="form-group"><label for="text">@Messages("productedit.form.text"):</label> <input type="text" name="text" class="form-control" value="{{prodCtrl.product.text}}"  required/></div>
+                <button type="submit" ng-click="submitTheForm" >@Messages("productedit.form.button.submit")</button>
+                <button type="submit">@Messages("productedit.form.button.cancel")</button>
+            </form>
+        </div>
+    </div>
+
+</div>

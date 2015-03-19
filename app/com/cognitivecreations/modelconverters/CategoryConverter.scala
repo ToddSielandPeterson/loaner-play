@@ -11,13 +11,16 @@ import com.cognitivecreations.helpers.Pimp_UUID._
  */
 class CategoryConverter extends ModelConverterBase[Category, CategoryMongo] {
   def fromMongo(category: CategoryMongo): Category = {
-    Category(categoryId = UUID.fromString(category.categoryId), name = category.categoryName, uniqueName = category.uniqueName,
+    Category(categoryId = Some(category.categoryId), name = category.categoryName, uniqueName = category.uniqueName,
       ordering = category.ordering, parentId = category.parentId)
   }
 
   def toMongo(category: Category): CategoryMongo = {
-    CategoryMongo(categoryId = category.categoryId.toString, categoryName = category.name, uniqueName = category.uniqueName,
-      ordering = category.ordering, parentId = category.parentId.map(uuidToString))
+    CategoryMongo(categoryId = category.categoryId.get.toString,
+      categoryName = category.name,
+      uniqueName = category.uniqueName,
+      ordering = category.ordering,
+      parentId = category.parentId.map(uuidToString))
   }
 
 }

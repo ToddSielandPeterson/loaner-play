@@ -1,0 +1,15 @@
+<div class="container" ng-init="categoryFn();">
+    <div class="row">
+        <div class="col-sm-6">Category Id : </div><div class="col-sm-6">{{category.categoryId}}</div>
+    </div><div class="row">
+        <div class="col-sm-6">Category Path :</div><div class="col-sm-6"></div>
+</div><div class="row">
+        <div class="col-sm-6">Category Name :</div><div class="col-sm-6">{{category.name}}</div>
+</div><div class="row">
+        <div class="col-sm-6">Unique Name :</div><div class="col-sm-6">{{category.uniqueName}}</div>
+</div><div class="row">
+        <div class="col-sm-6">ordering :</div><div class="col-sm-6">{{category.ordering}}<br/></div>
+</div><div class="row">
+        <div class="col-sm-12"><button ng-click="goToEdit(category.categoryId)">Edit</button></div>
+    </div>
+</div>

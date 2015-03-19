@@ -18,12 +18,22 @@ import scala.concurrent.{Await, Future, ExecutionContext}
  * Created by Todd Sieland-Peteson on 1/13/15.
  */
 
+/**
+ * a flattened list of each entry id and the path to get to it.
+ * @param id
+ * @param categoryPath
+ */
 case class CategoryFlat(id: UUID, categoryPath: List[String]) {
   def categoryAsPath(separator: String): String = categoryPath.reduce[String]((cur, acc) => acc + separator + cur)
 }
 
 object CategoryFlat {
-  def applyAll(categoryTree: CategoryTree): List[CategoryFlat] = {
+
+  def apply(catBranchs: List[CategoryBranch]): CategoryFlat = {
+    new CategoryFlat(catBranchs.last.categoryId, catBranchs.map(_.name))
+  }
+
+  def applyAll(categoryTree: CategoryTree, fullList: Boolean = false): List[CategoryFlat] = {
     val x = for {
       branch <- categoryTree.branches
       child <- branch.children
@@ -31,6 +41,19 @@ object CategoryFlat {
       applyIt(List(branch.name), child)
     }
     x.flatten
+  }
+
+  def buildAllList(categoryTree: CategoryTree): List[CategoryFlat] = {
+    def applyAll(backlinks: List[CategoryBranch]): List[CategoryFlat] = {
+      val current = List(apply(backlinks))
+      val below = backlinks.last.children.flatMap(branch => applyAll(backlinks ::: List(branch)))
+
+      current ::: below
+    }
+
+    categoryTree.branches.flatMap{
+      x => applyAll(List(x))
+    }
   }
 
   def applyIt(backLinks: List[String], currentCategoryBranch: CategoryBranch): List[CategoryFlat] = {
@@ -60,6 +83,17 @@ class CategoryCoordinator(implicit ec: ExecutionContext) extends CategoryConvert
       optCat <- categoryDao.findByCategoryUniqueName(uniqueName)
     } yield
       optCat.map(x => fromMongo(x))
+  }
+
+  def update(category: Category): Future[LastError] = {
+    findByPrimary(category.categoryId).flatMap {
+      case None => failed(s"Category ${category.categoryId} already exists")
+      case Some(s) => categoryDao.update(toMongo(category))
+    }
+  }
+
+  def delete(uuid: UUID): Future[LastError] = {
+    categoryDao.delete(uuid.toString)
   }
 
   def insert(category: Category): Future[LastError] = {

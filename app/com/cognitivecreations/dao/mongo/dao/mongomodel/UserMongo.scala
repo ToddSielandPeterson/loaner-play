@@ -9,10 +9,10 @@ case class UserMongo(lastName: String,
                      email: String,
                      userId: UUID,
                      password: String,
-                     website: Option[String] = None,
                      created: Option[DateTime] = None,
                      updated: Option[DateTime] = None,
-                     address: Option[AddressMongo] = None)
+                     address: Option[AddressMongo] = None,
+                     admin: Option[Boolean] = None)
 
 object UserMongo {
   implicit lazy val bsonHandler_UserMongoProperty = {
@@ -34,6 +34,4 @@ object UserMongo {
   def updatePassword(userMongo: UserMongo, password: Option[String]): UserMongo =
     if (password.isDefined) userMongo.copy(lastName = password.getOrElse("")) else userMongo
 
-  def updateWebsite(userMongo: UserMongo, website: Option[String]): UserMongo =
-    if (website.isDefined) userMongo.copy(lastName = website.getOrElse("")) else userMongo
 }

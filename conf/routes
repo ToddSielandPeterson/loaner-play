@@ -22,10 +22,11 @@ GET           /user/edit                     controllers.UserController.editSelf
 POST          /user/edit                     controllers.UserController.editSelfPost()
 GET           /user/products                 controllers.UserProductController.listForUser()
 GET           /user/product/:id              controllers.UserProductController.show(id: String)
-DELETE        /user/product/delete           controllers.UserProductController.delete(id: String)
-PUT           /user/product/add              controllers.UserProductController.add()
+PUT           /user/product/edit             controllers.UserProductController.add()
+DELETE        /user/product/edit/:id         controllers.UserProductController.delete(id: String)
 GET           /user/product/edit/:id         controllers.UserProductController.edit(id: String)
 POST          /user/product/edit/:id         controllers.UserProductController.editPost(id: String)
+GET           /user/categories               controllers.CategoriesController.editCategories
 
 # Play routes serving HTML to AngularJS start with /views
 #GET           /views/*any             controllers.Application.loadPublicHTML(any)
@@ -50,7 +51,11 @@ GET           /api/load/products             controllers.LoadDataController.load
 GET           /api/load/users                controllers.LoadDataController.loadUsers
 
 GET           /api/categories                controllers.CategoriesController.categoriesFlat()
+GET           /api/categoriesAll             controllers.CategoriesController.allCategoriesFlat()
 GET           /api/category/:id              controllers.CategoriesController.category(id: String)
+POST          /api/category/:id              controllers.CategoriesController.categoryUpdate(id: String)
+DELETE        /api/category/:id              controllers.CategoriesController.categoryDelete(id: String)
+PUT           /api/category                  controllers.CategoriesController.categoryAdd
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                  controllers.Assets.at(path="/public", file)

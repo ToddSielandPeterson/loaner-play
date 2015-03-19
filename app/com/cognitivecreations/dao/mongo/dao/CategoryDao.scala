@@ -1,9 +1,12 @@
 package com.cognitivecreations.dao.mongo.dao
 
+import java.util.UUID
+
 import com.cognitivecreations.dao.mongo.BaseMongoDao
 import com.cognitivecreations.dao.mongo.dao.mongomodel.{CategoryMongo, DatabaseMongoDataSource}
 import com.cognitivecreations.helpers.BSONHandlers
 import reactivemongo.bson.{BSONString, BSONDocument}
+import reactivemongo.core.commands.LastError
 
 import scala.concurrent.{Future, ExecutionContext}
 
@@ -17,14 +20,25 @@ trait CategoryDaoTrait extends BaseMongoDao[CategoryMongo] with BSONHandlers {
 }
 
 class CategoryDao(implicit val executionContext: ExecutionContext) extends CategoryDaoTrait {
+
+  def byCategoryId(uuid: String): BSONDocument = BSONDocument("categoryId" -> BSONString(uuid))
+
   def findByCategoryId(id: String): Future[Option[CategoryMongo]] = {
-    findOne(BSONDocument("categoryId" -> BSONString(id)))
+    findOne(byCategoryId(id))
     //collection.find(BSONDocument("userId" -> BSONString(id))).one[UserMongo]
   }
 
   def findByCategoryUniqueName(id: String): Future[Option[CategoryMongo]] = {
     findOne(BSONDocument("uniqueName" -> BSONString(id)))
     //collection.find(BSONDocument("userId" -> BSONString(id))).one[UserMongo]
+  }
+
+  def delete(id: String): Future[LastError] = {
+    delete(byCategoryId(id), first = true)
+  }
+
+  def update(categoryMongo: CategoryMongo): Future[LastError] = {
+    update(byCategoryId(categoryMongo.categoryId.toString), categoryMongo)
   }
 }
 

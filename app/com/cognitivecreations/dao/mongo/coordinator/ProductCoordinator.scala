@@ -35,8 +35,15 @@ class ProductCoordinator(implicit ec: ExecutionContext) extends ProductConverter
 
   def insert(product: Product): Future[LastError] = {
     findByPrimary(product.productId).flatMap {
-      case Some(s) => failed(s"Category ${product.productId.toString} already exists")
+      case Some(s) => failed(s"Product ${product.productId.toString} already exists")
       case None => productDao.insert(toMongo(product))
+    }
+  }
+
+  def update(product: Product): Future[LastError] = {
+    findByPrimary(product.productId).flatMap {
+      case None => failed(s"Product ${product.productId.toString} does not exist")
+      case Some(s) => productDao.update(toMongo(product))
     }
   }
 
@@ -59,7 +66,8 @@ class ProductCoordinator(implicit ec: ExecutionContext) extends ProductConverter
     for {
       product <- productDao.findByProductId(productId)
     } yield {
-      product.map(product => fromMongo(product))
+      val x = product.map(product => fromMongo(product))
+      x
     }
   }
 

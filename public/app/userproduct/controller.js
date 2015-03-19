@@ -1,6 +1,6 @@
 angular.module("app.userProduct.controller", ["ngResource", "ngRoute"])
-    .controller("userProductEditController", ['$scope', '$location', '$routeParams', 'categoriesLookupFactory', 'categoryLookupFactory', 'userProductFactory',
-            function($scope, $location, $routeParams, categoriesLookupFactory, categoryLookupFactory, userProductFactory) {
+    .controller("userProductEditController", ['$scope', '$location', '$routeParams', '$http', 'categoriesLookupFactory', 'categoryLookupFactory', 'userProductFactory',
+            function($scope, $location, $routeParams, $http, categoriesLookupFactory, categoryLookupFactory, userProductFactory) {
         $scope.product = {};
         $scope.categories = [{}];
         $scope.category = {};
@@ -30,13 +30,20 @@ angular.module("app.userProduct.controller", ["ngResource", "ngRoute"])
                 }
             )};
         $scope.submitTheForm = function() {
-            var dataObject = {
-              //productId = store.product.productId,
-              //userId = store.product.userId
-            };
-            var responsePromise = $http.post("/edit/", dataObject, {});
+            var responsePromise = $http.post("/api/u/product/" + $scope.product.productId, $scope.product);
             responsePromise.success(function(dataFromServer, status, headers, config) {
                 console.log(dataFromServer.title);
+            });
+            responsePromise.error(function(data, status, headers, config) {
+                alert("Submitting form failed!");
+            });
+        };
+
+        $scope.addProduct = function() {
+            var responsePromise = $http.put("/api/u/product", $scope.product);
+            responsePromise.success(function(dataFromServer, status, headers, config) {
+                console.log(dataFromServer.title);
+                $location.path("/" + id);
             });
             responsePromise.error(function(data, status, headers, config) {
                 alert("Submitting form failed!");
@@ -74,6 +81,10 @@ angular.module("app.userProduct.controller", ["ngResource", "ngRoute"])
 
         $scope.goToEdit = function(id){
             $location.path("/edit/" + id);
+        };
+
+        $scope.goToAdd = function(){
+            $location.path("/add");
         };
 
         $scope.goToShow = function(id){
