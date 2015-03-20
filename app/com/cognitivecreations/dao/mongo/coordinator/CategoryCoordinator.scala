@@ -99,7 +99,7 @@ class CategoryCoordinator(implicit ec: ExecutionContext) extends CategoryConvert
   def insert(category: Category): Future[LastError] = {
     findByPrimary(category.categoryId).flatMap {
       case Some(s) => failed(s"Category ${category.categoryId} already exists")
-      case None => categoryDao.insert(toMongo(category))
+      case None => categoryDao.insert(toMongo(category.copy(categoryId = Some(UUID.randomUUID()))))
     }
   }
 

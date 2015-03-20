@@ -24,6 +24,18 @@ angular.module("app.category.controller", ["ngResource", "ngRoute"])
             var responsePromise = $http.post("/api/category/" + $scope.category.categoryId, $scope.category);
             responsePromise.success(function(dataFromServer, status, headers, config) {
                 console.log(dataFromServer.title);
+                $location.path("/");
+            });
+            responsePromise.error(function(data, status, headers, config) {
+                alert("Submitting form failed!");
+            });
+        };
+
+        $scope.addCategory = function() {
+            var responsePromise = $http.put("/api/category", $scope.category);
+            responsePromise.success(function(dataFromServer, status, headers, config) {
+                console.log(dataFromServer.title);
+                $location.path("/");
             });
             responsePromise.error(function(data, status, headers, config) {
                 alert("Submitting form failed!");
@@ -49,6 +61,10 @@ angular.module("app.category.controller", ["ngResource", "ngRoute"])
             $location.path("/show/" + id);
         };
 
+        $scope.goToList = function(){
+            $location.path("/");
+        };
+
         $scope.backToShow = function(){
             $scope.goToShow($scope.product.productId);
         };
@@ -57,17 +73,17 @@ angular.module("app.category.controller", ["ngResource", "ngRoute"])
             $location.path("/delete/" + id);
         };
     }])
-    .controller("categoryListController",['$scope', '$resource', '$location', '$routeParams', 'categoriesLookupFactory',
-        function($scope, $resource, $location, $routeParams, categoriesLookupFactory) {
+    .controller("categoryListController",['$scope', '$resource', '$location', '$routeParams', 'allCategoriesLookupFactory',
+        function($scope, $resource, $location, $routeParams, allCategoriesLookupFactory) {
         $scope.categories = [];
 
-            $scope.categoriesFn = function () {
-                categoriesLookupFactory.get({},
-                    function success(data) {
-                        $scope.categories = data;
-                    }, function error(errorMessage) {
-                    }
-                )};
+        $scope.categoriesFn = function () {
+            allCategoriesLookupFactory.get({},
+                function success(data) {
+                    $scope.categories = data;
+                }, function error(errorMessage) {
+                }
+            )};
 
         $scope.goToEdit = function(id){
             $location.path("/edit/" + id);

@@ -34,10 +34,7 @@ class ProductCoordinator(implicit ec: ExecutionContext) extends ProductConverter
   }
 
   def insert(product: Product): Future[LastError] = {
-    findByPrimary(product.productId).flatMap {
-      case Some(s) => failed(s"Product ${product.productId.toString} already exists")
-      case None => productDao.insert(toMongo(product))
-    }
+    productDao.insert(toMongo(product.copy(productId = Some(UUID.randomUUID()))))
   }
 
   def update(product: Product): Future[LastError] = {

@@ -33,6 +33,7 @@ angular.module("app.userProduct.controller", ["ngResource", "ngRoute"])
             var responsePromise = $http.post("/api/u/product/" + $scope.product.productId, $scope.product);
             responsePromise.success(function(dataFromServer, status, headers, config) {
                 console.log(dataFromServer.title);
+                $location.path("/");
             });
             responsePromise.error(function(data, status, headers, config) {
                 alert("Submitting form failed!");
@@ -43,7 +44,7 @@ angular.module("app.userProduct.controller", ["ngResource", "ngRoute"])
             var responsePromise = $http.put("/api/u/product", $scope.product);
             responsePromise.success(function(dataFromServer, status, headers, config) {
                 console.log(dataFromServer.title);
-                $location.path("/" + id);
+                $location.path("/");
             });
             responsePromise.error(function(data, status, headers, config) {
                 alert("Submitting form failed!");
