@@ -1,22 +1,51 @@
-@(headerBody: Html, footerBody: Html, session: UserSession, inputErrors: Option[Form[Login.UserData]])
 <!DOCTYPE html>
-<html data-ng-app="app" data-ng-controller="AppCtrl">
+<html>
+
 <head>
-	<meta charset="UTF-8">
-	<title>The Eventual PlayFramework-AngularJS-MongoDB Seed Project</title>
-	<link rel="stylesheet" media="screen" href="@routes.Assets.at("third/bootstrap/css/bootstrap.min.css")">
-	<link rel="stylesheet" media="screen" href="@routes.Assets.at("third/bootstrap/css/bootstrap-theme.min.css")">
-	<link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
-	<link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
-	<script src="@routes.Assets.at("third/jquery/jquery-1.10.2.min.js")" type="text/javascript"></script>
-	<script src="@routes.Assets.at("third/bootstrap/js/bootstrap.min.js")" type="text/javascript"></script>
-	<script src="@routes.Assets.at("third/angularjs/angular.min.js")" type="text/javascript"></script>
-	<script src="@routes.Assets.at("third/angularjs/angular-resource.min.js")" type="text/javascript"></script>
-	<script src="@routes.Assets.at("public/app/app.js")" type="text/javascript"></script>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>INSPINIA | Login</title>
+
+    <link href=@routes.Assets.at("backend/css/bootstrap.min.css") rel="stylesheet">
+    <link href=@routes.Assets.at("backend/font-awesome/css/font-awesome.css") rel="stylesheet">
+
+    <link href=@routes.Assets.at("backend/css/animate.css") rel="stylesheet">
+    <link href=@routes.Assets.at("backend/css/style.css") rel="stylesheet">
+
 </head>
-<body>
-	@headerBody
-	@login_body(session, inputErrors)
-	@footerBody
+
+<body class="gray-bg">
+
+    <div class="middle-box text-center loginscreen  animated fadeInDown">
+        <div>
+            <div>
+
+                <h1 class="logo-name">IN+</h1>
+
+            </div>
+            <h3>Welcome to ToolBorrow</h3>
+            <p>Site Info...
+            </p>
+            <p>Login in. To see it in action.</p>
+            <form class="m-t" role="form" action="/login" method="post">
+                <div class="form-group">
+                    <input type="email" class="form-control" name="username" placeholder="Username" required="">
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" name="password" placeholder="Password" required="">
+                </div>
+                <button type="submit" class="btn btn-primary block full-width m-b">Login</button>
+
+                <a href="#"><small>Forgot password?</small></a>
+                <p class="text-muted text-center"><small>Do not have an account?</small></p>
+                <a class="btn btn-sm btn-white btn-block" href="/createaccount">Create an account</a>
+            </form>
+            <p class="m-t"> <small>ToolBorrow &copy; 2015 all rights reserved</small> </p>
+        </div>
+    </div>
+
 </body>
+
 </html>

@@ -48,14 +48,8 @@ object Login extends Controller {
 
     for {
       session <- sessionInfo
-      header <- Banner.index(embed = true, Some(session))(request)
-      footer <- Footer.index(embed = true, Some(session))(request)
-
-      headerBody <- Pagelet.readBody(header)
-      footerBody <- Pagelet.readBody(footer)
     } yield {
-
-      Ok(views.html.login(headerBody, footerBody, session, None)).
+      Ok(views.html.login()).
         withCookies(Cookie("sessioninfo", session.sessionId.toString, Some(86400 * 31)))
     }
   }
@@ -70,8 +64,6 @@ object Login extends Controller {
     val sessionInfo = sessionUtils.fetchFutureSessionInfo()
     for {
       session <- sessionInfo
-      header <- Banner.index(embed = true, Some(session))(request)
-      footer <- Footer.index(embed = true, Some(session))(request)
       u <- {
         if (!userFormInputHolder.hasErrors) {
           val userFormInput = userFormInputHolder.get
@@ -80,8 +72,6 @@ object Login extends Controller {
           Future.successful(None)
         }
       }
-      headerBody <- Pagelet.readBody(header)
-      footerBody <- Pagelet.readBody(footer)
     } yield {
       val newSession = session.copy(user = u)
       if (u.isDefined) {
@@ -91,11 +81,10 @@ object Login extends Controller {
       } else {
         sessionUtils.saveSession(newSession.copy(user = None)) // reset the user
         if (userFormInputHolder.hasErrors)
-          Ok(views.html.login(headerBody, footerBody, session, Some(userFormInputHolder)))
+          Ok(views.html.backendindex(session))
         else {
           userForm.withError(FormError("all", Messages("login.error.nouser")))
-          Ok(views.html.login(headerBody, footerBody, session,
-            Some(userForm.withError(FormError("login", "error.nouser")))))
+          Ok(views.html.login())
         }
       }
     }
@@ -197,21 +186,15 @@ object Login extends Controller {
   /*
   New User entry
    */
-  case class NewUserData(username: String, password: String, passwordAgain: String, firstName: String, lastName: String,
-                         address1: String, address2: String, city: String, state: String, zip: String)
+  case class NewUserData(email: String, password: String, firstName: String, lastName: String, zipcode: String)
 
   val newUserForm = Form(
     mapping(
-      "username" -> nonEmptyText,
+      "email" -> nonEmptyText,
       "password" -> nonEmptyText,
-      "passwordAgain" -> nonEmptyText,
       "firstName" -> nonEmptyText,
       "lastName" -> nonEmptyText,
-      "address1" -> nonEmptyText,
-      "address2" -> text,
-      "city" -> nonEmptyText,
-      "state" -> nonEmptyText,
-      "zip" -> nonEmptyText
+      "zipcode" -> nonEmptyText
     )(NewUserData.apply)(NewUserData.unapply)
   )
 
@@ -225,15 +208,15 @@ object Login extends Controller {
     for {
       session <- sessionInfo
 
-      header <- Banner.index(embed = true, Some(session))(request)
-      footer <- Footer.index(embed = true, Some(session))(request)
-      body <- Future.successful(Ok(new_user_body(user, session, None)))
-
-      headerBody <- Pagelet.readBody(header)
-      footerBody <- Pagelet.readBody(footer)
-      bodyBody <- Pagelet.readBody(body)
+//      header <- Banner.index(embed = true, Some(session))(request)
+//      footer <- Footer.index(embed = true, Some(session))(request)
+//      body <- Future.successful(Ok(new_user_body(user, session, None)))
+//
+//      headerBody <- Pagelet.readBody(header)
+//      footerBody <- Pagelet.readBody(footer)
+//      bodyBody <- Pagelet.readBody(body)
     } yield {
-      Ok(user_template(headerBody, bodyBody, footerBody, session))
+      Ok(views.html.register())
     }
   }
 
@@ -247,21 +230,23 @@ object Login extends Controller {
     val sessionInfo = sessionUtils.fetchFutureSessionInfo()
     for {
       session <- sessionInfo
-      user <- Future.successful(if (userFormInputHolder.hasErrors) User.newBlankUser()
-              else User.newBlankUser())
+      user <- if (userFormInputHolder.hasErrors) Future.successful(None)
+              else userCoordinator.findUserByUserName("") //userFormInputHolder.value.getOrElse(""))
 
-      header <- Banner.index(embed = true, Some(session))(request)
-      footer <- Footer.index(embed = true, Some(session))(request)
-      body <- Future.successful(Ok(new_user_body(user, session, Some(userFormInputHolder))))
-
-      headerBody <- Pagelet.readBody(header)
-      footerBody <- Pagelet.readBody(footer)
-      bodyBody <- Pagelet.readBody(body)
+//      header <- Banner.index(embed = true, Some(session))(request)
+//      footer <- Footer.index(embed = true, Some(session))(request)
+//      body <- Future.successful(Ok(new_user_body(user, session, Some(userFormInputHolder))))
+//
+//      headerBody <- Pagelet.readBody(header)
+//      footerBody <- Pagelet.readBody(footer)
+//      bodyBody <- Pagelet.readBody(body)
     } yield {
-      Ok(user_template(headerBody, bodyBody, footerBody, session))
+      if (userFormInputHolder.hasErrors && user.isEmpty)
+        Ok(views.html.register())
+      else {
+        TemporaryRedirect("/admin")
+      }
     }
-
-    Future.successful(Ok)
   }
 
 }

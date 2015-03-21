@@ -35,8 +35,8 @@ doctype html
       title= "Jade Templating CodeMirror Mode Example"
       link(rel='stylesheet', href='/css/bootstrap.min.css')
       link(rel='stylesheet', href='/css/index.css')
-      script(type='text/javascript', src='/js/jquery-1.9.1.min.js')
-      script(type='text/javascript', src='/js/bootstrap.min.js')
+      script(type='text/javascript', src='/assets/backend/js/jquery-1.9.1.min.js')
+      script(type='text/javascript', src='/assets/backend/js/bootstrap.min.js')
     body
       div.header
         h1 Welcome to this Example
@@ -48,7 +48,7 @@ doctype html
            if spot.logo
              img.img-rounded.logo(src=spot.logo)
            else
-             img.img-rounded.logo(src="img/placeholder.png")
+             img.img-rounded.logo(src="/assets/backend/img/placeholder.png")
          h3
            a(href=spot.hash) ##{spot.hash}
            if spot.title

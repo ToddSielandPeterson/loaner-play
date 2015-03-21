@@ -8,7 +8,7 @@
 $(document).ready(function () {
 
     // Append config box / Only for demo purpose
-    $.get("views/skin-config.html", function (data) {
+    $.get("/assets/backend/views/skin-config.html", function (data) {
         $('body').append(data);
     });
 

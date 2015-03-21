@@ -32,10 +32,34 @@ object Application extends Controller {
       headerBody <- Pagelet.readBody(header)
       footerBody <- Pagelet.readBody(footer)
     } yield {
-      Ok(views.html.index(headerBody, footerBody, session)).
+      Ok(views.html.backendindex(session)).
         withCookies(Cookie("sessioninfo", session.sessionId.toString, Some(86400 * 31)))
     }
 
   }
   
+  /** serve the index page app/views/index.scala.html */
+  def admin() = Action.async { implicit request =>
+    implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
+
+    val userController = new UserCoordinator()
+    val sessionInfo = SessionUtils(request).fetchFutureSessionInfo()
+
+    for {
+      session <- sessionInfo
+//      header <- Banner.index(embed = true, Some(session))(request)
+//      footer <- Footer.index(embed = true, Some(session))(request)
+//
+//      headerBody <- Pagelet.readBody(header)
+//      footerBody <- Pagelet.readBody(footer)
+    } yield {
+      if (session.user.isDefined)
+        Ok(views.html.backendindex(session)).
+          withCookies(Cookie("sessioninfo", session.sessionId.toString, Some(86400 * 31)))
+      else
+        TemporaryRedirect("/login")
+    }
+
+  }
+
 }

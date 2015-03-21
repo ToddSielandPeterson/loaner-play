@@ -2,14 +2,14 @@
 <div id="wrapper">
 
     <!-- Navigation -->
-    <div ng-include="'views/common/navigation.html'"></div>
+    <div ng-include="'/assets/backend/views/common/navigation.html'"></div>
 
     <!-- Page wraper -->
     <!-- ng-class with current state name give you the ability to extended customization your view -->
     <div id="page-wrapper" class="gray-bg {{$state.current.name}}">
 
         <!-- Page wrapper -->
-        <div ng-include="'views/common/topnavbar.html'"></div>
+        <div ng-include="'/assets/backend/views/common/topnavbar.html'"></div>
 
         <!-- Main view  -->
         <div class="row wrapper border-bottom white-bg page-heading">
@@ -62,7 +62,7 @@
                             <div class="m-t-md">
                                 <p>Check the Dashboard v.4 with top navigation layout</p>
                                 <div class="p-lg ">
-                                    <a ui-sref="dashboards_top.dashboard_4"><img class="img-responsive img-shadow" src="img/dashbard4_2.jpg" alt=""></a>
+                                    <a ui-sref="dashboards_top.dashboard_4"><img class="img-responsive img-shadow" src="/assets/backend/img/dashbard4_2.jpg" alt=""></a>
                                 </div>
                             </div>
                         </div>
@@ -86,7 +86,7 @@
                             <div class="m-t-md">
                                 <p>Check the Dashboard v.4 with basic layout</p>
                                 <div class="p-lg">
-                                    <a ui-sref="dashboards.dashboard_4_1"><img class="img-responsive img-shadow" src="img/dashbard4_1.jpg" alt=""></a>
+                                    <a ui-sref="dashboards.dashboard_4_1"><img class="img-responsive img-shadow" src="/assets/backend/img/dashbard4_1.jpg" alt=""></a>
                                 </div>
                             </div>
                         </div>
@@ -101,7 +101,7 @@
         </div>
 
         <!-- Footer -->
-        <div ng-include="'views/common/footer.html'"></div>
+        <div ng-include="'/assets/backend/views/common/footer.html'"></div>
 
     </div>
     <!-- End page wrapper-->

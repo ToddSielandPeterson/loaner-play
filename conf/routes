@@ -4,6 +4,7 @@
 
 # Home page
 GET           /                              controllers.Application.index(any = "none")
+GET           /admin                         controllers.Application.admin()
 GET           /categories                    controllers.CategoriesController.index
 GET           /products/:categoryName        controllers.ProductsController.index(categoryName:String)
 GET           /product/:productId            controllers.ProductsController.readOne(productId: String)
@@ -13,8 +14,8 @@ GET           /login                         controllers.Login.index
 POST          /login                         controllers.Login.post
 GET           /lostpassword                  controllers.Login.lostPassword
 POST          /lostpassword                  controllers.Login.lostPasswordPost
-GET           /createaccount                 controllers.UserController.createAccount
-POST          /createaccount                 controllers.UserController.createAccountPost()
+GET           /createaccount                 controllers.Login.newUser()
+POST          /createaccount                 controllers.Login.newUserPost()
 
 # all pages in the /user are protected, you must be logged in to access
 GET           /user                          controllers.UserDesktopController.index()

@@ -2362,21 +2362,21 @@ function modalDemoCtrl($scope, $modal) {
     $scope.open = function () {
 
         var modalInstance = $modal.open({
-            templateUrl: 'views/modal_example.html',
+            templateUrl: '/assets/backend/views/modal_example.html',
             controller: ModalInstanceCtrl,
         });
     };
 
     $scope.open1 = function () {
         var modalInstance = $modal.open({
-            templateUrl: 'views/modal_example1.html',
+            templateUrl: '/assets/backend/views/modal_example1.html',
             controller: ModalInstanceCtrl
         });
     };
 
     $scope.open2 = function () {
         var modalInstance = $modal.open({
-            templateUrl: 'views/modal_example2.html',
+            templateUrl: '/assets/backend/views/modal_example2.html',
             controller: ModalInstanceCtrl,
             windowClass: "animated fadeIn"
         });
@@ -2384,7 +2384,7 @@ function modalDemoCtrl($scope, $modal) {
 
     $scope.open3 = function (size) {
         var modalInstance = $modal.open({
-            templateUrl: 'views/modal_example3.html',
+            templateUrl: '/assets/backend/views/modal_example3.html',
             size: size,
             controller: ModalInstanceCtrl,
         });
@@ -2392,7 +2392,7 @@ function modalDemoCtrl($scope, $modal) {
 
     $scope.open4 = function () {
         var modalInstance = $modal.open({
-            templateUrl: 'views/modal_example2.html',
+            templateUrl: '/assets/backend/views/modal_example2.html',
             controller: ModalInstanceCtrl,
             windowClass: "animated flipInY"
         });
@@ -3014,7 +3014,7 @@ function notifyCtrl($scope, notify) {
         notify.closeAll();
     };
 
-    $scope.inspiniaTemplate = 'views/common/notify.html';
+    $scope.inspiniaTemplate = '/assets/backend/views/common/notify.html';
     $scope.inspiniaDemo1 = function(){
         notify({ message: 'Info - This is a Inspinia info notification', classes: 'alert-info', templateUrl: $scope.inspiniaTemplate});
     }

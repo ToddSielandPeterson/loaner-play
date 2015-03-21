@@ -39,13 +39,13 @@
 
                         </div>
                         <ol ui-tree-nodes="" ng-model="node.nodes" ng-class="{hidden: collapsed}">
-                            <li ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodes_renderer.html'">
+                            <li ng-repeat="node in node.nodes" ui-tree-node ng-include="'/assets/backend/nodes_renderer.html'">
                             </li>
                         </ol>
                     </script>
                     <div ui-tree id="tree-root">
                         <ol ui-tree-nodes ng-model="data">
-                            <li ng-repeat="node in data" ui-tree-node ng-include="'nodes_renderer.html'"></li>
+                            <li ng-repeat="node in data" ui-tree-node ng-include="'/assets/backend/nodes_renderer.html'"></li>
                         </ol>
                     </div>
                 </div>
