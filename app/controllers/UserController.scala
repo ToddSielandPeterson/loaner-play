@@ -27,6 +27,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 object UserController extends Controller {
 
+
   def index = Action.async { implicit request =>
     implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
     val sessionUtils = new SessionUtils(request)
@@ -45,7 +46,37 @@ object UserController extends Controller {
         withCookies(Cookie("sessioninfo", session.sessionId.toString, Some(86400 * 31)))
     }
   }
-  
+
+  def cleanUpUser(user: User) = {
+    if (user.admin.isDefined && user.admin.get) {
+      Json.obj("firstName" -> user.firstName,
+        "lastName" -> user.lastName,
+        "address" -> Json.toJson(user.address),
+        "email" -> user.email,
+        "userId" -> user.userId,
+        "isAdmin" -> user.admin)
+    } else {
+      Json.obj("firstName" -> user.firstName,
+        "lastName" -> user.lastName,
+        "address" -> Json.toJson(user.address),
+        "email" -> user.email,
+        "userId" -> user.userId)
+    }
+  }
+
+  def loggedInUserInfo = Action.async { implicit request =>
+    implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
+    val sessionUtils = new SessionUtils(request)
+    val userController = new UserCoordinator()
+    val sessionInfo = sessionUtils.fetchFutureSessionInfo()
+
+    for {
+      session <- sessionInfo
+    } yield {
+      Ok(cleanUpUser(session.user.getOrElse(User.newBlankUser())))
+    }
+  }
+
   def list = Action.async {
     implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
 

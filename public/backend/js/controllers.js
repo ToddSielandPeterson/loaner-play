@@ -35,9 +35,9 @@
  * Contains severals global data used in diferent view
  *
  */
-function MainCtrl() {
+function MainCtrl($http, $scope) {
 
-
+    $scope.user = loggedInUserInfo($http, $scope);
 
     /**
      * slideInterval - Interval for bootstrap Carousel, in milliseconds:

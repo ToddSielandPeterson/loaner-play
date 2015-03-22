@@ -33,6 +33,7 @@ GET           /user/categories               controllers.CategoriesController.ed
 #GET           /views/*any             controllers.Application.loadPublicHTML(any)
 
 # Play routes serving JSON to AngularJS start with /api
+GET           /api/user                      controllers.UserController.loggedInUserInfo
 GET           /api/users                     controllers.UserController.list
 POST          /api/user/new                  controllers.UserController.create
 GET           /api/user/:id                  controllers.UserController.show(id: String)

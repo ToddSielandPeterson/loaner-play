@@ -8,8 +8,17 @@ function config($translateProvider) {
     $translateProvider
         .translations('en', {
 
+            CATEGORIES: 'Categories',
+            USERS: 'Users',
+            PRODUCTS: 'Products',
+            TOOLSEARCH: 'Tool Search',
+            UPCOMINGRENTALS: 'Upcoming Rentals',
+            PASTRENTALS: 'Past Rentals',
+            RENTALS: 'Rentals',
+            PROFILE: 'Profile',
+
             // Define all menu elements
-            DASHBOARD: 'Dashboard',
+            DASHBOARD: 'Dashboard 5',
             GRAPHS: 'Graphs',
             MAILBOX: 'Mailbox',
             WIDGETS: 'Widgets',
@@ -34,6 +43,9 @@ function config($translateProvider) {
         })
         .translations('es', {
 
+            CATEGORIES: 'Categories',
+            USERS: 'Users',
+            PRODUCTS: 'Products',
             // Define all menu elements
             DASHBOARD: 'Salpicadero',
             GRAPHS: 'Gráficos',

@@ -21,6 +21,14 @@
  *
  */
 
+function loggedInUserInfo($http, scope) {
+    $http.get("/api/user").
+    success(function (data) {
+        scope.user = data;
+    }).error(function (errorMessage) {
+    })
+}
+
 
 /**
  * pageTitle - Directive for set Page title - mata title
@@ -40,7 +48,7 @@ function pageTitle($rootScope, $timeout) {
             $rootScope.$on('$stateChangeStart', listener);
         }
     }
-};
+}
 
 /**
  * sideNavigation - Directive for run metsiMenu on sidebar navigation
