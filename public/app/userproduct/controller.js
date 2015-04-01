@@ -29,6 +29,7 @@ angular.module("app.userProduct.controller", ["ngResource", "ngRoute"])
                 }, function error(errorMessage) {
                 }
             )};
+
         $scope.submitTheForm = function() {
             var responsePromise = $http.post("/api/u/product/" + $scope.product.productId, $scope.product);
             responsePromise.success(function(dataFromServer, status, headers, config) {

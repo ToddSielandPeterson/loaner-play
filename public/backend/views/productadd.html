@@ -1,0 +1,34 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-sm-4">
+        <h2>New Tool</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/">Home</a>
+            </li>
+           <li>
+                <a ui-sref="products.productlist">Your Tools</a>
+            </li>
+            <li class="active">
+                <strong>Add Tool</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+<div class="row" ng-controller="productController as prodListCtrl">
+    <div class="col-sm-12">
+        <form method="put" role="form">
+            <div class="form-group"><label for="name">Name :</label> <input type="text" id="name" name="name" class="form-control" ng-model="product.name" required /></div>
+            <div class="form-group"><label for="secondLine">Second Line :</label> <input type="text" id="secondLine" name="secondLine" class="form-control" ng-model="product.secondLine"  required/></div>
+            <div class="form-group"><label for="categoryId">Category :</label>
+                <select id="categoryId" ng-model="product.categoryId" ng-options="value.categoryId as value.categoryPath for value in categories" required>
+                    <option>--</option></select>
+            </div>
+            <div class="form-group"><label for="productType">Product Type :</label> <input type="text" id="productType" name="productType" class="form-control" ng-model="product.productType" /></div>
+            <div class="form-group"><label for="text">Text :</label> <input type="text" rows="10" name="text" id="text" class="form-control" ng-model="product.text"  required/></div>
+            <a type="submit" ng-click="addProduct()" class="btn btn-primary btn-sm">Submit</a>
+            <a type="submit" ng-click="backToShow(product.productId)" class="btn btn-danger btn-sm pull-right">Cancel</a>
+        </form>
+    </div>
+</div>
+{{product}}<br />
+{{categories}}

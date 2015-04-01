@@ -16,6 +16,7 @@ function config($translateProvider) {
             PASTRENTALS: 'Past Rentals',
             RENTALS: 'Rentals',
             PROFILE: 'Profile',
+            UPCOMING: 'Upcoming',
 
             // Define all menu elements
             DASHBOARD: 'Dashboard 5',

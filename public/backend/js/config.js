@@ -46,202 +46,237 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                 }
             }
         })
-        .state('dashboards.dashboard_2', {
-            url: "/dashboard_2",
-            templateUrl: "/assets/backend/views/dashboard_2.html",
-            data: { pageTitle: 'Dashboard 2' },
-            resolve: {
-                loadPlugin: function ($ocLazyLoad) {
-                    return $ocLazyLoad.load([
-                        {
-                            serie: true,
-                            name: 'angular-flot',
-                            files: [ '/assets/backend/js/plugins/flot/jquery.flot.js', '/assets/backend/js/plugins/flot/jquery.flot.time.js', '/assets/backend/js/plugins/flot/jquery.flot.tooltip.min.js', '/assets/backend/js/plugins/flot/jquery.flot.spline.js', '/assets/backend/js/plugins/flot/jquery.flot.resize.js', '/assets/backend/js/plugins/flot/jquery.flot.pie.js', '/assets/backend/js/plugins/flot/curvedLines.js', '/assets/backend/js/plugins/flot/angular-flot.js', ]
-                        },
-                        {
-                            files: ['/assets/backend/js/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js','/assets/backend/js/plugins/jvectormap/jquery-jvectormap-world-mill-en.js']
-                        }
-                    ]);
-                }
-            }
-        })
-        .state('dashboards.dashboard_3', {
-            url: "/dashboard_3",
-            templateUrl: "/assets/backend/views/dashboard_3.html",
-            data: { pageTitle: 'Dashboard 3' },
-            resolve: {
-                loadPlugin: function ($ocLazyLoad) {
-                    return $ocLazyLoad.load([
-                        {
-                            name: 'angles',
-                            files: ['/assets/backend/js/plugins/chartJs/angles.js', '/assets/backend/js/plugins/chartJs/Chart.min.js']
-                        },
-                        {
-                            name: 'angular-peity',
-                            files: ['/assets/backend/js/plugins/peity/jquery.peity.min.js', '/assets/backend/js/plugins/peity/angular-peity.js']
-                        },
-                        {
-                            name: 'ui.checkbox',
-                            files: ['/assets/backend/js/bootstrap/angular-bootstrap-checkbox.js']
-                        }
-                    ]);
-                }
-            }
-        })
-        .state('dashboards_top', {
+        .state('products', {
             abstract: true,
-            url: "/dashboards_top",
-            templateUrl: "/assets/backend/views/common/content_top_navigation.html",
+            url: "/products",
+            templateUrl: "/assets/backend/views/common/content.html"
         })
-        .state('dashboards_top.dashboard_4', {
-            url: "/dashboard_4",
-            templateUrl: "/assets/backend/views/dashboard_4.html",
-            data: { pageTitle: 'Dashboard 4' },
-            resolve: {
-                loadPlugin: function ($ocLazyLoad) {
-                    return $ocLazyLoad.load([
-                        {
-                            name: 'angles',
-                            files: ['/assets/backend/js/plugins/chartJs/angles.js', '/assets/backend/js/plugins/chartJs/Chart.min.js']
-                        },
-                        {
-                            name: 'angular-peity',
-                            files: ['/assets/backend/js/plugins/peity/jquery.peity.min.js', '/assets/backend/js/plugins/peity/angular-peity.js']
-                        },
-                        {
-                            serie: true,
-                            name: 'angular-flot',
-                            files: [ '/assets/backend/js/plugins/flot/jquery.flot.js', '/assets/backend/js/plugins/flot/jquery.flot.time.js', '/assets/backend/js/plugins/flot/jquery.flot.tooltip.min.js', '/assets/backend/js/plugins/flot/jquery.flot.spline.js', '/assets/backend/js/plugins/flot/jquery.flot.resize.js', '/assets/backend/js/plugins/flot/jquery.flot.pie.js', '/assets/backend/js/plugins/flot/curvedLines.js', '/assets/backend/js/plugins/flot/angular-flot.js', ]
-                        }
-                    ]);
-                }
-            }
+        .state('products.productlist', {
+            url: "/productlist",
+            templateUrl: "/assets/backend/views/productlist.html",
+            data: { pageTitle: 'Your Tools' }
         })
-        .state('dashboards.dashboard_4_1', {
-            url: "/dashboard_4_1",
-            templateUrl: "/assets/backend/views/dashboard_4_1.html",
-            data: { pageTitle: 'Dashboard 4' },
-            resolve: {
-                loadPlugin: function ($ocLazyLoad) {
-                    return $ocLazyLoad.load([
-                        {
-                            name: 'angles',
-                            files: ['/assets/backend/js/plugins/chartJs/angles.js', '/assets/backend/js/plugins/chartJs/Chart.min.js']
-                        },
-                        {
-                            name: 'angular-peity',
-                            files: ['/assets/backend/js/plugins/peity/jquery.peity.min.js', '/assets/backend/js/plugins/peity/angular-peity.js']
-                        },
-                        {
-                            serie: true,
-                            name: 'angular-flot',
-                            files: [ '/assets/backend/js/plugins/flot/jquery.flot.js', '/assets/backend/js/plugins/flot/jquery.flot.time.js', '/assets/backend/js/plugins/flot/jquery.flot.tooltip.min.js', '/assets/backend/js/plugins/flot/jquery.flot.spline.js', '/assets/backend/js/plugins/flot/jquery.flot.resize.js', '/assets/backend/js/plugins/flot/jquery.flot.pie.js', '/assets/backend/js/plugins/flot/curvedLines.js', '/assets/backend/js/plugins/flot/angular-flot.js', ]
-                        }
-                    ]);
-                }
-            }
+        .state('products.show', {
+            url: "/show/:productId",
+            templateUrl: "/assets/backend/views/productshow.html",
+            params: {productId: null },
+            data: { pageTitle: 'Your Tools' }
         })
-        .state('layouts', {
-            url: "/layouts",
-            templateUrl: "/assets/backend/views/layouts.html",
-            data: { pageTitle: 'Layouts' },
+        .state('products.edit', {
+            url: "/edit/:productId",
+            templateUrl: "/assets/backend/views/productedit.html",
+            params: {productId: null },
+            data: { pageTitle: 'Edit This Tool' }
         })
-        .state('charts', {
+        .state('products.delete', {
+            url: "/delete/:productId",
+            templateUrl: "/assets/backend/views/productdelete.html",
+            params: {productId: null },
+            data: { pageTitle: 'Delete This Tool' }
+        })
+        .state('products.add', {
+            url: "/add",
+            templateUrl: "/assets/backend/views/productadd.html",
+            data: { pageTitle: 'Add New Tools' }
+        })
+
+        .state('categories', {
             abstract: true,
-            url: "/charts",
+            url: "/categories",
             templateUrl: "/assets/backend/views/common/content.html",
         })
-        .state('charts.flot_chart', {
-            url: "/flot_chart",
-            templateUrl: "/assets/backend/views/graph_flot.html",
-            data: { pageTitle: 'Flot chart' },
-            resolve: {
-                loadPlugin: function ($ocLazyLoad) {
-                    return $ocLazyLoad.load([
-                        {
-                            serie: true,
-                            name: 'angular-flot',
-                            files: [ '/assets/backend/js/plugins/flot/jquery.flot.js',
-                                '/assets/backend/js/plugins/flot/jquery.flot.time.js',
-                                '/assets/backend/js/plugins/flot/jquery.flot.tooltip.min.js',
-                                '/assets/backend/js/plugins/flot/jquery.flot.spline.js',
-                                '/assets/backend/js/plugins/flot/jquery.flot.resize.js',
-                                '/assets/backend/js/plugins/flot/jquery.flot.pie.js',
-                                '/assets/backend/js/plugins/flot/curvedLines.js',
-                                '/assets/backend/js/plugins/flot/angular-flot.js' ]
-                        }
-                    ]);
-                }
-            }
+        .state('categories.list', {
+            url: "/list",
+            templateUrl: "/assets/backend/views/categorylist.html",
+            data: { pageTitle: 'System Categories' }
         })
-        .state('charts.rickshaw_chart', {
-            url: "/rickshaw_chart",
-            templateUrl: "/assets/backend/views/graph_rickshaw.html",
-            data: { pageTitle: 'Rickshaw chart' },
-            resolve: {
-                loadPlugin: function ($ocLazyLoad) {
-                    return $ocLazyLoad.load([
-                        {
-                            reconfig: true,
-                            serie: true,
-                            files: ['/assets/backend/js/plugins/rickshaw/vendor/d3.v3.js','/assets/backend/js/plugins/rickshaw/rickshaw.min.js']
-                        },
-                        {
-                            reconfig: true,
-                            name: 'angular-rickshaw',
-                            files: ['/assets/backend/js/plugins/rickshaw/angular-rickshaw.js']
-                        }
-                    ]);
-                }
-            }
+        .state('categories.show', {
+            url: "/show/:categoryId",
+            templateUrl: "/assets/backend/views/categoryshow.html",
+            params: {categoryId: null },
+            data: { pageTitle: 'Show Category' }
         })
-        .state('charts.peity_chart', {
-            url: "/peity_chart",
-            templateUrl: "/assets/backend/views/graph_peity.html",
-            data: { pageTitle: 'Peity graphs' },
-            resolve: {
-                loadPlugin: function ($ocLazyLoad) {
-                    return $ocLazyLoad.load([
-                        {
-                            name: 'angular-peity',
-                            files: ['/assets/backend/js/plugins/peity/jquery.peity.min.js', '/assets/backend/js/plugins/peity/angular-peity.js']
-                        }
-                    ]);
-                }
-            }
+        .state('categories.edit', {
+            url: "/edit/:categoryId",
+            templateUrl: "/assets/backend/views/categoryedit.html",
+            params: {categoryId: null },
+            data: { pageTitle: 'Edit Category' }
         })
-        .state('charts.sparkline_chart', {
-            url: "/sparkline_chart",
-            templateUrl: "/assets/backend/views/graph_sparkline.html",
-            data: { pageTitle: 'Sparkline chart' },
-            resolve: {
-                loadPlugin: function ($ocLazyLoad) {
-                    return $ocLazyLoad.load([
-                        {
-                            files: ['/assets/backend/js/plugins/sparkline/jquery.sparkline.min.js']
-                        }
-                    ]);
-                }
-            }
+        .state('categories.delete', {
+            url: "/delete/:categoryId",
+            templateUrl: "/assets/backend/views/categorydelete.html",
+            params: {categoryId: null },
+            data: { pageTitle: 'Delete Category' }
         })
-        .state('charts.chartjs_chart', {
-            url: "/chartjs_chart",
-            templateUrl: "/assets/backend/views/chartjs.html",
-            data: { pageTitle: 'Chart.js' },
-            resolve: {
-                loadPlugin: function ($ocLazyLoad) {
-                    return $ocLazyLoad.load([
-                        {
-                            files: ['/assets/backend/js/plugins/chartJs/Chart.min.js']
-                        },
-                        {
-                            name: 'angles',
-                            files: ['/assets/backend/js/plugins/chartJs/angles.js']
-                        }
-                    ]);
-                }
-            }
+        .state('categories.add', {
+            url: "/add",
+            templateUrl: "/assets/backend/views/categoryadd.html",
+            data: { pageTitle: 'Add Category' }
         })
+
+        .state('users', {
+            abstract: true,
+            url: "/users",
+            templateUrl: "/assets/backend/views/common/content.html",
+        })
+        .state('categories.list', {
+            url: "/list",
+            templateUrl: "/assets/backend/views/userlist.html",
+            data: { pageTitle: 'Users' }
+        })
+        .state('categories.show', {
+            url: "/show/:userId",
+            templateUrl: "/assets/backend/views/usershow.html",
+            params: {userId: null },
+            data: { pageTitle: 'Show User' }
+        })
+        .state('categories.edit', {
+            url: "/edit/:userId",
+            templateUrl: "/assets/backend/views/useredit.html",
+            params: {userId: null },
+            data: { pageTitle: 'Edit User' }
+        })
+        .state('categories.delete', {
+            url: "/delete/:userId",
+            templateUrl: "/assets/backend/views/userdelete.html",
+            params: {userId: null },
+            data: { pageTitle: 'Delete User' }
+        })
+        .state('categories.add', {
+            url: "/add",
+            templateUrl: "/assets/backend/views/useradd.html",
+            data: { pageTitle: 'Add User' }
+        })
+
+
+        .state('rentals', {
+            abstract: true,
+            url: "/rentals",
+            templateUrl: "/assets/backend/views/common/content.html",
+        })
+        .state('rentals.rentals', {
+            url: "/pastrentals",
+            templateUrl: "/assets/backend/views/empty_page.html",
+            data: { pageTitle: 'Your Past Rentals' }
+        })
+        .state('rentals.upcoming', {
+            url: "/futurerentals",
+            templateUrl: "/assets/backend/views/empty_page.html",
+            data: { pageTitle: 'Your Future Rentals' }
+        })
+
+        .state('app', {
+            abstract: true,
+            url: "/app",
+            templateUrl: "/assets/backend/views/common/content.html",
+        })
+        .state('app.faq', {
+            url: "/faq",
+            templateUrl: "/assets/backend/views/faq.html",
+            data: { pageTitle: 'FAQ' }
+        })
+
+        //.state('layouts', {
+        //    url: "/layouts",
+        //    templateUrl: "/assets/backend/views/layouts.html",
+        //    data: { pageTitle: 'Layouts' },
+        //})
+        //.state('charts', {
+        //    abstract: true,
+        //    url: "/charts",
+        //    templateUrl: "/assets/backend/views/common/content.html",
+        //})
+        //.state('charts.flot_chart', {
+        //    url: "/flot_chart",
+        //    templateUrl: "/assets/backend/views/graph_flot.html",
+        //    data: { pageTitle: 'Flot chart' },
+        //    resolve: {
+        //        loadPlugin: function ($ocLazyLoad) {
+        //            return $ocLazyLoad.load([
+        //                {
+        //                    serie: true,
+        //                    name: 'angular-flot',
+        //                    files: [ '/assets/backend/js/plugins/flot/jquery.flot.js',
+        //                        '/assets/backend/js/plugins/flot/jquery.flot.time.js',
+        //                        '/assets/backend/js/plugins/flot/jquery.flot.tooltip.min.js',
+        //                        '/assets/backend/js/plugins/flot/jquery.flot.spline.js',
+        //                        '/assets/backend/js/plugins/flot/jquery.flot.resize.js',
+        //                        '/assets/backend/js/plugins/flot/jquery.flot.pie.js',
+        //                        '/assets/backend/js/plugins/flot/curvedLines.js',
+        //                        '/assets/backend/js/plugins/flot/angular-flot.js' ]
+        //                }
+        //            ]);
+        //        }
+        //    }
+        //})
+        //.state('charts.rickshaw_chart', {
+        //    url: "/rickshaw_chart",
+        //    templateUrl: "/assets/backend/views/graph_rickshaw.html",
+        //    data: { pageTitle: 'Rickshaw chart' },
+        //    resolve: {
+        //        loadPlugin: function ($ocLazyLoad) {
+        //            return $ocLazyLoad.load([
+        //                {
+        //                    reconfig: true,
+        //                    serie: true,
+        //                    files: ['/assets/backend/js/plugins/rickshaw/vendor/d3.v3.js','/assets/backend/js/plugins/rickshaw/rickshaw.min.js']
+        //                },
+        //                {
+        //                    reconfig: true,
+        //                    name: 'angular-rickshaw',
+        //                    files: ['/assets/backend/js/plugins/rickshaw/angular-rickshaw.js']
+        //                }
+        //            ]);
+        //        }
+        //    }
+        //})
+        //.state('charts.peity_chart', {
+        //    url: "/peity_chart",
+        //    templateUrl: "/assets/backend/views/graph_peity.html",
+        //    data: { pageTitle: 'Peity graphs' },
+        //    resolve: {
+        //        loadPlugin: function ($ocLazyLoad) {
+        //            return $ocLazyLoad.load([
+        //                {
+        //                    name: 'angular-peity',
+        //                    files: ['/assets/backend/js/plugins/peity/jquery.peity.min.js', '/assets/backend/js/plugins/peity/angular-peity.js']
+        //                }
+        //            ]);
+        //        }
+        //    }
+        //})
+        //.state('charts.sparkline_chart', {
+        //    url: "/sparkline_chart",
+        //    templateUrl: "/assets/backend/views/graph_sparkline.html",
+        //    data: { pageTitle: 'Sparkline chart' },
+        //    resolve: {
+        //        loadPlugin: function ($ocLazyLoad) {
+        //            return $ocLazyLoad.load([
+        //                {
+        //                    files: ['/assets/backend/js/plugins/sparkline/jquery.sparkline.min.js']
+        //                }
+        //            ]);
+        //        }
+        //    }
+        //})
+        //.state('charts.chartjs_chart', {
+        //    url: "/chartjs_chart",
+        //    templateUrl: "/assets/backend/views/chartjs.html",
+        //    data: { pageTitle: 'Chart.js' },
+        //    resolve: {
+        //        loadPlugin: function ($ocLazyLoad) {
+        //            return $ocLazyLoad.load([
+        //                {
+        //                    files: ['/assets/backend/js/plugins/chartJs/Chart.min.js']
+        //                },
+        //                {
+        //                    name: 'angles',
+        //                    files: ['/assets/backend/js/plugins/chartJs/angles.js']
+        //                }
+        //            ]);
+        //        }
+        //    }
+        //})
         .state('mailbox', {
             abstract: true,
             url: "/mailbox",
@@ -440,11 +475,6 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                 }
             }
         })
-        .state('app', {
-            abstract: true,
-            url: "/app",
-            templateUrl: "/assets/backend/views/common/content.html",
-        })
         .state('app.contacts', {
             url: "/contacts",
             templateUrl: "/assets/backend/views/contacts.html",
@@ -488,11 +518,6 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                     ]);
                 }
             }
-        })
-        .state('app.faq', {
-            url: "/faq",
-            templateUrl: "/assets/backend/views/faq.html",
-            data: { pageTitle: 'FAQ' }
         })
         .state('app.timeline', {
             url: "/timeline",

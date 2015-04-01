@@ -4,7 +4,7 @@ import Keys._
 
 name := "loaner"
 
-version := "0.02"
+version := "0.03"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 

@@ -3058,6 +3058,112 @@ function imageCrop($scope) {
 
 }
 
+function productController($scope, $location, $http, $resource, $stateParams) {
+    $scope.categoriesFn = function () {
+        allCategoriesLookupFactory($resource).get({},
+            function success(data) {
+                $scope.categories = data;
+            }, function error(errorMessage) {
+            }
+        )};
+
+    $scope.categoryFn = function () {
+        categoryLookupFactory($resource).get( { id: $scope.product.categoryId },
+            function success(data) {
+                $scope.category = data;
+            }, function error(errorMessage) {
+            }
+        )};
+
+    $scope.userProductsFn = function () {
+        userProductsFactory($resource).get( {},
+            function success(data) {
+                $scope.products = data;
+            }, function error(errorMessage) {
+
+            }
+        )};
+
+    $scope.userProductFn = function () {
+        userProductFactory($resource).get( {'id':  $stateParams.productId },
+            function success(data) {
+                $scope.product = data;
+                $scope.categoryFn();
+            }, function error(errorMessage) {
+            }
+        )};
+
+    $scope.submitTheForm = function() {
+        var responsePromise = $http.post("/api/u/product/" + $scope.product.productId, $scope.product);
+        responsePromise.success(function(dataFromServer, status, headers, config) {
+            console.log(dataFromServer.title);
+            $location.path("/products/productlist");
+        });
+        responsePromise.error(function(data, status, headers, config) {
+            alert("Submitting form failed!");
+        });
+    };
+
+    $scope.addProduct = function() {
+        var responsePromise = $http.put("/api/u/product", $scope.product);
+        responsePromise.success(function(dataFromServer, status, headers, config) {
+            console.log(dataFromServer.title);
+            $location.path("/products/productlist");
+        });
+        responsePromise.error(function(data, status, headers, config) {
+            alert("Submitting form failed!");
+        });
+    };
+
+    $scope.categories = $scope.categoriesFn();
+    $scope.product = $scope.userProductFn();
+    $scope.product = $scope.userProductsFn();
+}
+
+function categoryEditController($scope, $location, $resource, $stateParams, $http) {
+    $scope.categoriesFn = function () {
+        allCategoriesLookupFactory($resource).get({},
+            function success(data) {
+                $scope.categories = data;
+            }, function error(errorMessage) {
+            }
+        )};
+
+    $scope.categoryFn = function () {
+        categoryLookupFactory($resource).get({'id':  $stateParams.categoryId},
+            function success(data) {
+                $scope.category = data;
+            }, function error(errorMessage) {
+            }
+        )
+    };
+
+    $scope.submitTheForm = function() {
+        var responsePromise = $http.post("/api/category/" + $scope.category.categoryId, $scope.category);
+        responsePromise.success(function(dataFromServer, status, headers, config) {
+            console.log(dataFromServer.title);
+            $location.path("/");
+        });
+        responsePromise.error(function(data, status, headers, config) {
+            alert("Submitting form failed!");
+        });
+    };
+
+    $scope.addCategory = function() {
+        var responsePromise = $http.put("/api/category", $scope.category);
+        responsePromise.success(function(dataFromServer, status, headers, config) {
+            console.log(dataFromServer.title);
+            $location.path("/");
+        });
+        responsePromise.error(function(data, status, headers, config) {
+            alert("Submitting form failed!");
+        });
+    };
+
+    $scope.categories = $scope.categoriesFn();
+    $scope.category = $scope.categoryFn();
+}
+
 /**
  *
  * Pass all functions into module
@@ -3084,3 +3190,5 @@ angular
     .controller('notifyCtrl', notifyCtrl)
     .controller('translateCtrl', translateCtrl)
     .controller('imageCrop', imageCrop)
+    .controller('productController', productController)
+    .controller('categoryEditController', categoryEditController)

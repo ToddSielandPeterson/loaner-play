@@ -29,23 +29,26 @@
                 <a ng-href="/categories"><i class="fa fa-th-large"></i> <span class="nav-label">{{ 'TOOLSEARCH' | translate }}</span> <span class="fa arrow"></span></a>
               </li>
               <li ng-class="{active: $state.includes('Products')}">
-                <a href="#/products"><i class="fa fa-th-large"></i> <span class="nav-label">{{ 'PRODUCTS' | translate }}</span> <span class="fa arrow"></span></a>
+                <a ui-sref="products.productlist"><i class="fa fa-th-large"></i> <span class="nav-label">{{ 'PRODUCTS' | translate }}</span> <span class="fa arrow"></span></a>
               </li>
               <li ng-class="{active: $state.includes('Rentals')}">
-                <a href="#/products"><i class="fa fa-th-large"></i> <span class="nav-label">{{ 'RENTALS' | translate }}</span> <span class="fa arrow"></span></a>
+                <a href="#rentals"><i class="fa fa-th-large"></i> <span class="nav-label">{{ 'RENTALS' | translate }}</span> <span class="fa arrow"></span></a>
                   <ul class="nav nav-second-level" ng-class="{in: $state.includes('Rentals')}">
-                      <li ui-sref-active="active"><a ui-sref="dashboards.dashboard_1">{{ 'PASTRENTALS' | translate }}</a></li>
-                      <li ui-sref-active="active"><a ui-sref="dashboards.dashboard_2">{{ 'UPCOMING' | translate }}</a></li>
+                      <li ui-sref-active="active"><a ui-sref="rentals.rentals">{{ 'PASTRENTALS' | translate }}</a></li>
+                      <li ui-sref-active="active"><a ui-sref="rentals.upcoming">{{ 'UPCOMING' | translate }}</a></li>
                   </ul>
               </li>
             <li ng-class="{active: $state.includes('Profile')}">
-                <a href="#/products"><i class="fa fa-th-large"></i> <span class="nav-label">{{ 'PROFILE' | translate }}</span> <span class="fa arrow"></span></a>
+                <a ui-sref="app.profile"><i class="fa fa-th-large"></i> <span class="nav-label">{{ 'PROFILE' | translate }}</span> <span class="fa arrow"></span></a>
             </li>
               <li ng-class="{active: $state.includes('Users')}" ng-show="user.isAdmin">
                 <a href="#/"><i class="fa fa-th-large"></i> <span class="nav-label">{{ 'USERS' | translate }}</span> <span class="fa arrow"></span></a>
               </li>
               <li ng-class="{active: $state.includes('Categories')}" ng-show="user.isAdmin">
-                <a href="index.html"><i class="fa fa-th-large"></i> <span class="nav-label">{{ 'CATEGORIES' | translate }}</span> <span class="fa arrow"></span></a>
+                <a ui-sref="categories.list"><i class="fa fa-th-large"></i> <span class="nav-label">{{ 'CATEGORIES' | translate }}</span> <span class="fa arrow"></span></a>
+              </li>
+              <li ng-class="{active: $state.includes('FAQ')}" ng-show="user.isAdmin">
+                <a ui-sref="app.faq"><i class="fa fa-th-large"></i> <span class="nav-label">FAQ</span> <span class="fa arrow"></span></a>
               </li>
               <!--<li ng-class="{active: $state.includes('dashboards')}">-->
                 <!--<a href="index.html"><i class="fa fa-th-large"></i> <span class="nav-label">{{ 'DASHBOARD' | translate }}</span> <span class="fa arrow"></span></a>-->

@@ -21,13 +21,49 @@
  *
  */
 
-function loggedInUserInfo($http, scope) {
-    $http.get("/api/user").
+function loggedInUserInfo(http, scope) {
+    http.get("/api/user").
     success(function (data) {
         scope.user = data;
     }).error(function (errorMessage) {
     })
 }
+
+function categoriesLookupFactory(resource) {
+    return resource("/api/categories", {}, {
+        get: {method: 'GET', cache: false, isArray: true}
+    });
+}
+
+function categoryLookupFactory(resource) {
+    return resource("/api/category/:id", {}, {
+        get: {method: 'GET', cache: false, isArray: false},
+        post: {method: 'POST', cache: false, isArray: false},
+        delete: {method: 'DELETE', cache: false, isArray: false}
+    });
+}
+
+function allCategoriesLookupFactory(resource) {
+    return resource("/api/categoriesAll", {}, {
+        get: {method: 'GET', cache: false, isArray: true}
+    });
+}
+
+function userProductFactory(resource) {
+    return resource("/api/u/product/:id", {}, {
+        get: {method: 'GET', cache: false, isArray: false},
+        post: {method: 'POST', cache: false, isArray: true},
+        delete: {method: 'DELETE', cache: false, isArray: true}
+    });
+}
+
+function userProductsFactory(resource) {
+        return resource("/api/u/products", {}, {
+            get: {method: 'GET', cache: false, isArray: true} //,
+            //post: {method: 'POST', cache: false, isArray: true},
+            //delete: {method: 'DELETE', cache: false, isArray: true}
+        });
+    }
 
 
 /**
