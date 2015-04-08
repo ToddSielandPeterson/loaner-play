@@ -114,35 +114,36 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
             data: { pageTitle: 'Add Category' }
         })
 
+        // users section
         .state('users', {
             abstract: true,
             url: "/users",
             templateUrl: "/assets/backend/views/common/content.html",
         })
-        .state('categories.list', {
+        .state('users.list', {
             url: "/list",
             templateUrl: "/assets/backend/views/userlist.html",
             data: { pageTitle: 'Users' }
         })
-        .state('categories.show', {
+        .state('users.show', {
             url: "/show/:userId",
             templateUrl: "/assets/backend/views/usershow.html",
             params: {userId: null },
             data: { pageTitle: 'Show User' }
         })
-        .state('categories.edit', {
+        .state('users.edit', {
             url: "/edit/:userId",
             templateUrl: "/assets/backend/views/useredit.html",
             params: {userId: null },
             data: { pageTitle: 'Edit User' }
         })
-        .state('categories.delete', {
+        .state('users.delete', {
             url: "/delete/:userId",
             templateUrl: "/assets/backend/views/userdelete.html",
             params: {userId: null },
             data: { pageTitle: 'Delete User' }
         })
-        .state('categories.add', {
+        .state('users.add', {
             url: "/add",
             templateUrl: "/assets/backend/views/useradd.html",
             data: { pageTitle: 'Add User' }

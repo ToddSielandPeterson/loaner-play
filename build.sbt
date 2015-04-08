@@ -4,11 +4,11 @@ import Keys._
 
 name := "loaner"
 
-version := "0.03"
+version := "0.04"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
-scalaVersion := "2.11.4"
+scalaVersion := "2.11.5"
 
 val jodaTime      = "joda-time" % "joda-time"           % "2.5" % "compile->default" intransitive ()
 val jodaMoney     = "org.joda"  % "joda-money"          % "0.9.1" % "compile->default" intransitive ()
@@ -30,3 +30,5 @@ libraryDependencies ++= Seq(
   "org.mongodb" %% "casbah" % "2.8.0-RC0",
   "commons-io" % "commons-io" % "2.4"
 )
+
+

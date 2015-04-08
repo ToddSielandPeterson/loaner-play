@@ -1,0 +1,37 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-sm-4">
+        <h2>Your Tools</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/">Home</a>
+            </li>
+            <li>
+                <a ui-sref="products.productlist">Your Tools</a>
+            </li>
+            <li class="active">
+                <strong>View Tool</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-sm-8">
+        <div class="title-action">
+            <a ui-sref="products.add" class="btn btn-primary btn-sm">Add Tool</a>
+        </div>
+    </div>
+</div>
+<div class="container" ng-controller="productController as prodCtrl">
+    <div class="row">
+        <div class="col-sm-6">Product Id : </div><div class="col-sm-6">{{product.productId}} <br /></div>
+        <div class="col-sm-6">Name :</div><div class="col-sm-6">{{product.name}}<br/></div>
+        <div class="col-sm-6">secondLine :</div><div class="col-sm-6">{{product.secondLine}}<br/></div>
+        <div class="col-sm-6">categoryId :</div><div class="col-sm-6">{{category.name}}<br/></div>
+        <div class="col-sm-6">productType :</div><div class="col-sm-6">{{product.productType}}<br/></div>
+        <div class="col-sm-6">text :</div><div class="col-sm-6">{{product.text}}<br/></div>
+        <div class="col-sm-12">
+            <a ui-sref="products.edit({productId:product.productId})" class="btn btn-primary btn-sm">Edit</a>&nbsp;
+            <a ui-sref="products.delete({productId:product.productId})" class="btn btn-danger btn-sm pull-right">Delete</a>
+        </div>
+    </div>
+</div>
+
+{{$stateParams | json}}

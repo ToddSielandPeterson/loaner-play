@@ -1,0 +1,35 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-sm-4">
+        <h2>Your Tools</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/">Home</a>
+            </li>
+            <li>
+                <a ui-sref="categories.list">Category List</a>
+            </li>
+            <li class="active">
+                <strong>Category</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-sm-8">
+        <div class="title-action">
+            <a ui-sref="categories.add" class="btn btn-primary btn-sm">Add Category</a>
+        </div>
+    </div>
+</div>
+<div class="container" ng-controller="categoryEditController as catCtrl">
+    <div class="row">
+        <div class="col-sm-6">Category Id : </div><div class="col-sm-6">{{category.categoryId}}</div>
+        <!--<div class="col-sm-6">Category Path :</div><div class="col-sm-6"></div>-->
+        <div class="col-sm-6">Category Name :</div><div class="col-sm-6">{{category.name}}</div>
+        <div class="col-sm-6">Unique Name :</div><div class="col-sm-6">{{category.uniqueName}}</div>
+        <div class="col-sm-6">Ordering :</div><div class="col-sm-6">{{category.ordering}}<br/></div>
+        <div class="col-sm-12">
+            <a ui-sref="categories.edit({categoryId:category.categoryId})" class="btn btn-primary btn-sm">Edit</a>&nbsp;
+            <a ui-sref="categories.delete({categoryId:category.categoryId})" class="btn btn-danger btn-sm pull-right">Delete</a>
+        </div>
+    </div>
+</div>
+
