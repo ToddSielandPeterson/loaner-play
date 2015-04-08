@@ -18,3 +18,7 @@ server.pid
 .cache
 atlassian-ide-plugin.xml
 .idea
+.jshintrc
+.npmignore
+.bower.json
+.csscomb.json
