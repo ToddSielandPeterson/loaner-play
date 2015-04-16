@@ -66,6 +66,14 @@ class UserCoordinator(implicit ec: ExecutionContext) extends UserConverter with 
     ))
   }
 
+  def addUser(user: User, id: UUID): Future[Option[User]] = {
+    for {
+      optUser <- userDao.addUser(toMongo(user))
+    } yield {
+      optUser.map(x => fromMongo(x))
+    }
+  }
+
   override def findByPrimary(id: UUID): Future[Option[User]] = {
     for {
       user <- userDao.findByUserId(id)

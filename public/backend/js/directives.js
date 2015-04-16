@@ -49,6 +49,21 @@ function allCategoriesLookupFactory(resource) {
     });
 }
 
+function userLookupFactory(resource) {
+    return resource("/api/user/:id", {}, {
+        get: {method: 'GET', cache: false, isArray: false},
+        post: {method: 'POST', cache: false, isArray: false},
+        put: {method: 'PUT', cache: false, isArray: false},
+        delete: {method: 'DELETE', cache: false, isArray: false}
+    });
+}
+
+function allUsersLookupFactory(resource) {
+    return resource("/api/users", {}, {
+        get: {method: 'GET', cache: false, isArray: true}
+    });
+}
+
 function userProductFactory(resource) {
     return resource("/api/u/product/:id", {}, {
         get: {method: 'GET', cache: false, isArray: false},

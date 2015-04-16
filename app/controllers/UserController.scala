@@ -4,13 +4,16 @@ package controllers
 import java.util.UUID
 
 import akka.japi.Option.Some
-import com.cognitivecreations.dao.mongo.coordinator.UserCoordinator
+import com.cognitivecreations.dao.mongo.coordinator.{CategoryCoordinator, UserCoordinator}
 import com.cognitivecreations.utils.SessionUtils
 import controllers.Application._
+import controllers.CategoriesController._
 import controllers.widgets.{Footer, Banner}
 
 import models._
 import models.User._
+import play.api.data.Form
+import play.api.data.Forms._
 import play.api.libs.concurrent.Akka
 import play.api.libs.json.{JsError, JsSuccess, Json}
 import play.api.mvc.{Cookie, Action, Controller}
@@ -18,7 +21,7 @@ import play.api.Play.current
 import ui.Pagelet
 
 import scala.concurrent.duration._
-import scala.concurrent.{ExecutionContext, Await}
+import scala.concurrent.{Future, ExecutionContext, Await}
 import scala.concurrent.ExecutionContext.Implicits.global
 
 /*
@@ -128,21 +131,91 @@ object UserController extends Controller {
     true
   }
 
-  /** update the celebrity for the given id from the JSON body */
-  def update(id: String) = Action(parse.json) { request =>
-    import play.api.Play.current
-    implicit val mongoController = this
+  def copyUser(user: User, input: UserData): User = {
+    user.copy(
+      firstName = input.firstName,
+      lastName = input.lastName,
+      admin = input.admin,
+      email = input.email,
+      address = user.address.copy(
+        addressLine1 = input.addressLine1,
+        addressLine2 = input.addressLine2,
+        city = input.city,
+        state = input.state,
+        zip = input.zip,
+        country = input.country
+      )
+    )
+  }
 
-    val json = request.body
-    json.validate[User] match {
-      case s: JsSuccess[User] => {
-        if (updateUser(s.get))
-          Ok(Json.toJson("Ok"))
-        else
-          Ok(Json.toJson("Failed"))
+  /** update the celebrity for the given id from the JSON body */
+  def update(id: String) = Action.async { implicit request =>
+    implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
+
+    val userFormInputHolder = UserForm.bindFromRequest()
+
+    if (userFormInputHolder.hasErrors) {
+      Future.successful(Ok(Json.toJson(Error(userFormInputHolder.toString))))
+    } else {
+      val userCoordinator = new UserCoordinator()
+      val sessionUtils = new SessionUtils(request)
+      val sessionInfo = sessionUtils.fetchFutureSessionInfo()
+
+      for {
+        session <- sessionInfo
+        adminUser = session.user.getOrElse(User.newBlankUser())
+        inputUser = userFormInputHolder.get
+        uuid = if (inputUser.userId.isDefined) UUID.fromString(inputUser.userId.get) else UUID.randomUUID()
+        user <- userCoordinator.findByPrimary(uuid)
+      } yield {
+        if (adminUser.userId.isEmpty || !adminUser.admin.getOrElse(false)) {
+          Ok(Json.toJson(Error("You are not logged in or do no have permission")))
+        } else {
+          if (user.isDefined) {
+            val updatedUser = copyUser(user.get, userFormInputHolder.get)
+            userCoordinator.updateUser(updatedUser, updatedUser.userId.get)
+            Ok(Json.toJson(user))
+          } else {
+            Ok(Json.toJson(Error("User does not exist")))
+          }
+        }
       }
-      case error: JsError =>
-        Ok(Json.toJson(error.toString))
+    }
+  }
+
+  /** update the celebrity for the given id from the JSON body */
+  def add() = Action.async { implicit request =>
+    implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
+
+    val userFormInputHolder = UserAddForm.bindFromRequest()
+
+    if (userFormInputHolder.hasErrors) {
+      Future.successful(Ok(Json.toJson(Error(userFormInputHolder.toString))))
+    } else {
+      val userCoordinator = new UserCoordinator()
+      val sessionUtils = new SessionUtils(request)
+      val sessionInfo = sessionUtils.fetchFutureSessionInfo()
+
+      for {
+        session <- sessionInfo
+        adminUser = session.user.getOrElse(User.newBlankUser())
+        inputUser = userFormInputHolder.get
+        uuid = if (inputUser.userId.isDefined) UUID.fromString(inputUser.userId.get) else UUID.randomUUID()
+        user <- userCoordinator.findByPrimary(uuid)
+      } yield {
+        if (adminUser.userId.isEmpty || !adminUser.admin.getOrElse(false)) {
+          Ok(Json.toJson(Error("You are not logged in or do no have permission")))
+        } else {
+          if (user.isEmpty) {
+            val input = userFormInputHolder.get
+            val updatedUser = copyUser(User.newBlankUser(), userFormInputHolder.get).copy( userId = Some(UUID.randomUUID()) )
+            userCoordinator.updateUser(updatedUser, updatedUser.userId.get)
+            Ok(Json.toJson(user))
+          } else {
+            Ok(Json.toJson(Error("User Already Exists")))
+          }
+        }
+      }
     }
   }
 
@@ -169,4 +242,81 @@ object UserController extends Controller {
   def nameFormat(name: String): String = {
     name.capitalize
   }
+
+  case class UserData(userId: Option[String],   // uuid for user (unique)
+                      firstName: String,
+                      lastName: String,
+                      email: String,
+                      password: Option[String],
+                      addressLine1: String,
+                      addressLine2: Option[String],
+                      city: String,
+                      state: String,
+                      zip: String,
+                      country: Option[String],
+                      admin: Option[Boolean]) {
+    def toNewUser: User = {
+      copyUserUser(User.newBlankUser).copy(
+        password = password,
+        passwordAgain = password
+      )
+    }
+    def copyUserUser(user: User):User = {
+      user.copy(
+        firstName = firstName,
+        lastName = lastName,
+        admin = admin,
+        email = email,
+        address = user.address.copy(
+          addressLine1 = addressLine1,
+          addressLine2 = addressLine2,
+          city = city,
+          state = state,
+          zip = zip,
+          country = country
+        )
+      )
+    }
+  }
+
+  val UserForm = Form(
+    mapping(
+      "userId" -> optional(text),
+      "firstName" -> nonEmptyText,
+      "lastName" -> nonEmptyText,
+      "email" -> email,
+      "password" -> optional(text),
+      "address.addressLine1" -> nonEmptyText,
+      "address.addressLine2" -> optional(text),
+      "address.city" -> nonEmptyText,
+      "address.state" -> nonEmptyText,
+      "address.zip" -> nonEmptyText,
+      "address.country" -> optional(text),
+      "isAdmin" -> optional(boolean)
+    )(UserData.apply)(UserData.unapply)
+  )
+
+  case class UserAddData(name: String,
+                             uniqueName: String,
+                             ordering: Int = 0, // link to unique User id
+                             parentId: Option[String] = None)
+
+  val UserAddForm = Form(
+    mapping(
+      "userId" -> optional(text),
+      "firstName" -> nonEmptyText,
+      "lastName" -> nonEmptyText,
+      "email" -> email,
+      "password" -> optional(text),
+      "address.addressLine1" -> nonEmptyText,
+      "address.addressLine2" -> optional(text),
+      "address.city" -> nonEmptyText,
+      "address.state" -> nonEmptyText,
+      "address.zip" -> nonEmptyText,
+      "address.country" -> optional(text),
+      "isAdmin" -> optional(boolean)
+    )(UserData.apply)(UserData.unapply)
+  )
+
+
 }

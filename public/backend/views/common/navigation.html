@@ -42,7 +42,7 @@
                 <a ui-sref="app.profile"><i class="fa fa-th-large"></i> <span class="nav-label">{{ 'PROFILE' | translate }}</span> <span class="fa arrow"></span></a>
             </li>
               <li ng-class="{active: $state.includes('Users')}" ng-show="user.isAdmin">
-                <a href="#/"><i class="fa fa-th-large"></i> <span class="nav-label">{{ 'USERS' | translate }}</span> <span class="fa arrow"></span></a>
+                <a ui-sref="users.list"><i class="fa fa-th-large"></i> <span class="nav-label">{{ 'USERS' | translate }}</span> <span class="fa arrow"></span></a>
               </li>
               <li ng-class="{active: $state.includes('Categories')}" ng-show="user.isAdmin">
                 <a ui-sref="categories.list"><i class="fa fa-th-large"></i> <span class="nav-label">{{ 'CATEGORIES' | translate }}</span> <span class="fa arrow"></span></a>
