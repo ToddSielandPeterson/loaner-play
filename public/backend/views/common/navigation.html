@@ -1,7 +1,7 @@
 <nav class="navbar-default navbar-static-side" role="navigation">
     <div class="sidebar-collapse">
         <ul side-navigation class="nav" id="side-menu">
-            <li class="nav-header">
+            <li class="nav-header" ng-show="user.userId">
 
                 <div class="dropdown profile-element" dropdown>
                     <img alt="image" class="img-circle" src="/assets/backend/img/profile_small.jpg"/>
@@ -28,17 +28,17 @@
               <li ng-class="{active: $state.includes('ToolSearch')}">
                 <a ng-href="/categories"><i class="fa fa-th-large"></i> <span class="nav-label">{{ 'TOOLSEARCH' | translate }}</span> <span class="fa arrow"></span></a>
               </li>
-              <li ng-class="{active: $state.includes('Products')}">
+              <li ng-class="{active: $state.includes('Products')}" ng-show="user.userId">
                 <a ui-sref="products.productlist"><i class="fa fa-th-large"></i> <span class="nav-label">{{ 'PRODUCTS' | translate }}</span> <span class="fa arrow"></span></a>
               </li>
-              <li ng-class="{active: $state.includes('Rentals')}">
+              <li ng-class="{active: $state.includes('Rentals')}" ng-show="user.userId">
                 <a href="#rentals"><i class="fa fa-th-large"></i> <span class="nav-label">{{ 'RENTALS' | translate }}</span> <span class="fa arrow"></span></a>
                   <ul class="nav nav-second-level" ng-class="{in: $state.includes('Rentals')}">
                       <li ui-sref-active="active"><a ui-sref="rentals.rentals">{{ 'PASTRENTALS' | translate }}</a></li>
                       <li ui-sref-active="active"><a ui-sref="rentals.upcoming">{{ 'UPCOMING' | translate }}</a></li>
                   </ul>
               </li>
-            <li ng-class="{active: $state.includes('Profile')}">
+            <li ng-class="{active: $state.includes('Profile')}" ng-show="user.userId">
                 <a ui-sref="app.profile"><i class="fa fa-th-large"></i> <span class="nav-label">{{ 'PROFILE' | translate }}</span> <span class="fa arrow"></span></a>
             </li>
               <li ng-class="{active: $state.includes('Users')}" ng-show="user.isAdmin">

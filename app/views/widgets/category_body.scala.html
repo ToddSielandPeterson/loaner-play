@@ -1,40 +1,60 @@
 @(categories: CategoryTree, session: UserSession)
 
-<div role="main" class="container">
-    <div class="row">
-        <div class="span12">
-            <h2>Categories</h2>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-sm-4">
+        <h2>This is main title</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="index.html">This is</a>
+            </li>
+            <li class="active">
+                <strong>Breadcrumb</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-sm-8">
+        <div class="title-action">
+            <a href="" class="btn btn-primary">This is action area</a>
         </div>
     </div>
 </div>
-<div role="sub" class="container">
-    @for(branch : CategoryBranch <- categories.branches) {
-        <div class="row">
-        <div class="col-lg-4 col-sm-6 col-xs-12">
-            <a href="/products/@branch.uniqueName">@branch.name</a>
-        </div>
-        </div>
-        @for(branch1 : CategoryBranch <- branch.children) {
-            <div class="row">
-            <div class="col-lg-4 col-sm-6 col-xs-12">
-                <a href="/products/@branch1.uniqueName">@branch.name -> @branch1.name</a>
-            </div>
-            </div>
-            @for(branch2 : CategoryBranch <- branch1.children) {
-                <div class="row">
-                <div class="col-lg-4 col-sm-6 col-xs-12">
-                    <a href="/products/@branch2.uniqueName">@branch.name -> @branch1.name -> @branch2.name</a>
-                </div>
-                </div>
-                @for(branch3 : CategoryBranch <- branch2.children) {
+<div class="row">
+    <div class="col-lg-12">
+        <div class="wrapper wrapper-content">
+            <div class="middle-box text-center animated fadeInRightBig">
+                <h3 class="font-bold">All Categories</h3>
+
+                <div class="error-desc">
+                    @for(branch : CategoryBranch <- categories.branches) {
                     <div class="row">
                     <div class="col-lg-4 col-sm-6 col-xs-12">
-                        <a href="/products/@branch2.uniqueName">@branch.name -> @branch1.name -> @branch2.name -> @branch3.name</a>
+                        <a href="/products/@branch.uniqueName">@branch.name</a>
                     </div>
                     </div>
+                    @for(branch1 : CategoryBranch <- branch.children) {
+                        <div class="row">
+                        <div class="col-lg-4 col-sm-6 col-xs-12">
+                            <a href="/products/@branch1.uniqueName">@branch.name -> @branch1.name</a>
+                        </div>
+                        </div>
+                        @for(branch2 : CategoryBranch <- branch1.children) {
+                            <div class="row">
+                            <div class="col-lg-4 col-sm-6 col-xs-12">
+                                <a href="/products/@branch2.uniqueName">@branch.name -> @branch1.name -> @branch2.name</a>
+                            </div>
+                            </div>
+                            @for(branch3 : CategoryBranch <- branch2.children) {
+                                <div class="row">
+                                <div class="col-lg-4 col-sm-6 col-xs-12">
+                                    <a href="/products/@branch2.uniqueName">@branch.name -> @branch1.name -> @branch2.name -> @branch3.name</a>
+                                </div>
+                                </div>
+                            }
+                        }
+                    }
                 }
-            }
-        }
-    }
+                </div>
+            </div>
+        </div>
     </div>
 </div>

@@ -3,7 +3,7 @@ package controllers
 import com.cognitivecreations.dao.mongo.coordinator.UserCoordinator
 import com.cognitivecreations.utils.SessionUtils
 import controllers.widgets.{Banner, Footer}
-import models.User
+import models.{Address, User}
 import play.api.Play.current
 import play.api.data.Form
 
@@ -186,7 +186,7 @@ object Login extends Controller {
   /*
   New User entry
    */
-  case class NewUserData(email: String, password: String, firstName: String, lastName: String, zipcode: String)
+  case class NewUserData(email: String, password: String, firstName: String, lastName: String, zipcode: String, accept: Boolean)
 
   val newUserForm = Form(
     mapping(
@@ -194,9 +194,28 @@ object Login extends Controller {
       "password" -> nonEmptyText,
       "firstName" -> nonEmptyText,
       "lastName" -> nonEmptyText,
-      "zipcode" -> nonEmptyText
+      "zipcode" -> nonEmptyText,
+      "accept" -> boolean
+
     )(NewUserData.apply)(NewUserData.unapply)
   )
+
+  def buildNewUser(newUserData: NewUserData): User = {
+    User.newBlankUser().copy(firstName = newUserData.firstName,
+      lastName = newUserData.lastName,
+      email = newUserData.email,
+      password = Some(newUserData.password),
+      passwordAgain = Some(newUserData.password),
+      address = new Address(
+        addressLine1 = "",
+        addressLine2 = Some(""),
+        city = "",
+        state = "",
+        zip = newUserData.zipcode,
+        country = Some("US")
+      )
+    )
+  }
 
   def newUser() = Action.async { implicit request =>
     implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
@@ -207,14 +226,6 @@ object Login extends Controller {
     val sessionInfo = sessionUtils.fetchFutureSessionInfo()
     for {
       session <- sessionInfo
-
-//      header <- Banner.index(embed = true, Some(session))(request)
-//      footer <- Footer.index(embed = true, Some(session))(request)
-//      body <- Future.successful(Ok(new_user_body(user, session, None)))
-//
-//      headerBody <- Pagelet.readBody(header)
-//      footerBody <- Pagelet.readBody(footer)
-//      bodyBody <- Pagelet.readBody(body)
     } yield {
       Ok(views.html.register())
     }
@@ -226,25 +237,23 @@ object Login extends Controller {
     val userCoordinator = new UserCoordinator()
     val userFormInputHolder = newUserForm.bindFromRequest()
     val sessionUtils = new SessionUtils(request)
-
     val sessionInfo = sessionUtils.fetchFutureSessionInfo()
+    val fUser = if (userFormInputHolder.hasErrors) Future.successful(None)
+                else userCoordinator.findUserByUserName(userFormInputHolder.get.email)
+
     for {
       session <- sessionInfo
-      user <- if (userFormInputHolder.hasErrors) Future.successful(None)
-              else userCoordinator.findUserByUserName("") //userFormInputHolder.value.getOrElse(""))
-
-//      header <- Banner.index(embed = true, Some(session))(request)
-//      footer <- Footer.index(embed = true, Some(session))(request)
-//      body <- Future.successful(Ok(new_user_body(user, session, Some(userFormInputHolder))))
-//
-//      headerBody <- Pagelet.readBody(header)
-//      footerBody <- Pagelet.readBody(footer)
-//      bodyBody <- Pagelet.readBody(body)
+      user <- fUser
     } yield {
-      if (userFormInputHolder.hasErrors && user.isEmpty)
+      if (userFormInputHolder.hasErrors)
         Ok(views.html.register())
       else {
-        TemporaryRedirect("/admin")
+        if (user.isDefined) {
+          Ok(views.html.register())
+        } else {
+          userCoordinator.insert(buildNewUser(newUserForm.get))
+          TemporaryRedirect("/admin")
+        }
       }
     }
   }

@@ -22,48 +22,6 @@ import scala.concurrent.{Future, ExecutionContext}
 object CategoriesController extends Controller {
   import models.Product._
 
-  /* web page calls */
-  def index() = Action.async{ implicit request =>
-    implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
-    val sessionInfo = SessionUtils(request).fetchFutureSessionInfo()
-    val categoryCoordinator = new CategoryCoordinator()
-
-    for {
-      session <- sessionInfo
-      category = categoryCoordinator.buildCategoryTree
-
-      header <- Banner.index(embed = true, Some(session))(request)
-      footer <- Footer.index(embed = true, Some(session))(request)
-      categoriesHtml <- CategoryWidget.index(category = category, embed = true, Some(session))(request)
-
-      headerBody <- Pagelet.readBody(header)
-      categoriesBody <- Pagelet.readBody(categoriesHtml)
-      footerBody <- Pagelet.readBody(footer)
-    } yield {
-        Ok(views.html.categories(headerBody, footerBody, categoriesBody, session))
-    }
-  }
-
-  def editCategories() = Action.async{ implicit request =>
-    implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
-    val sessionInfo = SessionUtils(request).fetchFutureSessionInfo()
-
-    for {
-      session <- sessionInfo
-
-      header <- Banner.index(embed = true, Some(session))(request)
-      footer <- Footer.index(embed = true, Some(session))(request)
-
-      headerBody <- Pagelet.readBody(header)
-      footerBody <- Pagelet.readBody(footer)
-    } yield {
-      if (session.isAdmin)
-        Ok(views.html.user.user_category_edit_body(headerBody, "categories", footerBody, session))
-      else
-        NotFound
-    }
-  }
-
   /* rest Calls */
   def categoriesFlat() = Action.async { implicit request =>
     implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")

@@ -14,8 +14,9 @@ import scala.concurrent.{ExecutionContext, Future}
  */
 object CategoryWidget extends Controller {
 
-  def index(category: CategoryTree, embed: Boolean = false, userSession: Option[UserSession] = None) = Action.async { request =>
-    implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
+  def index(category: CategoryTree, embed: Boolean = false, userSession: Option[UserSession] = None,
+            simpleDbLookups: ExecutionContext) = Action.async { request =>
+    implicit val simpleDbLookups1 = simpleDbLookups
 
     if (embed)
       Future(Ok(views.html.widgets.category_body(category, userSession.get)))

@@ -5,7 +5,7 @@
 # Home page
 GET           /                              controllers.Application.index(any = "none")
 GET           /admin                         controllers.Application.admin()
-GET           /categories                    controllers.CategoriesController.index
+GET           /categories                    controllers.StoreCategoryController.index
 GET           /products/:categoryName        controllers.ProductsController.index(categoryName:String)
 GET           /product/:productId            controllers.ProductsController.readOne(productId: String)
 
@@ -28,7 +28,7 @@ PUT           /user/product/edit             controllers.UserProductController.a
 DELETE        /user/product/edit/:id         controllers.UserProductController.delete(id: String)
 GET           /user/product/edit/:id         controllers.UserProductController.edit(id: String)
 POST          /user/product/edit/:id         controllers.UserProductController.editPost(id: String)
-GET           /user/categories               controllers.CategoriesController.editCategories
+#GET           /user/categories               controllers.StoreCategoryController.editCategories
 
 # Play routes serving HTML to AngularJS start with /views
 #GET           /views/*any             controllers.Application.loadPublicHTML(any)

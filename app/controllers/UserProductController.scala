@@ -6,14 +6,14 @@ import com.cognitivecreations.dao.mongo.coordinator.{CategoryFlat, CategoryCoord
 import com.cognitivecreations.modelconverters.CategoryConverter
 import com.cognitivecreations.utils.SessionUtils
 import controllers.widgets.{Banner, Footer}
-import models.{Error, UserSession, Product}
+import models.{User, Error, UserSession, Product}
 import org.joda.time.DateTime
 import play.api.Play.current
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.libs.concurrent.Akka
 import play.api.libs.json.Json
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.{Request, AnyContent, Action, Controller}
 import ui.Pagelet
 
 import scala.concurrent.{Future, ExecutionContext}
@@ -23,20 +23,32 @@ import scala.util.Try
  * Created by tsieland on 1/7/15.
  */
 
+class NotLoggedInException(userId: Option[UUID]) extends Exception
+
 
 object UserProductController extends Controller {
   import models.Product._
+
+  def loggedInUser()(implicit request: Request[AnyContent], simpleDbLookups: ExecutionContext): Future[User] = {
+    for {
+      session <- SessionUtils(request).fetchFutureSessionInfo()
+    } yield {
+      if (session.user.isEmpty || session.user.get.userId.isEmpty) {
+        throw new NotLoggedInException(None)
+      } else {
+        session.user.get
+      }
+    }
+  }
 
 
   def productListForUser() = Action.async{ implicit request =>
     implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
     val productCoordinator = new ProductCoordinator()
-    val sessionUtils = new SessionUtils(request)
-    val sessionInfo = sessionUtils.fetchFutureSessionInfo()
 
     for {
-      session <- sessionInfo
-      productList <- productCoordinator.findByOwner(session.user.get)
+      user <- loggedInUser
+      productList <- productCoordinator.findByOwner(user)
     } yield
       Ok(Json.toJson(productList))
   }
@@ -44,13 +56,11 @@ object UserProductController extends Controller {
   def productForUser(productStringId: String) = Action.async{ implicit request =>
     implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
     val productCoordinator = new ProductCoordinator()
-    val sessionUtils = new SessionUtils(request)
-    val sessionInfo = sessionUtils.fetchFutureSessionInfo()
 
     val productId = UUID.fromString(productStringId)
     for {
-      session <- sessionInfo
-      product <- productCoordinator.findByPrimaryAndUser(productId, session.user)
+      user <- loggedInUser
+      product <- productCoordinator.findByPrimaryAndUser(productId, Some(user))
     } yield
       Ok(Json.toJson(product.get))
   }
@@ -58,21 +68,17 @@ object UserProductController extends Controller {
   def productAddForUser() = Action.async { implicit request =>
     implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
     val productCoordinator = new ProductCoordinator()
-    val sessionUtils = new SessionUtils(request)
-    val sessionInfo = sessionUtils.fetchFutureSessionInfo()
     val productFormInputHolder = productAddForm.bindFromRequest()
 
-    if (productFormInputHolder.hasErrors) {
-      Future.successful(Ok(Json.toJson(Error(productFormInputHolder.toString))))
-    } else { // valid
-      for {
-        session <- sessionInfo
-      } yield {
-        val productIn = productFormInputHolder.get
-        if (session.user.isEmpty || session.user.get.userId.isEmpty) {
-          Ok(Json.toJson(Error("You are not logged in")))
-        } else {
-          val product = new Product(userId = session.user.flatMap(_.userId),
+    try {
+      if (productFormInputHolder.hasErrors) {
+        Future.successful(Ok(Json.toJson(Error(productFormInputHolder.toString))))
+      } else {
+        for {
+          user <- loggedInUser
+        } yield {
+          val productIn = productFormInputHolder.get
+          val product = new Product(userId = user.userId,
             text = productIn.text.get,
             name = productIn.name,
             secondLine = productIn.secondLine,
@@ -83,35 +89,36 @@ object UserProductController extends Controller {
           Ok(Json.toJson(product))
         }
       }
+    } catch {
+      case ex: NotLoggedInException => Future.successful(Ok(Json.toJson(Error("You are not logged in"))))
     }
   }
 
   def productUpdateForUser(productStringId: String) = Action.async { implicit request =>
     implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
     val productCoordinator = new ProductCoordinator()
-    val sessionInfo = new SessionUtils(request).fetchFutureSessionInfo()
     val productFormInputHolder = productForm.bindFromRequest()
 
-    if (productFormInputHolder.hasErrors) {
-      Future.successful(Ok(Json.toJson(Error(productFormInputHolder.toString))))
-    } else { // valid
-      for {
-        session <- sessionInfo
-      } yield {
-        val productIn = productFormInputHolder.get
-        if (session.user.isEmpty || session.user.get.userId.isEmpty) {
-          Ok(Json.toJson(Error("You are not logged in")))
-        } else {
+    try {
+      if (productFormInputHolder.hasErrors) {
+        Future.successful(Ok(Json.toJson(Error(productFormInputHolder.toString))))
+      } else { // valid
+        for {
+          user <- loggedInUser
+        } yield {
+          val productIn = productFormInputHolder.get
           if (productIn.productId.isEmpty) {
             Ok(Json.toJson(Error("should have a productId")))
           } else {
-            val product = fromProductData(productIn, session.user.get.userId.get)
+            val product = fromProductData(productIn, user.userId.get)
             val errors = productCoordinator.update(product)
             // TODO: add error processing if failed.
             Ok(Json.toJson(product))
           }
         }
       }
+    } catch {
+      case ex: NotLoggedInException => Future.successful(Ok(Json.toJson(Error("You are not logged in"))))
     }
   }
 
