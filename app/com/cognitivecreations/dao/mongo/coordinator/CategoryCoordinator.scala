@@ -146,5 +146,9 @@ object CategoryCoordinator {
   def updateCategoryTree(catTree: CategoryTree) = {
     updatableCategoryTree = Some(catTree)
   }
+
+  def apply()(implicit ec: ExecutionContext): CategoryCoordinator = {
+    new CategoryCoordinator()
+  }
 }
 

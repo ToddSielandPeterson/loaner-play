@@ -4,7 +4,7 @@
 
 # Home page
 GET           /                              controllers.Application.index(any = "none")
-GET           /admin                         controllers.Application.admin()
+GET           /admin                         controllers.Application.backendIndex
 GET           /categories                    controllers.StoreCategoryController.index
 GET           /products/:categoryName        controllers.ProductsController.index(categoryName:String)
 GET           /product/:productId            controllers.ProductsController.readOne(productId: String)
@@ -48,11 +48,11 @@ POST          /api/u/product/:id             controllers.UserProductController.p
 DELETE        /api/u/product/:id             controllers.UserProductController.productDeleteForUser(id: String)
 PUT           /api/u/product                 controllers.UserProductController.productAddForUser
 
-GET           /api/load/session/add          controllers.LoadDataController.sessionTest
-GET           /api/load/session/find         controllers.LoadDataController.sessionPullTest
-GET           /api/load/categories           controllers.LoadDataController.loadCategories
-GET           /api/load/products             controllers.LoadDataController.loadProducts
-GET           /api/load/users                controllers.LoadDataController.loadUsers
+#GET           /api/load/session/add          controllers.LoadDataController.sessionTest
+#GET           /api/load/session/find         controllers.LoadDataController.sessionPullTest
+#GET           /api/load/categories           controllers.LoadDataController.loadCategories
+#GET           /api/load/products             controllers.LoadDataController.loadProducts
+#GET           /api/load/users                controllers.LoadDataController.loadUsers
 
 GET           /api/categories                controllers.CategoriesController.categoriesFlat()
 GET           /api/categoriesAll             controllers.CategoriesController.allCategoriesFlat()

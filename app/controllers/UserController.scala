@@ -31,25 +31,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 object UserController extends Controller {
 
 
-  def index = Action.async { implicit request =>
-    implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
-    val sessionUtils = new SessionUtils(request)
-    val userController = new UserCoordinator()
-    val sessionInfo = sessionUtils.fetchFutureSessionInfo()
-
-    for {
-      session <- sessionInfo
-      header <- Banner.index(embed = true, Some(session))(request)
-      footer <- Footer.index(embed = true, Some(session))(request)
-
-      headerBody <- Pagelet.readBody(header)
-      footerBody <- Pagelet.readBody(footer)
-    } yield {
-      Ok(views.html.me(headerBody, footerBody, session)).
-        withCookies(Cookie("sessioninfo", session.sessionId.toString, Some(86400 * 31)))
-    }
-  }
-
   def cleanUpUser(user: User) = {
     if (user.admin.isDefined && user.admin.get) {
       Json.obj("firstName" -> user.firstName,

@@ -1,12 +1,24 @@
 @(products: List[List[(Product, Int)]], category: Category, session: UserSession)
 
-<div role="main" class="container">
-    <div class="row">
-        <div class="span12">
-            <h2>Products</h2>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-sm-4">
+        <h2>This is main title</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="index.html">This is</a>
+            </li>
+            <li class="active">
+                <strong><a href="/products/@category.uniqueName">@category.name</a></strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-sm-8">
+        <div class="title-action">
+            <a href="" class="btn btn-primary">This is action area</a>
         </div>
     </div>
 </div>
+
 <div role="sub" class="container">
     @if(products.isEmpty) {
     <div class="row">
@@ -18,12 +30,24 @@
         @for(prodGroup <- products) {
         <div class="row">
             @for(prodInd <- prodGroup) {
-            <div class="col-lg-4 col-sm-6 col-xs-12">
-                <img src="@prodInd._1.thumbnails.head" />
-                <h4><a href="/product/@prodInd._1.productId">@prodInd._1.name</a></h4>
-                <h5>@prodInd._1.secondLine</h5>
-                <p>@prodInd._1.text</p>
-            </div>
+                    <!--Tile-->
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="tile">
+                        @*<div class="badges">*@
+                            @*<span class="sale">Sale</span>*@
+                        @*</div>*@
+                        <div class="price-label">Price goes here</div>
+                        <a href="/product/@prodInd._1.productId">
+                            <img src="/assets/frontend/img/catalog/1.png" alt="1"/> @* @prodInd._1.thumbnails.head" alt="1"/> *@
+                            <span class="tile-overlay"></span>
+                        </a>
+                        <div class="footer">
+                            <a href="/product/@prodInd._1.productId">@prodInd._1.name</a>
+                            <span>@prodInd._1.secondLine</span>
+                            <button class="btn btn-primary">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
             }
         }
         </div>

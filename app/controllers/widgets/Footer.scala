@@ -10,11 +10,7 @@ import scala.concurrent.Future
 object Footer extends Controller {
 
   def index(embed: Boolean = false, userSession: Option[UserSession] = None) = Action.async {
-
-    if (embed)
-      Future.successful(Ok(views.html.widgets.footer_body()))
-    else
-      Future.successful(Ok(views.html.widgets.footer()))
+    Future.successful(Ok(views.html.widgets.footer_body()))
   }
 
 }

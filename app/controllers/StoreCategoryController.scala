@@ -28,13 +28,13 @@ object StoreCategoryController extends Controller {
       session <- sessionInfo
       category = categoryCoordinator.buildCategoryTree
 
-      categoriesHtml <- CategoryWidget.index(category = category, embed = true, Some(session), simpleDbLookups)(request)
+      categoriesHtml <- CategoryWidget.index(categoryTree = Some(category), embed = true, Some(session), simpleDbLookups)(request)
       categoriesBody <- Pagelet.readBody(categoriesHtml)
 
       containerHtml <- StoreWrapper.index(Some(session), categoriesBody, simpleDbLookups)(request)
       containerBody <- Pagelet.readBody(containerHtml)
     } yield {
-      Ok(views.html.categories(containerBody, session))
+      Ok(views.html.store(containerBody, session))
     }
   }
 

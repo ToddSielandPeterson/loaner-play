@@ -1,23 +1,5 @@
 @(categories: CategoryTree, session: UserSession)
 
-<div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-sm-4">
-        <h2>This is main title</h2>
-        <ol class="breadcrumb">
-            <li>
-                <a href="index.html">This is</a>
-            </li>
-            <li class="active">
-                <strong>Breadcrumb</strong>
-            </li>
-        </ol>
-    </div>
-    <div class="col-sm-8">
-        <div class="title-action">
-            <a href="" class="btn btn-primary">This is action area</a>
-        </div>
-    </div>
-</div>
 <div class="row">
     <div class="col-lg-12">
         <div class="wrapper wrapper-content">
@@ -56,5 +38,49 @@
                 </div>
             </div>
         </div>
+    </div>
+</div>
+<div class="catalog-block">
+    <div class="container">
+        <ul class="catalog">
+            <li class="has-submenu"><a href="shop-filters-left-3cols.html">Handbag<i class="fa fa-chevron-down"></i></a>
+                <ul class="submenu">
+                    <li><a href="#">Wristlet</a></li>
+                    <li class="has-submenu"><a href="#">Backpack</a><!--Class "has-submenu" for adding carret and dropdown-->
+                        <ul class="sub-submenu">
+                            <li><a href="#">KATA</a></li>
+                            <li><a href="#">Think Tank</a></li>
+                            <li><a href="#">Manfrotto</a></li>
+                            <li><a href="#">Lowepro</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#">Hat box</a></li>
+                    <li class="has-submenu"><a href="#">Clutch</a>
+                        <ul class="sub-submenu">
+                            <li><a href="#">Louis Vuitton</a></li>
+                            <li><a href="#">Chanel</a></li>
+                            <li><a href="#">Christian Dior</a></li>
+                            <li><a href="#">Gucci</a></li>
+                            <li><a href="#">Neri Karra</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#">Envelope</a></li>
+                    <li class="offer">
+                        <div class="col-1">
+                            <p class="p-style2">Use product images on the menu. It's easier to percept a visual content than a textual one. </p>
+                        </div>
+                        <div class="col-2">
+                            <img src=@routes.Assets.at("frontend/img/offers/menu-drodown-offer.jpg") alt="Special Offer"/>
+                            <a class="btn btn-black" href="#"><span>584$</span>Special offer</a>
+                        </div>
+                    </li>
+                </ul>
+            </li>
+            <li><a href="shop-filters-left-3cols.html">Wallet</a></li>
+            <li><a href="shop-filters-left-3cols.html">Satchel</a></li>
+            <li><a href="shop-filters-left-3cols.html">Clutch</a></li>
+            <li><a href="shop-filters-left-3cols.html">Hobo bags</a></li>
+            <li><a href="shop-filters-left-3cols.html">Shoulder Bag</a></li>
+        </ul>
     </div>
 </div>
