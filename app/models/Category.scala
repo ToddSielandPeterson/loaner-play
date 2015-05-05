@@ -33,7 +33,7 @@ object Category {
       (JsPath \ "parentId").read[Option[UUID]]
     ) (Category.apply _)
 
-
+  def newCategory: Category = new Category(None, "", "", 0, None)
 }
 
 
