@@ -3214,6 +3214,57 @@ function userController($scope, $location, $resource, $stateParams, $http) {
     ];
     //$scope.userOptions = $scope.options[1];
 }
+
+
+function galleryController($scope, $location, $resource, $stateParams, $http) {
+    $scope.galleryfn = function () {
+        allUsersLookupFactory($resource).get({},
+            function success(data) {
+                $scope.users = data;
+            }, function error(errorMessage) {
+            }
+        )};
+
+    $scope.userFn = function () {
+        userLookupFactory($resource).get({'id':  $stateParams.categoryId},
+            function success(data) {
+                $scope.user = data;
+            }, function error(errorMessage) {
+            }
+        )
+    };
+
+    $scope.submitTheForm = function() {
+        var responsePromise = $http.post("/api/user/" + $scope.user.userId, $scope.user);
+        responsePromise.success(function(dataFromServer, status, headers, config) {
+            console.log(dataFromServer.title);
+            $location.path("/");
+        });
+        responsePromise.error(function(data, status, headers, config) {
+            alert("Submitting form failed!");
+        });
+    };
+
+    $scope.addUser = function() {
+        var responsePromise = $http.put("/api/user", $scope.blankUser);
+        responsePromise.success(function(dataFromServer, status, headers, config) {
+            console.log(dataFromServer.title);
+            $location.path("/");
+        });
+        responsePromise.error(function(data, status, headers, config) {
+            alert("Submitting form failed!");
+        });
+    };
+
+    $scope.blankUser = {};
+    $scope.users = $scope.usersFn();
+    $scope.user = $scope.userFn();
+    $scope.userTypeOptions = [
+        { label: 'User',  value: false },
+        { label: 'Admin', value: true }
+    ];
+    //$scope.userOptions = $scope.options[1];
+}
 /**
  *
  * Pass all functions into module
@@ -3243,3 +3294,4 @@ angular
     .controller('productController', productController)
     .controller('categoryEditController', categoryEditController)
     .controller('userController', userController)
+    .controller('galleryController', galleryController)

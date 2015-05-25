@@ -11,13 +11,13 @@ import play.modules.reactivemongo.json.BSONFormats._
 case class UserPage(userId: String, header: String, text: String)
 
 object UserPage {
-  implicit val category_Writes: Writes[UserPage] = (
+  implicit val userPage_Writes: Writes[UserPage] = (
     (JsPath \  "userId").write[String] and
       (JsPath \ "header").write[String] and
       (JsPath \ "text").write[String]
     )(unlift(UserPage.unapply))
 
-  implicit val category_Reads: Reads[UserPage] = (
+  implicit val userPage_Reads: Reads[UserPage] = (
     (JsPath \ "userId").read[String] and
       (JsPath \ "header").read[String] and
       (JsPath \ "text").read[String]

@@ -149,7 +149,19 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
             data: { pageTitle: 'Add User' }
         })
 
+        // images
+        .state('images', {
+            abstract: true,
+            url: "/images",
+            templateUrl: "/assets/backend/views/common/content.html",
+        })
+        .state('images.gallery', {
+            url: "/gallery",
+            templateUrl: "/assets/backend/views/basic_gallery.html",
+            data: { pageTitle: 'Your Images' }
+        })
 
+        // rental list
         .state('rentals', {
             abstract: true,
             url: "/rentals",

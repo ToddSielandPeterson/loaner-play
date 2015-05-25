@@ -17,6 +17,7 @@ function config($translateProvider) {
             RENTALS: 'Rentals',
             PROFILE: 'Profile',
             UPCOMING: 'Upcoming',
+            IMAGES: 'Images',
 
             // Define all menu elements
             DASHBOARD: 'Dashboard 5',

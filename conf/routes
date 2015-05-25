@@ -3,6 +3,7 @@
 # ~~~~
 
 # Home page
+# Store pages.
 GET           /                              controllers.Application.index(any = "none")
 GET           /admin                         controllers.Application.backendIndex
 GET           /categories                    controllers.StoreCategoryController.index
@@ -60,6 +61,13 @@ GET           /api/category/:id              controllers.CategoriesController.ca
 POST          /api/category/:id              controllers.CategoriesController.categoryUpdate(id: String)
 DELETE        /api/category/:id              controllers.CategoriesController.categoryDelete(id: String)
 PUT           /api/category                  controllers.CategoriesController.categoryAdd
+
+GET           /api/gallery                   controllers.GalleryController.userImages()
+GET           /api/galleryAll                controllers.GalleryController.allImages()
+GET           /api/gallery/:id               controllers.GalleryController.galleryItem(id: String)
+POST          /api/gallery/:id               controllers.GalleryController.galleryUpdate(id: String)
+DELETE        /api/gallery/:id               controllers.GalleryController.galleryDelete(id: String)
+PUT           /api/gallery                   controllers.GalleryController.galleryAdd
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                  controllers.Assets.at(path="/public", file)

@@ -107,6 +107,9 @@
           </ul>
         </li>
         <li class="hide-sm"><a href="support.html"><span>S</span>upport</a></li>
+        @if(user.isDefined) {
+          <li class="hide-sm"><a href="/admin"><span>A</span>dmin</a></li>
+        }
       </ul>
 
     </div>
