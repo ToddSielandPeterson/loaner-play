@@ -22,4 +22,5 @@ object DatabaseMongoDataSource extends MongoDataSource {
     lazy val ordersSource = db[BSONCollection]("orders")
     lazy val privateMessageSource = db[BSONCollection]("privateMessages")
     lazy val image = db[BSONCollection]("images")
+    lazy val faq = db[BSONCollection]("faq")
 }
