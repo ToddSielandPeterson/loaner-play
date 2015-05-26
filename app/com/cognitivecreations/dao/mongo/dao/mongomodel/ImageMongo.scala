@@ -9,7 +9,7 @@ import org.joda.time.DateTime
  */
 
 case class ImageMongo(imageId: Option[UUID],
-                      owner: Option[UUID],
+                      userId: Option[UUID],
                       image: String,  // full url
                       thumbnail: Option[String],
                       adminOk: Boolean, // if admin has ok'd

@@ -25,23 +25,15 @@ trait ImageDaoTrait extends BaseMongoDao[ImageMongo] with BSONHandlers {
 
 class ImageDao(implicit val executionContext: ExecutionContext) extends ImageDaoTrait {
 
+  def byMainKey(id: String): BSONDocument = { byKey("imageId", id) }
+  def byUserKey(id: String): BSONDocument = { byKey("userId", id) }
+
   def findByUrl(url: String): Future[Option[ImageMongo]] = {
     findOne(BSONDocument("image" -> BSONString(url)))
   }
 
-  def byKey(key: String, value: String): BSONDocument = {
-    BSONDocument(key -> BSONString(value))
-  }
-  def byMainKey(id: String): BSONDocument = {
-    BSONDocument("id" -> BSONString(id))
-  }
-  def byMainKey(id: UUID): BSONDocument = {
-    BSONDocument("id" -> BSONString(id.toString))
-  }
-
-  def findByUserId(id: UUID): Future[List[ImageMongo]] = {
-    find(byKey("categoryId",id.toString))
-  }
+  def findByUserId(id: UUID): Future[List[ImageMongo]] = { find(byUserKey(id)) }
+  def findByImageId(id: UUID): Future[List[ImageMongo]] = { find(byMainKey(id)) }
 
   def update(image: ImageMongo): Future[LastError] = {
     val upsertProduct = image.copy(lastUpdate = Some(new DateTime))

@@ -5,7 +5,7 @@ import java.util.UUID
 /**
  * Created by Todd Sieland-Peteson on 1/15/15.
  */
-case class ProductReviewsMongo(ownerId: UUID, userId: UUID, productId: UUID, orderId: UUID, rating:Int, bodyText: String)
+case class ProductReviewsMongo(ownerId: UUID, reviewerId: UUID, productId: UUID, orderId: UUID, rating:Int, bodyText: String)
 
 object ProductReviewsMongo {
   implicit lazy val bsonHandler_ProductReviews = {

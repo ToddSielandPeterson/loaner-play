@@ -21,21 +21,11 @@ trait UserReviewsDaoTrait extends BaseMongoDao[UserReviewsMongo] with BSONHandle
 }
 
 class UserReviewsDao(implicit val executionContext: ExecutionContext) extends UserReviewsDaoTrait {
-  def byReviewerKey(value: String): BSONDocument = {
-    BSONDocument("reviewer" -> BSONString(value))
-  }
-  def byOwnerKey(value: String): BSONDocument = {
-    BSONDocument("owner" -> BSONString(value))
-  }
-  def byProductKey(value: String): BSONDocument = {
-    BSONDocument("product" -> BSONString(value))
-  }
-  def byMainKey(id: String): BSONDocument = {
-    BSONDocument("id" -> BSONString(id))
-  }
-  def byMainKey(id: UUID): BSONDocument = {
-    BSONDocument("id" -> BSONString(id.toString))
-  }
+  def byReviewerKey(value: String): BSONDocument = { byKey("reviewer", value)  }
+  def byOwnerKey(value: String): BSONDocument = { byKey("owner", value)  }
+  def byProductKey(value: String): BSONDocument = { byKey("product", value)  }
+  def byMainKey(id: String): BSONDocument = { byKey("id", id)  }
+
   def update(userReview: UserReviewsMongo): Future[LastError] = {
     val upsertProduct = userReview.copy(lastUpdate = DateTime.now())
     update(byMainKey(userReview.id.toString), update = upsertProduct, upsert = true, multi = false)

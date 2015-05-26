@@ -21,16 +21,14 @@ trait CategoryDaoTrait extends BaseMongoDao[CategoryMongo] with BSONHandlers {
 
 class CategoryDao(implicit val executionContext: ExecutionContext) extends CategoryDaoTrait {
 
-  def byCategoryId(uuid: String): BSONDocument = BSONDocument("categoryId" -> BSONString(uuid))
+  def byCategoryId(uuid: String): BSONDocument = byKey("categoryId", uuid)
 
   def findByCategoryId(id: String): Future[Option[CategoryMongo]] = {
     findOne(byCategoryId(id))
-    //collection.find(BSONDocument("userId" -> BSONString(id))).one[UserMongo]
   }
 
   def findByCategoryUniqueName(id: String): Future[Option[CategoryMongo]] = {
-    findOne(BSONDocument("uniqueName" -> BSONString(id)))
-    //collection.find(BSONDocument("userId" -> BSONString(id))).one[UserMongo]
+    findOne(byKey("uniqueName", id))
   }
 
   def delete(id: String): Future[LastError] = {

@@ -23,30 +23,31 @@ trait PrivateMessageDaoTrait extends BaseMongoDao[PrivateMessageMongo] with BSON
 }
 
 class PrivateMessageDao(implicit val executionContext: ExecutionContext) extends PrivateMessageDaoTrait {
-  def byKey(key: String, value: String): BSONDocument = {
-    BSONDocument(key -> BSONString(value))
-  }
-  def byMainKey(id: String): BSONDocument = {
-    BSONDocument("id" -> BSONString(id))
-  }
-  def byMainKey(id: UUID): BSONDocument = {
-    BSONDocument("id" -> BSONString(id.toString))
-  }
+  def byMainKey(id: String): BSONDocument = { byKey("id", id) }
 
   def deleteByProductId(id: UUID): Future[LastError] = {
     delete(byMainKey(id), true)
   }
 
   def findByToUser(id: UUID): Future[List[PrivateMessageMongo]] = {
-    find(byKey("toUser", id.toString))
+    find(byKey("toUser", id))
   }
 
   def findByFromUser(id: UUID): Future[List[PrivateMessageMongo]] = {
-    find(byKey("fromUser", id.toString))
+    find(byKey("fromUser", id))
   }
 
   def update(privateMessage: PrivateMessageMongo): Future[LastError] = {
     val upsertPrivateMessage = privateMessage.copy(lastUpdated = Some(new DateTime))
     update(byMainKey(privateMessage.id), update = upsertPrivateMessage, upsert = true, multi = false)
+  }
+
+  def userMessageCount(userId: Option[UUID]): Future[Int] = {
+    if (userId.isDefined)
+      count(byKey("toUser", userId.get))
+    else {
+      assert(true, "userMessageCount should have a value")
+      Future(0)
+    }
   }
 }

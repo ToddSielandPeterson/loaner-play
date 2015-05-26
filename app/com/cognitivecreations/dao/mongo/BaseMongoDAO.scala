@@ -33,6 +33,16 @@ trait MongoDao[T] extends Logging with MongoLogging {
   def readTimeout = Duration(5000, "milliseconds")
   def writeTimeout = Duration(5000, "milliseconds")
 
+  /**
+   * builds a BSON documnet with the key and value
+   * @param key
+   * @param value
+   * @return
+   */
+  def byKey(key: String, value: String): BSONDocument = {
+    BSONDocument(key -> BSONString(value))
+  }
+
   def findById(id: String)(implicit ec: ExecutionContext) : Future[Option[T]] = {
     collection.find(BSONDocument("_id" -> BSONObjectID(id))).domainHeadOption[T]
   }

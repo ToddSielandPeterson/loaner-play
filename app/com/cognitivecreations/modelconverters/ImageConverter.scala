@@ -11,7 +11,7 @@ import models.Image
 class ImageConverter extends ModelConverterBase[Image, ImageMongo] {
   def fromMongo(image: ImageMongo): Image = {
     Image(imageId = image.imageId,
-      owner = image.owner,
+      owner = image.userId,
       image = image.image,
       thumbnail = image.thumbnail,
       adminOk = image.adminOk,
@@ -22,7 +22,7 @@ class ImageConverter extends ModelConverterBase[Image, ImageMongo] {
 
   def toMongo(image: Image): ImageMongo = {
     ImageMongo(imageId = image.imageId,
-      owner = image.owner,
+      userId = image.owner,
       image = image.image,
       thumbnail = image.thumbnail,
       adminOk = image.adminOk,

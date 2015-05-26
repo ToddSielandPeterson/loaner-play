@@ -8,13 +8,14 @@ import org.joda.time.DateTime
  * Created by tsieland on 10/14/14.
  */
 case class PagesMongo(userPageId: UUID,
+                      userId: UUID,
                       name: String,
                       header: String,
                       tags: List[String],
                       text: String,
                       active: Boolean,
                       created: Option[DateTime] = None,
-                      updated: Option[DateTime] = None)
+                      lastUpdated: Option[DateTime] = None)
 
 object PagesMongo {
   implicit lazy val bsonHandler_PagesMongo = {

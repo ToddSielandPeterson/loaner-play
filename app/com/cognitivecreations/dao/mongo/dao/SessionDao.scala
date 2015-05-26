@@ -20,14 +20,14 @@ trait SessionDaoTrait extends BaseMongoDao[SessionMongo] with BSONHandlers {
 }
 
 class SessionDao(implicit val executionContext: ExecutionContext) extends SessionDaoTrait {
-  def queryBySessionId(id: UUID): BSONDocument = BSONDocument("sessionId" -> BSONString(id.toString))
+  def bySessioKey(id: UUID): BSONDocument = byKey("sessionId", id)
 
   def findBySessionId(id: UUID): Future[Option[SessionMongo]] = {
-    findOne(queryBySessionId(id))
+    findOne(bySessioKey(id))
   }
 
   def upsert(id: UUID, before: SessionMongo, after: SessionMongo): Future[LastError] = {
-    update(queryBySessionId(before.sessionId), updateQuery(before, after), upsert = true)
+    update(bySessioKey(before.sessionId), updateQuery(before, after), upsert = true)
   }
 
 }
