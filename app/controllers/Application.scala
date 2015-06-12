@@ -15,7 +15,7 @@ import play.api.Play.current
  * Author: Sari Haj Hussein
  */
 
-object Application extends Controller {
+object Application extends Controller with LoggedInController {
   
   /** serve the index page app/views/index.scala.html */
   def index(any: String) = Action.async { request =>

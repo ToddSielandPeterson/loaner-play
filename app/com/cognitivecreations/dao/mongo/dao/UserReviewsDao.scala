@@ -26,6 +26,22 @@ class UserReviewsDao(implicit val executionContext: ExecutionContext) extends Us
   def byProductKey(value: String): BSONDocument = { byKey("product", value)  }
   def byMainKey(id: String): BSONDocument = { byKey("id", id)  }
 
+  def findByReviewer(uuid: UUID): Future[List[UserReviewsMongo]] = {
+    find(byReviewerKey(uuid))
+  }
+
+  def findByOwner(uuid: UUID): Future[List[UserReviewsMongo]] = {
+    find(byOwnerKey(uuid))
+  }
+
+  def findByProduct(uuid: UUID): Future[List[UserReviewsMongo]] = {
+    find(byProductKey(uuid))
+  }
+
+  def delete(uuid: UUID): Future[LastError] = {
+    delete(byMainKey(uuid), true)
+  }
+
   def update(userReview: UserReviewsMongo): Future[LastError] = {
     val upsertProduct = userReview.copy(lastUpdate = DateTime.now())
     update(byMainKey(userReview.id.toString), update = upsertProduct, upsert = true, multi = false)

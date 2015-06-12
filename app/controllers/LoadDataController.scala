@@ -13,7 +13,7 @@ import scala.concurrent.duration._
 import scala.concurrent.{Await, ExecutionContext}
 import play.api.Play.current
 
-object LoadDataController extends Controller {
+object LoadDataController extends Controller with LoggedInController {
   val hammerId = UUID.randomUUID()
   val sawsId = UUID.randomUUID()
   val taleSawsId = UUID.randomUUID()

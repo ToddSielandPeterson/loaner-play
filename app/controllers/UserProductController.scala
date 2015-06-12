@@ -23,24 +23,9 @@ import scala.util.Try
  * Created by tsieland on 1/7/15.
  */
 
-class NotLoggedInException(userId: Option[UUID]) extends Exception
 
-
-object UserProductController extends Controller {
+object UserProductController extends Controller with LoggedInController  {
   import models.Product._
-
-  def loggedInUser()(implicit request: Request[AnyContent], simpleDbLookups: ExecutionContext): Future[User] = {
-    for {
-      session <- SessionUtils(request).fetchFutureSessionInfo()
-    } yield {
-      if (session.user.isEmpty || session.user.get.userId.isEmpty) {
-        throw new NotLoggedInException(None)
-      } else {
-        session.user.get
-      }
-    }
-  }
-
 
   def productListForUser() = Action.async{ implicit request =>
     implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")

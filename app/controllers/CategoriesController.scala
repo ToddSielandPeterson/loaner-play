@@ -19,7 +19,7 @@ import scala.concurrent.{Future, ExecutionContext}
 /**
  * Created by Todd Sieland-Peteson on 2/17/15.
  */
-object CategoriesController extends Controller {
+object CategoriesController extends Controller with LoggedInController {
   import models.Product._
 
   /* rest Calls */

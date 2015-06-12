@@ -31,6 +31,10 @@ class FaqDao(implicit val executionContext: ExecutionContext) extends FaqDaoTrai
 
   def findByFaqId(id: UUID): Future[Option[FaqMongo]] = { findOne(byMainKey(id)) }
 
+  def delete(uuid: UUID): Future[LastError] = {
+    delete(byMainKey(uuid), true)
+  }
+
   def update(faq: FaqMongo): Future[LastError] = {
     val upsertProduct = faq.copy(lastUpdate = DateTime.now())
     update(byMainKey(faq.faqId), update = upsertProduct, upsert = true, multi = false)

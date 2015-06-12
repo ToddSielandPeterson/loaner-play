@@ -15,7 +15,7 @@ import scala.concurrent.{Future, ExecutionContext}
 /**
  * Created by Todd Sieland-Peteson on 2/2/15.
  */
-object UserDesktopController extends Controller {
+object UserDesktopController extends Controller with LoggedInController {
 
   def index = Action.async { implicit request =>
     implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")

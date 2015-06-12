@@ -19,11 +19,31 @@ class UserReviewCoordinator(implicit ec: ExecutionContext) extends UserReviewCon
 
   def findByPrimary(uuid: UUID): Future[Option[UserReviews]] = {
     for {
-      optImage <- userReviewsDao.findById(uuid.toString)
+      optReview <- userReviewsDao.findById(uuid.toString)
     } yield
-    optImage.map(fromMongo)
+    optReview.map(fromMongo)
   }
 
+  def findByOwner(uuid:UUID): Future[List[UserReviews]] = {
+    for {
+      reviews <- userReviewsDao.findByOwner(uuid)
+    } yield
+      reviews.map(fromMongo)
+  }
+
+  def findByReviewer(uuid:UUID): Future[List[UserReviews]] = {
+    for {
+      reviews <- userReviewsDao.findByReviewer(uuid)
+    } yield
+      reviews.map(fromMongo)
+  }
+
+  def findByProduct(uuid:UUID): Future[List[UserReviews]] = {
+    for {
+      reviews <- userReviewsDao.findByProduct(uuid)
+    } yield
+      reviews.map(fromMongo)
+  }
 
   def insert(userReviews: UserReviews): Future[LastError] = {
     userReviewsDao.insert(toMongo(userReviews))

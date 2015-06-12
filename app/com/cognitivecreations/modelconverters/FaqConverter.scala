@@ -4,14 +4,14 @@ import java.util.UUID
 
 import com.cognitivecreations.dao.mongo.dao.mongomodel.{FaqMongo, CategoryMongo}
 import com.cognitivecreations.helpers.Pimp_UUID._
-import models.{Faq, Category}
+import models.Faq
 import org.joda.time.DateTime
 
 /**
  * Created by Todd Sieland-Peteson on 5/25/15.
  */
 
-class FaqConverter extends ModelConverterBase[Faq, FaqMongo] {
+object FaqConverter extends ModelConverterBase[Faq, FaqMongo] {
   def fromMongo(faq: FaqMongo): Faq =
     Faq(faqId = Some(faq.faqId),
       orderingIndex = faq.orderingIndex,
@@ -22,7 +22,8 @@ class FaqConverter extends ModelConverterBase[Faq, FaqMongo] {
       vote = faq.vote,
       lastUpdate = Some(faq.lastUpdate),
       create = Some(faq.create),
-      showUntil = Some(faq.showUntil) )
+      showUntil = Some(faq.showUntil),
+      showFrom = Some(faq.showFrom))
 
   def toMongo(faq: Faq): FaqMongo =
     FaqMongo(faqId = faq.faqId.getOrElse(UUID.randomUUID()),
@@ -34,7 +35,9 @@ class FaqConverter extends ModelConverterBase[Faq, FaqMongo] {
       vote = faq.vote,
       lastUpdate = faq.lastUpdate.getOrElse(DateTime.now()),
       create = faq.create.getOrElse(DateTime.now()),
-      showUntil = faq.showUntil.getOrElse(DateTime.now()))
+      showUntil = faq.showUntil.getOrElse(DateTime.now().plusYears(2)),
+      showFrom = faq.showFrom.getOrElse(DateTime.now()))
+
 }
 
 

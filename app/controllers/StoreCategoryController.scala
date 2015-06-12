@@ -14,7 +14,7 @@ import scala.concurrent.ExecutionContext
 /**
  * Created by Todd Sieland-Peteson on 4/18/15.
  */
-object StoreCategoryController extends Controller {
+object StoreCategoryController extends Controller with LoggedInController {
   import models.Product._
 
   /* web page calls */

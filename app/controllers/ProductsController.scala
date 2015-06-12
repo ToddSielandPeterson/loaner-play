@@ -16,7 +16,7 @@ import scala.concurrent.ExecutionContext
 /**
  * Created by tsieland on 1/7/15.
  */
-object ProductsController extends Controller {
+object ProductsController extends Controller with LoggedInController {
 
   def categoriesCategoryId(category: Option[Category]): UUID =
     category.getOrElse(Category.newCategory).categoryId.getOrElse(UUID.randomUUID())

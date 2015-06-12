@@ -2,14 +2,14 @@ package controllers
 
 import controllers.CategoriesController._
 import play.api.libs.json.Json
-import play.api.mvc.Action
+import play.api.mvc.{Controller, Action}
 
 import scala.concurrent.Future
 
 /**
  * Created by Todd Sieland-Peteson on 5/4/15.
  */
-object GalleryController {
+object GalleryController extends Controller with LoggedInController {
 
   def userImages() = Action.async { implicit request =>
 

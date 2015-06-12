@@ -9,7 +9,8 @@ import org.joda.time.DateTime
  */
 case class FaqMongo (faqId:UUID, orderingIndex: Int, title:String, richText: String,
                      author: Option[String], tags: List[String], vote: Option[Int],
-                     create: DateTime = DateTime.now(), lastUpdate: DateTime = DateTime.now(), showUntil: DateTime = DateTime.now())
+                     create: DateTime = DateTime.now(), lastUpdate: DateTime = DateTime.now(),
+                     showUntil: DateTime = DateTime.now().plusYears(2), showFrom: DateTime = DateTime.now())
 
 object FaqMongo {
   implicit lazy val bsonHandler_FaqMongo = {

@@ -28,8 +28,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
  * Author: Sari Haj Hussein
  */
 
-object UserController extends Controller {
-
+object UserController extends Controller with LoggedInController {
 
   def cleanUpUser(user: User) = {
     if (user.admin.isDefined && user.admin.get) {

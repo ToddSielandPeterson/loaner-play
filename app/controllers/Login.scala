@@ -21,7 +21,7 @@ import scala.concurrent.{Future, ExecutionContext}
 /**
  * Created by Todd Sieland-Peteson on 1/14/15.
  */
-object Login extends Controller {
+object Login extends Controller with LoggedInController {
 
   case class UserData(username: String, password: String)
 
