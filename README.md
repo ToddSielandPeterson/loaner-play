@@ -9,7 +9,7 @@
 
 ##One time startup or redeploy:
 
-- loader file (/init directory) will have a script to use mongorestore function.
+- loader file (/init directory) use "mongorestore" function to restore. It should restore into toolloaner db.
 
 ##Running:
 
@@ -24,8 +24,7 @@
 - /app/views holds the basic html/scala code.  this is used in the entry points return values.  
 - /public this is anything that is html/javascript based.  Note: play sets this up to respond via the /assets
 - /public/frontend - frontend code for the store. basic html and css. 
-- /pubplc/backend - backend code based around angular
-
+- /public/backend - backend code based around angular
 
 ## Basic Play info
 
