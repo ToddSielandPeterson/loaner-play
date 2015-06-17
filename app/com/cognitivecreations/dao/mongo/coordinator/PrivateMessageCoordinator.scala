@@ -24,14 +24,14 @@ class PrivateMessageCoordinator(implicit ec: ExecutionContext) extends PrivateMe
 
   def findByFromUser(uuid: UUID): Future[List[PrivateMessage]] = {
     for {
-      imageList <- privateMessageDao.findByFromUser(uuid)
-    } yield imageList.map(fromMongo)
+      privateMassageList <- privateMessageDao.findByFromUser(uuid)
+    } yield privateMassageList.map(fromMongo)
   }
 
   def findByToUser(uuid: UUID): Future[List[PrivateMessage]] = {
     for {
-      imageList <- privateMessageDao.findByToUser(uuid)
-    } yield imageList.map(fromMongo)
+      privateMassageList <- privateMessageDao.findByToUser(uuid)
+    } yield privateMassageList.map(fromMongo)
   }
 
   def insert(privateMessage: PrivateMessage): Future[LastError] = {

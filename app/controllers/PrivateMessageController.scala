@@ -34,6 +34,28 @@ object PrivateMessageController extends Controller with LoggedInController  {
       Ok(Json.toJson(faqList))
   }
 
+//  def privateMessageList(page:Int, size:Int) = Action.async{ implicit request =>
+//    implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
+//    val privateMessageCoordinator = new PrivateMessageCoordinator()
+//
+//    for {
+//      user <- loggedInUser
+//      pmList <- privateMessageCoordinator.find()
+//    } yield
+//      Ok(Json.toJson(pmList))
+//  }
+
+  def privateMessage(id: String) = Action.async{ implicit request =>
+    implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
+    val privateMessageCoordinator = new PrivateMessageCoordinator()
+
+    for {
+      user <- loggedInUser
+      pmList <- privateMessageCoordinator.findByPrimary(UUID.fromString(id))
+    } yield
+      Ok(Json.toJson(pmList))
+  }
+
   def addPrivateMessageForUser() = Action.async { implicit request =>
     implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
     val privateMessageCoordinator = new PrivateMessageCoordinator()
@@ -57,7 +79,31 @@ object PrivateMessageController extends Controller with LoggedInController  {
     }
   }
 
-  def replyPriateMessageForUser(faqStringId: String) = Action.async { implicit request =>
+  // fix this
+  def savePrivateMessage() = Action.async { implicit request =>
+    implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
+    val privateMessageCoordinator = new PrivateMessageCoordinator()
+    val privateMessageFormInputHolder = privateMessageForm.bindFromRequest()
+
+    try {
+      if (privateMessageFormInputHolder.hasErrors) {
+        Future.successful(Ok(Json.toJson(Error(privateMessageFormInputHolder.toString))))
+      } else {
+        for {
+          user <- loggedInUser
+        } yield {
+          val messageData = privateMessageFormInputHolder.get
+          val privateMessage = fromPrivateMessageData(messageData)
+          privateMessageCoordinator.insert(privateMessage)
+          Ok(Json.toJson(privateMessage))
+        }
+      }
+    } catch {
+      case ex: NotLoggedInException => Future.successful(Ok(Json.toJson(Error("You are not logged in"))))
+    }
+  }
+
+  def replyPrivateMessageForUser(faqStringId: String) = Action.async { implicit request =>
     implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
     val privateMessageCoordinator = new PrivateMessageCoordinator()
     val privateMessageFormInputHolder = privateMessageForm.bindFromRequest()
@@ -91,7 +137,7 @@ object PrivateMessageController extends Controller with LoggedInController  {
     }
   }
 
-  def productDeleteForUser(faqStringId: String) = Action.async { implicit request =>
+  def privateMessageDeleteForUser(faqStringId: String) = Action.async { implicit request =>
     implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
 
     val sessionInfo = SessionUtils(request).fetchFutureSessionInfo()

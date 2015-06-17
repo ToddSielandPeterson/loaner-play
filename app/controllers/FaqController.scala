@@ -29,88 +29,108 @@ object FaqController extends Controller with LoggedInController {
     implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
     val faqCoordinator = new FaqCoordinator()
 
-    for {
-      user <- loggedInUser
-      faqList <- faqCoordinator.findAllActive()
-    } yield
-      Ok(Json.toJson(faqList))
-  }
-
-  def productAddForUser() = Action.async { implicit request =>
-    implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
-    val faqCoordinator = new FaqCoordinator()
-    val faqFormInputHolder = FaqForm.bindFromRequest()
-
-    if (faqFormInputHolder.hasErrors) {
-      Future.successful(Ok(Json.toJson(Error(faqFormInputHolder.toString))))
-    } else {
+    {
       for {
         user <- loggedInUser
-        if user.admin.getOrElse(false)
-      } yield {
-        val faqData = faqFormInputHolder.get
-        val faq = fromFaqData(faqData)
-
-        faqCoordinator.insert(faq)
-        Ok(Json.toJson(faq))
-      }
-    }.recoverWith{
-      case ex: NotLoggedInException => Future.successful(Ok(Json.toJson(Error("You are not logged in"))))
+        faqList <- faqCoordinator.findAllActive()
+      } yield
+        Ok(Json.toJson(faqList))
+    }.recover{
+      case ex: NotLoggedInException => Unauthorized
     }
   }
 
-  def faqUpdateForUser(faqStringId: String) = Action.async { implicit request =>
+  def faq(id: String) = Action.async{ implicit request =>
     implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
+    val faqCoordinator = new FaqCoordinator()
+
+    {
+      for {
+        user <- loggedInUser
+        faqList <- faqCoordinator.findByPrimary(UUID.fromString(id))
+      } yield
+      Ok(Json.toJson(faqList))
+    }.recover{
+      case ex: NotLoggedInException => Unauthorized
+      case ex: IllegalArgumentException => BadRequest // from faq id being wrong
+    }
+  }
+
+  def faqUpdate(faqStringId: String) = Action.async { implicit request =>
+    implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
+
     val faqCoordinator = new FaqCoordinator()
     val faqFormInputHolder = FaqForm.bindFromRequest()
 
-    loggedInUser.map{ user =>
-      user.admin match {
-        case Some(x) if x => // if admin
-          val faqData = faqFormInputHolder.get // if there are errors it will throw an expection
-          val faq = fromFaqData (faqData)
-          if (faqData.faqId.isEmpty) {
-            Ok (Json.toJson (Error ("should have a faqId") ) )
-          } else {
-            val errors = faqCoordinator.update (fromFaqData (faqData) )
-              // TODO: add error processing if failed.
-            Ok (Json.toJson (faq) )
-          }
-        case _ =>
-          Ok(Json.toJson(Error(faqFormInputHolder.toString)))
+    {
+      errorTest(faqFormInputHolder)
+      for {
+        user <- loggedInAdminUser()
+        faqData = faqFormInputHolder.get // if there are errors it will throw an exception
+        faq = fromFaqData(faqData)
+        errors <- faqCoordinator.update(fromFaqData(faqData))
+      } yield {
+        if (errors.inError)
+          ExpectationFailed(errorOrUnknownAsJson(errors))
+        else
+          Ok (Json.toJson(faq))
       }
     }.recover{
-      case ex: NotLoggedInException =>
-        Ok(Json.toJson(Error("You are not logged in")))
-      case ex: NoSuchElementException if faqFormInputHolder.hasErrors =>
-        Ok(Json.toJson(Error(faqFormInputHolder.toString)))
+      case ex: FormErrorException => ExpectationFailed(ex.getMessage)
+      case ex: NotLoggedInAsAdminException => Unauthorized
+      case ex: IllegalArgumentException => BadRequest // from faq id being wrong
     }
   }
 
-  def productDeleteForUser(faqStringId: String) = Action.async { implicit request =>
+  def faqDelete(faqStringId: String) = Action.async { implicit request =>
     implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
 
-    val sessionInfo = SessionUtils(request).fetchFutureSessionInfo()
     val faqCoordinator = new FaqCoordinator()
-    val faqId = UUID.fromString(faqStringId)
 
-    for {
-      user <- loggedInUser
-      if user.admin.getOrElse(false)
-      productShow <- faqCoordinator.delete(faqId)
-    } yield {
-      Ok(Json.toJson(Error.success))
+    {
+      val faqId = UUID.fromString(faqStringId)
+      for {
+        user <- loggedInAdminUser()
+        productShow <- faqCoordinator.delete(faqId)
+      } yield {
+        Ok(Json.toJson(Error.success))
+      }
+    }.recover{
+      case ex: NotLoggedInAsAdminException => Unauthorized
+      case ex: IllegalArgumentException => BadRequest // from faq id being wrong
     }
   }
 
-  def add() = Action.async { request =>
-    Future.successful(NotImplemented)
+  def addFaq() = Action.async { implicit request =>
+    implicit val simpleDbLookups: ExecutionContext = Akka.system.dispatchers.lookup("contexts.concurrent-lookups")
+
+    val faqCoordinator = new FaqCoordinator()
+    val faqFormInputHolder = FaqForm.bindFromRequest()
+
+    {
+      errorTest(faqFormInputHolder)
+      for {
+        user <- loggedInAdminUser()
+        faqData = faqFormInputHolder.get // if there are errors it will throw an exception
+        faq = fromFaqData (faqData)
+        errors <- faqCoordinator.insert (fromFaqData (faqData) )
+      } yield {
+        if (errors.inError)
+          ExpectationFailed(errorOrUnknownAsJson(errors))
+        else
+          Ok (Json.toJson(faq))
+      }
+    }.recover{
+      case ex: FormErrorException => ExpectationFailed(ex.getMessage)
+      case ex: NotLoggedInAsAdminException => Unauthorized
+      case ex: IllegalArgumentException => BadRequest // from faq id being wrong
+    }
   }
 
-  case class FaqData(faqId:Option[String], orderingIndex: String, title:String, richText: String,
+  case class FaqData(faqId:Option[String], orderingIndex: Int, title:String, richText: String,
                      author: Option[String],
                      //tags: Option[List[String]],
-                     vote: Option[String],
+                     vote: Option[Int],
                      create: Option[String], lastUpdate: Option[String],
                      showUntil: Option[String], showFrom: Option[String])
 
@@ -122,7 +142,7 @@ object FaqController extends Controller with LoggedInController {
       richText = faq.richText,
       author = faq.author,
       tags = None,
-      vote = optionInt(faq.vote),
+      vote = faq.vote,
       lastUpdate = Some(DateTime.now()),
       create = None,
       showUntil = optionDateTime(faq.showUntil),
@@ -135,14 +155,14 @@ object FaqController extends Controller with LoggedInController {
       title = faqFormData.title,
       richText = faqFormData.richText,
       author = faqFormData.author,
-      vote = optionInt(faqFormData.vote),
+      vote = faqFormData.vote,
       lastUpdate = Some(DateTime.now()),
       showUntil = optionDateTime(faqFormData.showUntil),
       showFrom = optionDateTime(faqFormData.showFrom))
   }
   def newFaqData(faq: FaqData): Faq = {
     new Faq(
-      faqId = optionId(faq.faqId),
+      faqId = Some(UUID.randomUUID()),
       orderingIndex = faq.orderingIndex.toInt,
       title = faq.title,
       richText = faq.richText,
@@ -158,12 +178,27 @@ object FaqController extends Controller with LoggedInController {
   val FaqForm = Form(
     mapping(
       "faqId" -> optional(text),
-      "orderingIndex" -> text,
+      "orderingIndex" -> number,
       "title" -> text,
       "richText" -> text,
       "author" -> optional(text),
 //      "tags" -> optional(List(text)),
-      "vote" -> optional(text),
+      "vote" -> optional(number),
+      "create" -> optional(text),
+      "lastUpdate" -> optional(text),
+      "showUntil" -> optional(text),
+      "showFrom" -> optional(text)
+    )(FaqData.apply)(FaqData.unapply)
+  )
+
+  val FaqInsertForm = Form(
+    mapping(
+      "faqId" -> optional(text),
+      "orderingIndex" -> number,
+      "title" -> text,
+      "richText" -> text,
+      "author" -> optional(text),
+      "vote" -> optional(number),
       "create" -> optional(text),
       "lastUpdate" -> optional(text),
       "showUntil" -> optional(text),

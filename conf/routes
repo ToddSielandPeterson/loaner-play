@@ -69,6 +69,18 @@ POST          /api/gallery/:id               controllers.GalleryController.galle
 DELETE        /api/gallery/:id               controllers.GalleryController.galleryDelete(id: String)
 PUT           /api/gallery                   controllers.GalleryController.galleryAdd
 
+GET           /api/privateMessageAll              controllers.PrivateMessageController.privateMessageList()
+GET           /api/privateMessage/:id          controllers.PrivateMessageController.privateMessage(id: String)
+POST          /api/privateMessage              controllers.PrivateMessageController.addPrivateMessageForUser
+DELETE        /api/privateMessage/:id          controllers.PrivateMessageController.privateMessageDeleteForUser(id: String)
+PUT           /api/privateMessage              controllers.PrivateMessageController.savePrivateMessage
+
+GET           /api/faqAll                   controllers.FaqController.faqList()
+GET           /api/faq/:id                  controllers.FaqController.faq(id: String)
+POST          /api/faq                      controllers.FaqController.addFaq
+DELETE        /api/faq/:id                  controllers.FaqController.faqDelete(id: String)
+PUT           /api/faq                      controllers.FaqController.faqUpdate(faqStringId: String)
+
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                  controllers.Assets.at(path="/public", file)
 
