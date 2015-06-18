@@ -80,6 +80,43 @@ function userProductsFactory(resource) {
         });
     }
 
+// all functions for faq fetching
+function faqAllFactory(resource) {
+        return resource("/api/faqAll", {}, {
+            get: {method: 'GET', cache: false, isArray: true}
+        });
+    }
+
+function faqAddFactory(resource) {
+        return resource("/api/faq", {}, {
+            put: {method: 'PUT', cache: false, isArray: false}
+        });
+    }
+
+function faqFactory(resource) {
+        return resource("/api/faq/:id", {}, {
+            get: {method: 'GET', cache: false, isArray: false},
+            post: {method: 'POST', cache: false, isArray: false},
+            delete: {method: 'DELETE', cache: false, isArray: false}
+        });
+    }
+
+// Private Message
+function privateMessageFactory(resource) {
+        return resource("/api/faq", {}, {
+            get: {method: 'GET', cache: false, isArray: true},
+            put: {method: 'PUT', cache: false, isArray: false}
+        });
+    }
+
+function privateMessageWithIdFactory(resource) {
+        return resource("/api/faq/:id", {}, {
+            get: {method: 'GET', cache: false, isArray: false},
+            post: {method: 'POST', cache: false, isArray: false},
+            delete: {method: 'DELETE', cache: false, isArray: false}
+        });
+    }
+
 
 /**
  * pageTitle - Directive for set Page title - mata title
